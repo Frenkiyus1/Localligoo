@@ -7,3 +7,6 @@ test-results/
 .DS_Store
 Thumbs.db
 WEBSITE-20261008T070906Z-1-001/
+.wrangler/
+.dev.vars*
+.env*

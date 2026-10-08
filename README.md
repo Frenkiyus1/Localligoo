@@ -4,7 +4,7 @@ Trang chủ dùng **BÌA CHỦ O ELM.png** làm nền và ghép 4 ảnh từ th�
 
 ## Chạy
 
-Cần Node.js 20 trở lên.
+Cần Node.js 22 trở lên.
 
 ```sh
 npm install
@@ -51,3 +51,29 @@ npm test
 ```
 
 Kiểm tra chạy ở hai kích thước 1280 × 900 và 390 × 844, xác minh ảnh tải đủ, không tràn ngang, điều hướng và thao tác bàn phím. Ảnh chụp toàn trang được lưu trong `test-results/`.
+
+## Deploy Cloudflare Workers
+
+Repository có sẵn `wrangler.jsonc` cho Worker **localligoo**. Wrangler chạy `npm run build` trước khi deploy, rồi chỉ lấy các file frontend trong `dist/`. Không dùng thư mục gốc làm thư mục assets.
+
+Thiết lập trong Cloudflare Workers Builds:
+
+- **Root directory**: thư mục gốc repository.
+- **Build command**: `npm run build`.
+- **Deploy command**: `npx wrangler deploy` (hoặc `npm run deploy`).
+
+Build command trong dashboard có thể chạy riêng; bước build trong Wrangler vẫn tạo `dist/` khi chạy deploy trực tiếp từ CLI.
+
+Kiểm tra đóng gói trước khi upload:
+
+```sh
+npm run deploy:check
+```
+
+Lệnh này chạy dry-run và không publish lên Cloudflare. Deploy thật cần đăng nhập Cloudflare hoặc thông tin xác thực do Workers Builds cung cấp.
+
+```sh
+npm run deploy
+```
+
+Xem [Static Assets](https://developers.cloudflare.com/workers/static-assets/) và [custom builds](https://developers.cloudflare.com/workers/wrangler/custom-builds/) trong tài liệu Cloudflare.
