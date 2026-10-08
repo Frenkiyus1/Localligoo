@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#b4c04c" />
+    <meta name="description" content="LOCALINGO — From Local to Global. Learn English through the places, people, culture and everyday life around you." />
+    <title>LOCALINGO — From Local to Global</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="./assets/background.png" as="image" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#journey">Skip to your English journey</a>
+
+    <main class="landing" id="home">
+      <img class="page-art" src="./assets/background.png" width="2405" height="3619" alt="" fetchpriority="high" draggable="false" />
+
+      <header class="masthead">
+        <a class="hotspot brand" href="#home" aria-label="LOCALINGO home"></a>
+        <nav class="desktop-nav" aria-label="Main navigation">
+          <a class="hotspot nav-home" href="#home" aria-label="Home"><span class="nav-label">HOME</span></a>
+          <a class="hotspot nav-learn" href="#learn" aria-label="Learn"><span class="nav-label">LEARN</span></a>
+          <a class="hotspot nav-explore" href="#explore" aria-label="Explore"><span class="nav-label">EXPLORE</span></a>
+          <a class="hotspot nav-practice" href="#practice" aria-label="Practice"><span class="nav-label">PRACTICE</span></a>
+          <button class="hotspot nav-badges" type="button" data-panel="badges" aria-label="Badges"><span class="nav-label">BADGES</span></button>
+        </nav>
+      </header>
+
+      <section class="hero-copy sr-only" aria-labelledby="welcome-title">
+        <h1 id="welcome-title">Welcome to LOCALINGO</h1>
+        <p>From Local to Global</p>
+      </section>
+
+      <a class="art-button start-button" href="#journey" aria-label="Start learning">
+        <span class="element-visual" aria-hidden="true">
+          <img src="./assets/start-learning.png" width="2405" height="1805" alt="" draggable="false" />
+        </span>
+        <span class="sr-only">Start learning</span>
+      </a>
+
+      <section class="about-copy sr-only" aria-labelledby="about-title">
+        <h2 id="about-title">What is LOCALINGO?</h2>
+        <p>LOCALINGO is an English learning space where your language meets your local world.</p>
+        <p>Instead of learning English through unfamiliar situations, LOCALINGO helps you learn through places, people, culture and everyday life around you.</p>
+      </section>
+
+      <section class="values-copy sr-only" aria-labelledby="values-title">
+        <h2 id="values-title">Our core values</h2>
+        <article><h3>01 — Learn: Learn with Purpose</h3><p>Build real English skills through meaningful and familiar contexts.</p></article>
+        <article><h3>02 — Connect: Connect with Your Place</h3><p>Discover people, culture and places that make your community unique.</p></article>
+        <article><h3>03 — Explore: Learn by Exploring</h3><p>Learn, practice and discover through interactive activities.</p></article>
+      </section>
+
+      <section class="journey" id="journey" aria-labelledby="journey-title" tabindex="-1">
+        <h2 class="sr-only" id="journey-title">Your English journey</h2>
+        <button class="art-button learn-button" id="learn" type="button" data-panel="learn" aria-label="Learn — Learn with Purpose">
+          <span class="element-visual" aria-hidden="true"><img src="./assets/learn.png" width="2405" height="1805" alt="" draggable="false" /></span>
+          <span class="sr-only">Learn</span>
+        </button>
+        <button class="art-button explore-button" id="explore" type="button" data-panel="explore" aria-label="Explore — Learn by Exploring">
+          <span class="element-visual" aria-hidden="true"><img src="./assets/explore.png" width="2405" height="1805" alt="" draggable="false" /></span>
+          <span class="sr-only">Explore</span>
+        </button>
+        <button class="art-button practice-button" id="practice" type="button" data-panel="practice" aria-label="Practice — Use your English">
+          <span class="element-visual" aria-hidden="true"><img src="./assets/practice.png" width="2405" height="1805" alt="" draggable="false" /></span>
+          <span class="sr-only">Practice</span>
+        </button>
+      </section>
+
+      <footer class="page-footer">
+        <a class="hotspot footer-brand" href="#home" aria-label="Back to LOCALINGO home"></a>
+      </footer>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="#home">Home</a>
+      <a href="#learn">Learn</a>
+      <a href="#explore">Explore</a>
+      <a href="#practice">Practice</a>
+      <button type="button" data-panel="badges">Badges</button>
+    </nav>
+
+    <dialog class="journey-dialog" aria-labelledby="panel-title" aria-describedby="panel-description">
+      <form method="dialog"><button class="close-dialog" aria-label="Close" autofocus>×</button></form>
+      <p class="dialog-eyebrow">YOUR ENGLISH JOURNEY</p>
+      <h2 id="panel-title"></h2>
+      <p id="panel-description"></p>
+      <p class="panel-note"></p>
+      <form method="dialog"><button class="dialog-return">Back to your journey</button></form>
+    </dialog>
+    <noscript><p class="noscript-note">You can explore the homepage without JavaScript. Enable JavaScript to open the journey introductions.</p></noscript>
+  </body>
+</html>
