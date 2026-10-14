@@ -4,15 +4,30 @@ const description = document.querySelector("#panel-description");
 const note = document.querySelector(".panel-note");
 
 const panels = {
+  "nature-wildlife": {
+    "title": "Nature & Wildlife",
+    "description": "Discover the natural wonders",
+    "note": "Discover the land, people and culture of Moc Chau, Son La."
+  },
+  "local-food": {
+    "title": "Local Food",
+    "description": "Taste the local culture",
+    "note": "Discover the land, people and culture of Moc Chau, Son La."
+  },
+  "people-tradition": {
+    "title": "People & Tradition",
+    "description": "Meet local communities.",
+    "note": "Discover the land, people and culture of Moc Chau, Son La."
+  },
+  "festivals-seasons": {
+    "title": "Festivals & Seasons",
+    "description": "Explore seasonal traditions.",
+    "note": "Discover the land, people and culture of Moc Chau, Son La."
+  },
   learn: {
     title: "Learn with Purpose",
     description: "Build real English skills through meaningful and familiar contexts.",
     note: "Discover English through the places, people and everyday life around you.",
-  },
-  explore: {
-    title: "Learn by Exploring",
-    description: "Discover people, culture and places that make your community unique.",
-    note: "Connect with your place and see your local world through English.",
   },
   practice: {
     title: "Practice your English",

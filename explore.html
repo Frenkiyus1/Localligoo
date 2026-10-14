@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#b4c04c" />
+  <meta name="description" content="Explore the land, people and culture of Moc Chau, Son La with LOCALINGO." />
+  <title>Explore — LOCALINGO</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="./assets/explore/background.png" as="image" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./explore.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#topics">Skip to explore topics</a>
+  <main class="landing explore-landing" id="top">
+    <img class="page-art" src="./assets/explore/background.png" width="2405" height="2988" alt="" fetchpriority="high" draggable="false" />
+    <svg class="explore-paper" viewBox="0 0 2405 2988" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="paper" width="2405" height="1800" patternUnits="userSpaceOnUse">
+          <image href="./assets/explore/nature-wildlife.png" width="2405" height="2988" />
+        </pattern>
+      </defs>
+      <rect width="2405" height="2988" fill="url(#paper)" />
+    </svg>
+    <header class="masthead">
+      <a class="hotspot brand" href="./index.html" aria-label="LOCALINGO home"></a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a class="hotspot nav-home" href="./index.html" aria-label="Home">HOME</a>
+        <a class="hotspot nav-learn" href="./index.html#learn" aria-label="Learn">LEARN</a>
+        <a class="hotspot nav-explore" href="#topics" aria-label="Explore" aria-current="page">EXPLORE</a>
+        <button class="hotspot nav-badges" type="button" data-panel="badges" aria-label="Badges">BADGES</button>
+      </nav>
+    </header>
+    <section class="sr-only" aria-labelledby="explore-title">
+      <h1 id="explore-title">There's more to discover</h1>
+      <p>Discover surprising stories about the land, people and culture of Moc Chau, Son La.</p>
+    </section>
+    <section class="explore-topics" id="topics" aria-labelledby="topics-title" tabindex="-1">
+      <h2 class="sr-only" id="topics-title">Keep exploring! Choose a topic to discover more local facts.</h2>
+      <button class="art-button topic-button topic-nature-wildlife" id="nature-wildlife" type="button" data-panel="nature-wildlife" aria-label="Nature &amp; Wildlife">
+        <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/nature-wildlife.png" width="2405" height="2988" alt="" draggable="false" /></span>
+        <span class="sr-only">Nature &amp; Wildlife — Discover the natural wonders</span>
+      </button>
+      <button class="art-button topic-button topic-local-food" id="local-food" type="button" data-panel="local-food" aria-label="Local Food">
+        <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/local-food.png" width="2405" height="2988" alt="" draggable="false" /></span>
+        <span class="sr-only">Local Food — Taste the local culture</span>
+      </button>
+      <button class="art-button topic-button topic-people-tradition" id="people-tradition" type="button" data-panel="people-tradition" aria-label="People &amp; Tradition">
+        <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/people-tradition.png" width="2405" height="2988" alt="" draggable="false" /></span>
+        <span class="sr-only">People &amp; Tradition — Meet local communities.</span>
+      </button>
+      <button class="art-button topic-button topic-festivals-seasons" id="festivals-seasons" type="button" data-panel="festivals-seasons" aria-label="Festivals &amp; Seasons">
+        <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/festivals-seasons.png" width="2405" height="2988" alt="" draggable="false" /></span>
+        <span class="sr-only">Festivals &amp; Seasons — Explore seasonal traditions.</span>
+      </button>
+    </section>
+  </main>
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a href="./index.html">Home</a>
+    <a href="./index.html#learn">Learn</a>
+    <a href="#topics" aria-current="page">Explore</a>
+    <button type="button" data-panel="badges">Badges</button>
+  </nav>
+  <dialog class="journey-dialog" aria-labelledby="panel-title" aria-describedby="panel-description">
+    <form method="dialog"><button class="close-dialog" aria-label="Close" autofocus>×</button></form>
+    <p class="dialog-eyebrow">EXPLORE MOC CHAU, SON LA</p>
+    <h2 id="panel-title"></h2>
+    <p id="panel-description"></p>
+    <p class="panel-note"></p>
+    <form method="dialog"><button class="dialog-return">Back to topics</button></form>
+  </dialog>
+  <noscript><p class="noscript-note">Enable JavaScript to open the topic introductions.</p></noscript>
+</body>
+</html>

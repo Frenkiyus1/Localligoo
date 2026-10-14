@@ -26,14 +26,13 @@ test("start learning and navigation reach the journey controls", async ({ page }
   await expect(page).toHaveURL(/#journey$/);
   const nav = page.viewportSize().width <= 640 ? page.locator(".mobile-nav") : page.locator(".desktop-nav");
   await nav.getByRole("link", { name: "Explore", exact: true }).click();
-  await expect(page).toHaveURL(/#explore$/);
-  await expect(page.locator("#explore")).toBeInViewport();
+  await expect(page).toHaveURL(/explore(?:\.html)?$/);
+  await expect(page).toHaveTitle("Explore — LOCALINGO");
 });
 
 test("journey buttons support keyboard activation, Escape and focus restoration", async ({ page }) => {
   for (const [id, title] of [
     ["learn", "Learn with Purpose"],
-    ["explore", "Learn by Exploring"],
     ["practice", "Practice your English"],
   ]) {
     const button = page.locator("#" + id);

@@ -18,7 +18,7 @@ createServer(async (request, response) => {
   try {
     const url = new URL(request.url, "http://localhost");
     const pathname = decodeURIComponent(url.pathname);
-    const requestedPath = pathname.endsWith("/") ? pathname + "index.html" : pathname;
+    const requestedPath = pathname.endsWith("/") ? pathname + "index.html" : extname(pathname) ? pathname : pathname + ".html";
     const path = resolve(root, "." + requestedPath);
     const type = mime[extname(path)];
     // Serve only frontend file types; never expose Git metadata or local scripts.

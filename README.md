@@ -34,7 +34,7 @@ Canvas giữ tỷ lệ **2405 × 3619** theo ảnh mẫu và co giãn cùng các
 
 Nội dung chữ và minh họa có sẵn trong ảnh nền. HTML cung cấp thêm văn bản ngữ nghĩa cho trình đọc màn hình, vùng bấm menu, liên kết bỏ qua và điều khiển bàn phím. Điện thoại có thêm thanh điều hướng với vùng bấm lớn dưới ảnh.
 
-Nút **Start Learning** cuộn đến hành trình học. Menu cuộn đến từng lựa chọn; các nút hành trình mở giới thiệu. Đây là frontend trang chủ; bài học, tài khoản và lưu huy hiệu chưa được tích hợp.
+Nút **Start Learning** cuộn đến hành trình học. Menu Learn/Practice cuộn đến từng lựa chọn; menu và thẻ Explore mở trang Explore; các nút Learn/Practice mở giới thiệu. Đây là frontend trang chủ; bài học, tài khoản và lưu huy hiệu chưa được tích hợp.
 
 ## Kiểm tra
 
@@ -77,3 +77,11 @@ npm run deploy
 ```
 
 Xem [Static Assets](https://developers.cloudflare.com/workers/static-assets/) và [custom builds](https://developers.cloudflare.com/workers/wrangler/custom-builds/) trong tài liệu Cloudflare.
+
+## Trang Explore
+
+Mở `/explore.html` hoặc chọn Explore từ menu/thẻ ở trang chủ. Trang dùng **EXPLORE O ELM.png** làm nền và 4 ảnh nguyên gốc trong **EXPLORE/ELM** làm các thẻ chủ đề, theo bố cục **EXPLORE FULL.png**.
+
+`explore.css` căn các vùng hiển thị theo canvas **2405 × 2988**. Lớp texture giấy lấy từ vùng trống của ảnh element bằng SVG pattern; CSS chỉ hiển thị vùng thẻ, không sửa các ảnh gốc. Thẻ hỗ trợ bàn phím, hover/focus và hộp thoại giới thiệu. Nội dung chi tiết cho từng chủ đề chưa được cung cấp.
+
+Build và deploy Cloudflare đóng gói trang Explore cùng assets trong `dist/`.
