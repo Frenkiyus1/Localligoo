@@ -75,8 +75,7 @@ a { color: inherit; }
 .nav-home { left: 25.436798%; width: 5.8%; }
 .nav-learn { left: 34.142827%; width: 6.6%; }
 .nav-explore { left: 43.305718%; width: 8.9%; }
-.nav-practice { left: 54.863409%; width: 9.4%; }
-.nav-badges { left: 66.740021%; width: 8.1%; }
+.nav-badges { left: 55%; width: 8.1%; }
 .footer-brand { left: 2.4%; top: 90.2%; width: 10.1%; height: 3.7%; }
 
 .journey {
@@ -217,3 +216,9 @@ a { color: inherit; }
   html { scroll-behavior: auto; }
   .element-visual { transition: none; }
 }
+
+/* Two journey destinations after removing Practice. */
+.journey .learn-button { left: 22%; }
+.journey .explore-button { left: 53%; }
+.contact-footer { display:flex; justify-content:space-between; gap:20px; padding:20px 5%; font-size:clamp(11px,1.2vw,16px); background:#b4c04c; }
+.contact-footer a { margin-left:auto; overflow-wrap:anywhere; }

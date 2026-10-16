@@ -10,7 +10,8 @@
     "test": "playwright test",
     "deploy": "wrangler deploy",
     "deploy:check": "wrangler deploy --dry-run",
-    "preview": "wrangler dev"
+    "preview": "wrangler dev",
+    "test:api": "node --test tests/api.test.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",

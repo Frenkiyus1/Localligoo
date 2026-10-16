@@ -1,62 +1,25 @@
+import { readProgress } from "./progress.js";
 const dialog = document.querySelector(".journey-dialog");
-const title = document.querySelector("#panel-title");
-const description = document.querySelector("#panel-description");
-const note = document.querySelector(".panel-note");
-
 const panels = {
-  "nature-wildlife": {
-    "title": "Nature & Wildlife",
-    "description": "Discover the natural wonders",
-    "note": "Discover the land, people and culture of Moc Chau, Son La."
-  },
-  "local-food": {
-    "title": "Local Food",
-    "description": "Taste the local culture",
-    "note": "Discover the land, people and culture of Moc Chau, Son La."
-  },
-  "people-tradition": {
-    "title": "People & Tradition",
-    "description": "Meet local communities.",
-    "note": "Discover the land, people and culture of Moc Chau, Son La."
-  },
-  "festivals-seasons": {
-    "title": "Festivals & Seasons",
-    "description": "Explore seasonal traditions.",
-    "note": "Discover the land, people and culture of Moc Chau, Son La."
-  },
-  learn: {
-    title: "Learn with Purpose",
-    description: "Build real English skills through meaningful and familiar contexts.",
-    note: "Discover English through the places, people and everyday life around you.",
-  },
-  practice: {
-    title: "Practice your English",
-    description: "Use what you learn in familiar, everyday situations.",
-    note: "Bring English into your local world, one conversation at a time.",
-  },
-  badges: {
-    title: "Your badges",
-    description: "Your English journey starts here.",
-    note: "Learning activities and badge tracking will be available when the courses are added.",
-  },
+  "nature-wildlife": ["Nature & Wildlife", "Discover the natural wonders"],
+  "local-food": ["Local Food", "Taste the local culture"],
+  "people-tradition": ["People & Tradition", "Meet local communities."],
+  "festivals-seasons": ["Festivals & Seasons", "Explore seasonal traditions."],
+  "coming-soon": ["More adventures are on the way", "Start Unit 2 · My House to meet BanBan and try the speaking missions."],
+  badges: ["Your badges", "Complete the five My House speaking missions to earn your Storyteller badge."]
 };
-
-document.querySelectorAll("[data-panel]").forEach((button) => {
+document.querySelectorAll("[data-panel]").forEach(button => {
   button.addEventListener("click", () => {
     const panel = panels[button.dataset.panel];
-    title.textContent = panel.title;
-    description.textContent = panel.description;
-    note.textContent = panel.note;
+    if (!panel || !dialog) return;
+    document.querySelector("#panel-title").textContent = panel[0];
+    document.querySelector("#panel-description").textContent = panel[1];
+    const count = readProgress().speaking.length;
+    document.querySelector(".panel-note").textContent = button.dataset.panel === "badges" ? (count === 5 ? "🏅 Storyteller — completed!" : `${count}/5 speaking missions completed. Your progress is saved on this browser.`) : "Discover the land, people and culture of Mộc Châu, Sơn La.";
     dialog.showModal();
   });
 });
-
-dialog.addEventListener("click", (event) => {
+dialog?.addEventListener("click", event => {
   const bounds = dialog.getBoundingClientRect();
-  if (
-    event.clientX < bounds.left || event.clientX > bounds.right ||
-    event.clientY < bounds.top || event.clientY > bounds.bottom
-  ) {
-    dialog.close();
-  }
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
 });

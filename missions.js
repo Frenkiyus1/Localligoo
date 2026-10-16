@@ -1,0 +1,8 @@
+// Supplementary speaking prompts created for the supplied My House design.
+export const missions = [
+  { id: "house-1", title: "Welcome home", prompt: "Where do you live, and what is your house like?", hint: "Say where you live. Describe your house in two or three sentences.", example: "I live in Mộc Châu. My house is small and cosy. There is a garden in front of it." },
+  { id: "house-2", title: "A room tour", prompt: "What rooms are there in your house?", hint: "Try “There is…” for one room and “There are…” for two or more rooms.", example: "There is a kitchen and a living room. There are two bedrooms in my house." },
+  { id: "house-3", title: "Your favourite room", prompt: "What is your favourite room? What is in it?", hint: "Name your favourite room and describe two things you can find there.", example: "My favourite room is my bedroom. There is a desk next to the window. My books are on the shelf." },
+  { id: "house-4", title: "A Thái stilt house", prompt: "Imagine visiting a Thái stilt house. What can you see?", hint: "Describe the wooden house, its stairs or the space underneath it. Use “I can see…” and “There is…”.", example: "I can see a wooden house on stilts. There is a staircase in front of the house. There is an open space underneath it." },
+  { id: "house-5", title: "Invite a friend", prompt: "Invite BanBan to your home and tell him what you can do together.", hint: "Start with an invitation. Describe your home and suggest an activity.", example: "Would you like to visit my house, BanBan? There is a big living room. We can read books and play games together." }
+];

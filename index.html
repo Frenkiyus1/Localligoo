@@ -9,7 +9,7 @@
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="./assets/background.png" as="image" />
     <link rel="stylesheet" href="./styles.css" />
-    <script src="./app.js" defer></script>
+    <script src="./app.js" type="module"></script>
   </head>
   <body>
     <a class="skip-link" href="#journey">Skip to your English journey</a>
@@ -21,9 +21,8 @@
         <a class="hotspot brand" href="#home" aria-label="LOCALINGO home"></a>
         <nav class="desktop-nav" aria-label="Main navigation">
           <a class="hotspot nav-home" href="#home" aria-label="Home"><span class="nav-label">HOME</span></a>
-          <a class="hotspot nav-learn" href="#learn" aria-label="Learn"><span class="nav-label">LEARN</span></a>
+          <a class="hotspot nav-learn" href="./learn.html" aria-label="Learn"><span class="nav-label">LEARN</span></a>
           <a class="hotspot nav-explore" href="./explore.html" aria-label="Explore"><span class="nav-label">EXPLORE</span></a>
-          <a class="hotspot nav-practice" href="#practice" aria-label="Practice"><span class="nav-label">PRACTICE</span></a>
           <button class="hotspot nav-badges" type="button" data-panel="badges" aria-label="Badges"><span class="nav-label">BADGES</span></button>
         </nav>
       </header>
@@ -33,7 +32,7 @@
         <p>From Local to Global</p>
       </section>
 
-      <a class="art-button start-button" href="#journey" aria-label="Start learning">
+      <a class="art-button start-button" href="./learn.html" aria-label="Start learning">
         <span class="element-visual" aria-hidden="true">
           <img src="./assets/start-learning.png" width="2405" height="1805" alt="" draggable="false" />
         </span>
@@ -55,30 +54,26 @@
 
       <section class="journey" id="journey" aria-labelledby="journey-title" tabindex="-1">
         <h2 class="sr-only" id="journey-title">Your English journey</h2>
-        <button class="art-button learn-button" id="learn" type="button" data-panel="learn" aria-label="Learn — Learn with Purpose">
+        <a class="art-button learn-button" id="learn" href="./learn.html" aria-label="Learn — Learn with Purpose">
           <span class="element-visual" aria-hidden="true"><img src="./assets/learn.png" width="2405" height="1805" alt="" draggable="false" /></span>
           <span class="sr-only">Learn</span>
-        </button>
+        </a>
         <a class="art-button explore-button" id="explore" href="./explore.html" aria-label="Explore — Learn by Exploring">
           <span class="element-visual" aria-hidden="true"><img src="./assets/explore.png" width="2405" height="1805" alt="" draggable="false" /></span>
           <span class="sr-only">Explore</span>
         </a>
-        <button class="art-button practice-button" id="practice" type="button" data-panel="practice" aria-label="Practice — Use your English">
-          <span class="element-visual" aria-hidden="true"><img src="./assets/practice.png" width="2405" height="1805" alt="" draggable="false" /></span>
-          <span class="sr-only">Practice</span>
-        </button>
       </section>
 
       <footer class="page-footer">
         <a class="hotspot footer-brand" href="#home" aria-label="Back to LOCALINGO home"></a>
       </footer>
     </main>
+    <footer class="contact-footer"><span>LOCALINGO · From Local to Global</span><a href="mailto:localingo.workspace@gmail.com">localingo.workspace@gmail.com</a></footer>
 
     <nav class="mobile-nav" aria-label="Mobile navigation">
       <a href="#home">Home</a>
-      <a href="#learn">Learn</a>
+      <a href="./learn.html">Learn</a>
       <a href="./explore.html">Explore</a>
-      <a href="#practice">Practice</a>
       <button type="button" data-panel="badges">Badges</button>
     </nav>
 

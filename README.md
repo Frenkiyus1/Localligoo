@@ -1,87 +1,97 @@
-# LOCALINGO frontend
+# LOCALINGO
 
-Trang chủ dùng **BÌA CHỦ O ELM.png** làm nền và ghép 4 ảnh từ thư mục **ELEMENT LẺ** theo vị trí của **BÌA CHỦ.png**.
+Website học tiếng Anh qua văn hóa địa phương. Luồng học hiện có: **Home → Learn → Unit 2 · My House → Speaking**.
 
-## Chạy
+## Chạy local
 
 Cần Node.js 22 trở lên.
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-Mở **http://localhost:4173**. Có thể mở `index.html` trực tiếp; trang không cần backend hoặc dịch vụ ngoài.
+Mở http://localhost:4173. Các trang dùng JavaScript modules nên cần HTTP server thay vì mở trực tiếp file HTML.
 
-## Build
+`npm run dev` phục vụ giao diện và trả trạng thái AI chưa kết nối. Các chức năng xem bài, nghe mẫu bằng trình duyệt, ghi âm, phát lại và Explore vẫn hoạt động.
+
+## Nội dung và giao diện
+
+- Loại bỏ mục Practice khỏi menu và hành trình trang chủ.
+- Learn, My House và bìa Speaking dùng ảnh từ thư mục thiết kế `TRANG LEARN`. Bản cần triển khai nằm trong `assets/learn/`; thư mục thiết kế gốc được bỏ qua trong Git để tránh lưu trùng nhiều ảnh lớn.
+- Speaking có 5 nhiệm vụ bổ sung về My House, BanBan hướng dẫn, nghe mẫu, ghi âm tối đa 60 giây, tải file âm thanh, phát lại và thử lại.
+- Explore giữ đúng **24 câu** và các lựa chọn trong file nội dung. File nguồn đánh số 1–25 nhưng thiếu câu 12; không thêm hoặc nhân đôi câu hỏi. Thứ tự thẻ được xáo trộn khi mở trang hoặc bấm Shuffle; có lọc chủ đề, đáp án và đặt lại bài.
+- Khóa đáp án trong `questions.js` được suy ra từ các lựa chọn vì tài liệu nguồn không có bảng đáp án riêng. Có thể chỉnh thuộc tính `answer` (chỉ số từ 0).
+- Tiến độ Speaking và câu trả lời Explore lưu ở `localStorage` trên từng trình duyệt, không đồng bộ tài khoản. Huy hiệu Storyteller mở khi hoàn thành 5 nhiệm vụ nói.
+- Footer mọi trang có liên kết email `localingo.workspace@gmail.com`.
+- Những unit/kỹ năng chưa có nội dung được ghi Coming soon. Chỉ Speaking của My House có bài học tương tác.
+
+## AI Speaking trên Cloudflare
+
+Backend `worker.js` dùng **Cloudflare Workers AI binding `AI`**, không cần khóa OpenAI:
+
+1. `@cf/openai/whisper-large-v3-turbo` là mô hình nhận dạng giọng nói được Cloudflare host. Không gọi dịch vụ API OpenAI.
+2. `@cf/meta/llama-3.3-70b-instruct-fp8-fast` sửa ngữ pháp, góp ý từ vựng và câu trả lời bằng tiếng Việt.
+3. Chế độ **Read the example aloud** đối chiếu từ nhận dạng với câu mẫu; thống kê tốc độ nói từ độ dài bản ghi và khoảng nghỉ khi có timestamps.
+
+**Giới hạn phát âm:** nhận dạng lời nói không phải bộ chấm âm vị. Không sinh điểm phát âm hoặc điểm trôi chảy giả từ transcript; các mục này hiển thị hướng dẫn luyện tập, đối chiếu từ và nhịp nói ước tính. Sai khác từ có thể do lỗi ASR. Muốn chấm chi tiết từng âm vị cần bổ sung dịch vụ chuyên dụng.
+
+Người học phải đồng ý trước khi gửi bản ghi/câu trả lời tới Cloudflare Workers AI. Server không lưu bản ghi hay ghi nội dung vào log. Trình duyệt chỉ lưu tiến độ, không lưu audio/transcript trong localStorage. Mỗi lần đổi nhiệm vụ hoặc rời trang sẽ giải phóng bản ghi tạm.
+
+Endpoint:
+
+- `GET /api/speaking/status`: kiểm tra có binding AI.
+- `POST /api/speaking/assess`: nhận JSON `missionId`, `mode` (`audio` hoặc `text`), `consent`, `readAloud` tùy chọn, `audio` (WAV base64) hoặc `text`.
+
+Audio được chuyển trong trình duyệt thành WAV mono PCM 16-bit 16 kHz, dài 1–60 giây. Server giới hạn kích thước request, kiểm tra WAV và âm lượng, chống cross-origin, giới hạn 10 yêu cầu/phút/IP qua binding `SPEAKING_LIMITER`, kiểm tra kết quả AI trước khi trả về. Hạn mức có tính gần đúng theo cơ chế Cloudflare; không thay thế hạn mức chi phí của tài khoản.
+
+Cần tài khoản Cloudflare có quyền Workers AI và hạn mức phù hợp. `wrangler.jsonc` đã khai báo `AI`, `ASSETS`, `SPEAKING_LIMITER` và route `/api/*`.
 
 ```sh
-npm run build
+npx wrangler login
+npm run preview
 ```
 
-Thư mục `dist/` chứa frontend tĩnh, có thể đưa lên dịch vụ hosting. Các đường dẫn asset là đường dẫn tương đối, dùng được khi website nằm trong thư mục con.
-
-## Bố cục và asset
-
-- `assets/background.png`: bản sao nguyên gốc của **BÌA CHỦ O ELM.png**.
-- `assets/start-learning.png`, `learn.png`, `explore.png`, `practice.png`: bản sao nguyên gốc của 4 element.
-- `element-geometry.css`: vị trí, kích thước, vùng hiển thị và đường viền CSS của từng element.
-- `assets/montserrat.ttf`: font menu, kèm giấy phép SIL Open Font License trong `assets/montserrat-OFL.txt`.
-- `styles.css`: tỷ lệ trang, vùng bấm menu, hiệu ứng hover/focus và điều chỉnh trên điện thoại.
-- `app.js`: hộp thoại giới thiệu Learn, Explore, Practice và Badges.
-
-Canvas giữ tỷ lệ **2405 × 3619** theo ảnh mẫu và co giãn cùng các element. Các element gốc có nền hình chữ nhật và vài vệt trắng ở mép; CSS `clip-path` loại bỏ phần thừa theo đường viền ảnh mẫu mà không sửa ảnh gốc.
-
-Nội dung chữ và minh họa có sẵn trong ảnh nền. HTML cung cấp thêm văn bản ngữ nghĩa cho trình đọc màn hình, vùng bấm menu, liên kết bỏ qua và điều khiển bàn phím. Điện thoại có thêm thanh điều hướng với vùng bấm lớn dưới ảnh.
-
-Nút **Start Learning** cuộn đến hành trình học. Menu Learn/Practice cuộn đến từng lựa chọn; menu và thẻ Explore mở trang Explore; các nút Learn/Practice mở giới thiệu. Đây là frontend trang chủ; bài học, tài khoản và lưu huy hiệu chưa được tích hợp.
+Workers AI chạy từ xa ngay khi dùng Wrangler preview; lệnh suy luận dùng hạn mức tài khoản. Chỉ trạng thái có binding chưa chứng minh tài khoản đã có quyền/hạn mức suy luận; lỗi thực tế sẽ hiển thị trên giao diện để người học thử lại.
 
 ## Kiểm tra
 
 ```sh
-npx playwright install chromium
+npm run test:api
 npm test
+npm run build
+npm run deploy:check
 ```
 
-Nếu máy đã có Google Chrome, có thể dùng `PLAYWRIGHT_CHANNEL=chrome` thay cho cài Chromium. Trên PowerShell:
+Nếu dùng Chrome đã cài sẵn, trên PowerShell:
 
 ```powershell
 $env:PLAYWRIGHT_CHANNEL = 'chrome'
 npm test
 ```
 
-Kiểm tra chạy ở hai kích thước 1280 × 900 và 390 × 844, xác minh ảnh tải đủ, không tràn ngang, điều hướng và thao tác bàn phím. Ảnh chụp toàn trang được lưu trong `test-results/`.
+Hoặc cài Chromium bằng `npx playwright install chromium`.
 
-## Deploy Cloudflare Workers
+Kiểm tra API dùng binding AI giả lập để xác minh xử lý request, lỗi, consent, giới hạn, silence và kết quả. Kiểm tra trình duyệt chạy desktop 1280 × 900 và mobile 390 × 844, xác minh luồng học, Explore, xử lý audio, lưu tiến độ và huy hiệu; lời gọi suy luận được giả lập. Ảnh QA trong `test-results/`.
 
-Repository có sẵn `wrangler.jsonc` cho Worker **localligoo**. Wrangler chạy `npm run build` trước khi deploy, rồi chỉ lấy các file frontend trong `dist/`. Không dùng thư mục gốc làm thư mục assets.
+## Build và triển khai
 
-Thiết lập trong Cloudflare Workers Builds:
+`npm run build` đóng gói frontend vào `dist/`. Wrangler bundle backend riêng; chỉ thư mục `dist/` được upload làm static assets.
 
-- **Root directory**: thư mục gốc repository.
-- **Build command**: `npm run build`.
-- **Deploy command**: `npx wrangler deploy` (hoặc `npm run deploy`).
+Cloudflare Workers Builds:
 
-Build command trong dashboard có thể chạy riêng; bước build trong Wrangler vẫn tạo `dist/` khi chạy deploy trực tiếp từ CLI.
-
-Kiểm tra đóng gói trước khi upload:
+- Root directory: gốc repository.
+- Build command: `npm run build`.
+- Deploy command: `npx wrangler deploy`.
+- Giữ tên Worker `localligoo` và cho phép binding Workers AI.
 
 ```sh
 npm run deploy:check
-```
-
-Lệnh này chạy dry-run và không publish lên Cloudflare. Deploy thật cần đăng nhập Cloudflare hoặc thông tin xác thực do Workers Builds cung cấp.
-
-```sh
 npm run deploy
 ```
 
-Xem [Static Assets](https://developers.cloudflare.com/workers/static-assets/) và [custom builds](https://developers.cloudflare.com/workers/wrangler/custom-builds/) trong tài liệu Cloudflare.
+Dry-run không xuất bản website và không xác minh suy luận AI thật. Git push chỉ đưa mã nguồn lên GitHub; website chỉ cập nhật nếu repository đã nối Workers Builds hoặc có người chạy deploy.
 
-## Trang Explore
+Tài liệu: [Workers AI binding](https://developers.cloudflare.com/workers-ai/configuration/bindings/), [Whisper](https://developers.cloudflare.com/workers-ai/models/whisper-large-v3-turbo/), [Llama](https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/), [Rate limit](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
 
-Mở `/explore.html` hoặc chọn Explore từ menu/thẻ ở trang chủ. Trang dùng **EXPLORE O ELM.png** làm nền và 4 ảnh nguyên gốc trong **EXPLORE/ELM** làm các thẻ chủ đề, theo bố cục **EXPLORE FULL.png**.
-
-`explore.css` căn các vùng hiển thị theo canvas **2405 × 2988**. Lớp texture giấy lấy từ vùng trống của ảnh element bằng SVG pattern; CSS chỉ hiển thị vùng thẻ, không sửa các ảnh gốc. Thẻ hỗ trợ bàn phím, hover/focus và hộp thoại giới thiệu. Nội dung chi tiết cho từng chủ đề chưa được cung cấp.
-
-Build và deploy Cloudflare đóng gói trang Explore cùng assets trong `dist/`.
+Font Montserrat dùng giấy phép SIL Open Font License trong `assets/montserrat-OFL.txt`.

@@ -6,6 +6,24 @@
     "command": "npm run build"
   },
   "assets": {
-    "directory": "./dist"
-  }
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "main": "worker.js",
+  "ai": {
+    "binding": "AI"
+  },
+  "ratelimits": [
+    {
+      "name": "SPEAKING_LIMITER",
+      "namespace_id": "24025",
+      "simple": {
+        "limit": 10,
+        "period": 60
+      }
+    }
+  ]
 }
