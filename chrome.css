@@ -49,12 +49,13 @@
 }
 .site-footer {
   display: grid;
-  grid-template-columns: 10.6% minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: clamp(8px, 2vw, 40px);
   padding: 22px 2.4%;
   color: #684415;
   background: #b4c04c;
+  font-family: "Montserrat", Arial, sans-serif;
   font-size: clamp(11px, 1.1vw, 20px);
   line-height: 1.5;
   text-align: left;
@@ -62,7 +63,10 @@
 .site-footer a { margin: 0; }
 .site-footer > span,
 .site-footer .footer-email { min-width: 0; overflow-wrap: anywhere; }
-.footer-logo { display: block; text-decoration: none; }
+.footer-logo { display: block; width: clamp(64px, 10.6vw, 180px); justify-self: start; text-decoration: none; }
+.footer-tagline { font-size: clamp(15px, 1.55vw, 30px); font-weight: 800; text-align: center; }
+.footer-contact { justify-self: end; font-size: clamp(10px, 1vw, 18px); font-weight: 600; text-align: right; }
+.home-footer .footer-logo { width: 10.1cqw; }
 .footer-logo-window {
   display: block;
   position: relative;
@@ -107,4 +111,15 @@
 }
 @media (max-width: 640px) {
   .course-art .masthead::before { height: 5.5cqw; }
+}
+
+@media (max-width: 640px) {
+  .site-footer,
+  .site-footer:not(.home-footer) { grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 6px 8px; }
+  .site-footer .footer-logo { width: 48px; align-self: start; }
+  .site-footer .footer-tagline { font-size: clamp(11px, 3.1vw, 15px); line-height: 1.4; align-self: center; }
+  .site-footer .footer-contact { grid-column: 1 / -1; font-size: 10px; }
+  .home-footer { height: auto; }
+  .home-footer.site-footer { grid-template-columns: 10.6% minmax(0, 1fr) 10.6%; }
+  .home-footer .footer-logo { width: 10.1cqw; }
 }

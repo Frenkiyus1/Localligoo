@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="./chrome.css">
 </head>
 <body>
-  <a class="skip-link" href="#topics">Skip to explore topics</a>
+  <a class="skip-link" href="#explore-quiz">Skip to Explore questions</a>
   <main class="landing explore-landing" id="top">
     <img class="page-art" src="./assets/explore/background.png" width="2405" height="2988" alt="" fetchpriority="high" draggable="false" />
     <svg class="explore-paper" viewBox="0 0 2405 2988" aria-hidden="true" focusable="false">
@@ -40,37 +40,39 @@
       <h1 id="explore-title">There's more to discover</h1>
       <p>Discover surprising stories about the land, people and culture of Moc Chau, Son La.</p>
     </section>
-    <section class="explore-quiz" id="explore-quiz" aria-labelledby="quiz-title">
-      <div class="quiz-topline"><div><p class="eyebrow">A LITTLE CURIOSITY GOES A LONG WAY</p><h2 id="quiz-title">How well do you know Mộc Châu?</h2></div></div>
-      <div class="quiz-tools"><label class="sr-only" for="quiz-category">Question topic</label><select id="quiz-category"><option value="all">All 24 questions</option value="nature">Nature &amp; Wildlife</option><option value="food">Local Food</option><option value="people">People &amp; Tradition</option><option value="festivals">Festivals &amp; Seasons</option></select><button id="shuffle-questions" type="button">↻ Shuffle</button><button id="reset-quiz" type="button">Start again</button></div>
-      <p id="quiz-progress-text" class="quiz-progress-copy" aria-live="polite">0/24 answered</p><progress id="quiz-progress" max="24" value="0" aria-label="Explore questions answered"></progress>
+    <section class="explore-quiz" id="explore-quiz" aria-labelledby="quiz-title" tabindex="-1">
+      <header class="quiz-topline"><h2 id="quiz-title">Five little discoveries · Mộc Châu</h2></header>
       <div id="question-deck"></div>
-      <div class="quiz-controls"><button id="previous-question" type="button">← Previous</button><span id="question-position" aria-live="polite"></span><button id="next-question" type="button">Next →</button></div>
+      <div class="quiz-progress-track">
+        <progress id="quiz-progress" max="5" value="0" aria-label="Explore questions answered"></progress>
+        <span id="question-position">Question 1 of 5</span>
+      </div>
+      <p id="quiz-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
     </section>
     <section class="explore-topics" id="topics" aria-labelledby="topics-title" tabindex="-1">
-      <h2 class="sr-only" id="topics-title">Keep exploring! Choose a topic to discover more local facts.</h2>
-      <button class="art-button topic-button topic-nature-wildlife" id="nature-wildlife" type="button" data-quiz-category="nature" aria-label="Nature &amp; Wildlife">
+      <h2 class="sr-only" id="topics-title">Discover the stories behind every answer.</h2>
+      <article class="art-button topic-button topic-nature-wildlife" id="nature-wildlife" aria-label="Nature &amp; Wildlife">
         <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/nature-wildlife.png" width="2405" height="2988" alt="" draggable="false" /></span>
         <span class="sr-only">Nature &amp; Wildlife — Discover the natural wonders</span>
-      </button>
-      <button class="art-button topic-button topic-local-food" id="local-food" type="button" data-quiz-category="food" aria-label="Local Food">
+      </article>
+      <article class="art-button topic-button topic-local-food" id="local-food" aria-label="Local Food">
         <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/local-food.png" width="2405" height="2988" alt="" draggable="false" /></span>
         <span class="sr-only">Local Food — Taste the local culture</span>
-      </button>
-      <button class="art-button topic-button topic-people-tradition" id="people-tradition" type="button" data-quiz-category="people" aria-label="People &amp; Tradition">
+      </article>
+      <article class="art-button topic-button topic-people-tradition" id="people-tradition" aria-label="People &amp; Tradition">
         <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/people-tradition.png" width="2405" height="2988" alt="" draggable="false" /></span>
         <span class="sr-only">People &amp; Tradition — Meet local communities.</span>
-      </button>
-      <button class="art-button topic-button topic-festivals-seasons" id="festivals-seasons" type="button" data-quiz-category="festivals" aria-label="Festivals &amp; Seasons">
+      </article>
+      <article class="art-button topic-button topic-festivals-seasons" id="festivals-seasons" aria-label="Festivals &amp; Seasons">
         <span class="element-visual topic-visual" aria-hidden="true"><img src="./assets/explore/festivals-seasons.png" width="2405" height="2988" alt="" draggable="false" /></span>
         <span class="sr-only">Festivals &amp; Seasons — Explore seasonal traditions.</span>
-      </button>
+      </article>
     </section>
   </main>
   <footer class="site-footer">
   <a class="footer-logo" href="./index.html" aria-label="Back to LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" alt="" width="2405" height="3619" loading="lazy"></span></a>
-  <span>LOCALINGO · From Local to Global</span>
-  <a class="footer-email" href="mailto:localingo.workspace@gmail.com">localingo.workspace@gmail.com</a>
+  <span class="footer-tagline">LOCALINGO · From Local to Global</span>
+  <span class="footer-contact">Email: <a class="footer-email" href="mailto:localingo.workspace@gmail.com">localingo.workspace@gmail.com</a></span>
 </footer>
   <nav class="mobile-nav" aria-label="Mobile navigation">
     <a href="./index.html">Home</a>
@@ -86,7 +88,6 @@
     <p class="panel-note"></p>
     <form method="dialog"><button class="dialog-return">Back to topics</button></form>
   </dialog>
-  <dialog class="journey-dialog" id="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">Start Explore again?</h2><p>This clears your Explore answers on this browser. Your speaking progress is kept.</p><form method="dialog"><button class="dialog-return">Keep my answers</button></form><button class="dialog-return" id="confirm-reset" type="button">Clear Explore answers</button></dialog>
-  <noscript><p class="noscript-note">Enable JavaScript to answer the 24 Explore questions and save your progress.</p></noscript>
+  <noscript><p class="noscript-note">Enable JavaScript to answer five random questions about Mộc Châu.</p></noscript>
 </body>
 </html>
