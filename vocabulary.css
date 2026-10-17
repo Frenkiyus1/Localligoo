@@ -16,8 +16,6 @@
 .vocab-fact-next span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .vocab-fact-next:hover { background: #ffffff25; }
 .vocab-fact-position { margin: 16px 0 0; text-align: center; font-size: 13px; font-weight: 800; }
-.vocabulary-link { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; min-height: 44px; padding: 10px 24px; border: 2px solid #684415; border-radius: 30px; background: #f9e7b3; font: 800 clamp(12px, 1.3vw, 23px)/1.5 'Montserrat', Arial, sans-serif; white-space: nowrap; text-decoration: none; }
-.vocabulary-link:hover { background: #fff4cb; }
 @media (max-width: 900px) {
   .vocab-facts { width: calc(100% - 32px); margin-top: 12px; }
   .vocab-fact { aspect-ratio: auto; padding: 0; border: 2px solid #d9bc76; border-radius: 20px; background: #fff0c5; overflow: hidden; }
@@ -30,7 +28,6 @@
 }
 @media (max-width: 640px) {
   .vocabulary { background: #fae8b5; }
-  .vocabulary-link { position: static; grid-column: 1/-1; transform: none; justify-content: center; margin: 8px auto; white-space: normal; text-align: center; }
   .vocab-scene { aspect-ratio: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0 16px 16px; }
   .vocab-scene::before { content: ''; grid-column: 1/-1; margin-inline: -16px; aspect-ratio: 2405 / 1605; background: url('./assets/vocab/background.png') left -7.2765vw / 100% auto no-repeat; }
   .vocab-background { display: none; }

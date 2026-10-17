@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('source vocabulary plays words, reports unavailable audio and cycles facts', async ({ page }, testInfo) => {
+test('My House New Words opens source vocabulary, plays words and cycles facts', async ({ page }, testInfo) => {
   await page.addInitScript(() => {
     window.pronounced = [];
     Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: {
@@ -8,8 +8,13 @@ test('source vocabulary plays words, reports unavailable audio and cycles facts'
     } });
   });
   await page.goto('/explore.html');
-  await page.locator('.vocabulary-link').click();
-  await expect(page).toHaveURL(/#vocabulary$/);
+  await expect(page.locator('#vocabulary, .vocabulary-link')).toHaveCount(0);
+  await expect(page.locator('script[src*="vocabulary"], link[href*="vocabulary"]')).toHaveCount(0);
+  await page.goto('/my-house.html');
+  await page.getByRole('link', { name: 'New Words — House vocabulary' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/my-house\.html#vocabulary$/);
+  await expect(page.locator('#vocabulary')).toBeFocused();
   await expect(page.locator('.vocab-word')).toHaveCount(15);
   await page.locator('.vocabulary img').evaluateAll(images => Promise.all(images.map(image => { image.loading = 'eager'; return image.decode(); })));
   for (const word of await page.locator('.vocab-word').all()) {
