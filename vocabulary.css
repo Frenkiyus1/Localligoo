@@ -1,0 +1,46 @@
+/* House vocabulary uses the supplied artwork and its original label exports. */
+.vocabulary { max-width: 2405px; margin-inline: auto; color: #684415; background: #f9e7b3 url('./assets/vocab/background.png') center bottom / 100% auto; font-family: 'Montserrat', Arial, sans-serif; }
+.vocab-scene { position: relative; aspect-ratio: 2405 / 1605; overflow: hidden; container-type: inline-size; }
+.vocab-background { position: absolute; left: 0; top: -10.90343%; display: block; width: 100%; height: 180.06231%; pointer-events: none; }
+.vocab-word { position: absolute; display: block; padding: 0; border: 0; border-radius: 16px; color: inherit; background: transparent; cursor: pointer; }
+.vocab-word-art, .vocab-fact-art { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; }
+.vocab-word-art img, .vocab-fact-art img { position: absolute; width: var(--iw); height: var(--ih); left: var(--ix); top: var(--iy); max-width: none; pointer-events: none; }
+.vocab-word:hover, .vocab-word.is-speaking { filter: brightness(1.07) drop-shadow(0 3px 3px #68441545); }
+.vocab-word-copy, .vocab-fact-copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.vocab-hint { margin: 0; padding: 18px 20px; min-height: 58px; text-align: center; font-size: clamp(12px, 1.2vw, 20px); font-weight: 700; }
+.vocab-facts { width: 76%; max-width: 1765px; margin: 30px auto 0; padding-bottom: 36px; }
+.vocab-fact { position: relative; aspect-ratio: 1765 / 601; }
+.vocab-fact[hidden] { display: none; }
+.vocab-fact-art { border-radius: 3.5% / 10%; }
+.vocab-fact-next { position: absolute; right: 0; bottom: 0; width: 21%; height: 34%; padding: 0; border: 0; border-radius: 20px; background: transparent; color: inherit; cursor: pointer; }
+.vocab-fact-next span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.vocab-fact-next:hover { background: #ffffff25; }
+.vocab-fact-position { margin: 16px 0 0; text-align: center; font-size: 13px; font-weight: 800; }
+.vocabulary-link { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; min-height: 44px; padding: 10px 24px; border: 2px solid #684415; border-radius: 30px; background: #f9e7b3; font: 800 clamp(12px, 1.3vw, 23px)/1.5 'Montserrat', Arial, sans-serif; white-space: nowrap; text-decoration: none; }
+.vocabulary-link:hover { background: #fff4cb; }
+@media (max-width: 900px) {
+  .vocab-facts { width: calc(100% - 32px); margin-top: 12px; }
+  .vocab-fact { aspect-ratio: auto; padding: 0; border: 2px solid #d9bc76; border-radius: 20px; background: #fff0c5; overflow: hidden; }
+  .vocab-fact-art { display: none; }
+  .vocab-fact-copy { position: static; width: auto; height: auto; clip-path: none; overflow: visible; }
+  .vocab-fact-copy h3 { margin: 0; padding: 18px 20px; background: #f8d371; font-size: clamp(19px, 3vw, 28px); line-height: 1.4; }
+  .vocab-fact-copy p { margin: 0; padding: 20px; font-size: 15px; line-height: 1.8; }
+  .vocab-fact-next { position: relative; display: block; width: auto; height: auto; min-height: 44px; margin: 0 20px 20px auto; padding: 12px 22px; border: 2px solid #b5d7cf; border-radius: 16px; background: #e5fbfa; font-weight: 800; }
+  .vocab-fact-next span { position: static; width: auto; height: auto; clip-path: none; }
+}
+@media (max-width: 640px) {
+  .vocabulary { background: #fae8b5; }
+  .vocabulary-link { position: static; grid-column: 1/-1; transform: none; justify-content: center; margin: 8px auto; white-space: normal; text-align: center; }
+  .vocab-scene { aspect-ratio: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0 16px 16px; }
+  .vocab-scene::before { content: ''; grid-column: 1/-1; margin-inline: -16px; aspect-ratio: 2405 / 1605; background: url('./assets/vocab/background.png') left -7.2765vw / 100% auto no-repeat; }
+  .vocab-background { display: none; }
+  .vocab-word { position: relative; left: auto !important; top: auto !important; width: auto !important; height: auto !important; min-height: 94px; padding: 14px 32px 14px 12px; border: 1px solid #c5a057; border-radius: 16px; background: #ffde8b; text-align: left; }
+  .vocab-word-art { display: none; }
+  .vocab-word-copy { position: static; display: grid; gap: 5px; width: auto; height: auto; overflow: visible; clip-path: none; }
+  .vocab-word-copy strong { font-size: 13px; line-height: 1.4; }
+  .vocab-word-copy [lang] { font-size: 12px; line-height: 1.4; }
+  .vocab-speaker { width: 20px; height: 20px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 21px; font-weight: 800; }
+  .vocab-hint { padding-top: 8px; }
+}
+
+.vocab-speaker svg { display: block; width: 100%; height: 100%; }
