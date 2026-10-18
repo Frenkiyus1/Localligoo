@@ -14,7 +14,6 @@
 <script src="./speaking.js" type="module">
 </script>
   <link rel="stylesheet" href="./chrome.css">
-<link rel="stylesheet" href="./speaking.css">
 </head>
 <body class="course-body">
 <a class="skip-link" href="#content">Skip to learning content</a>
@@ -36,78 +35,109 @@
 <button class="intro-start" type="button" id="start-speaking" aria-label="Start speaking with BanBan">
 </button>
 </section>
-<section class="landing speaking-art speaking-canvas" id="speaking-exercise" hidden>
-  <img class="page-art" src="./assets/learn/speaking-background.png" width="2405" height="1805" alt="" draggable="false">
-  <header class="masthead">
-  <a class="hotspot brand" href="./index.html" aria-label="LOCALINGO home"></a>
-  <nav class="art-nav" aria-label="Main navigation">
-    <a class="art-home" href="./index.html" aria-label="Home">HOME</a>
-    <a class="art-learn" href="./learn.html" aria-label="Learn">LEARN</a>
-    <a class="art-explore" href="./explore.html" aria-label="Explore">EXPLORE</a>
-    <button class="art-badges" data-panel="badges" aria-label="Badges" type="button">BADGES</button>
-  </nav>
-</header>
-  <div class="speaking-copy">
-    <h1 class="sr-only">Storyteller's Camp · Speaking</h1>
-    <div class="speaking-progress" aria-label="My House speaking progress">
-      <span id="mission-count"></span><span data-speaking-count>0/5 speaking missions completed</span>
-      <progress data-speaking-progress max="5" value="0" aria-label="Speaking missions completed"></progress>
-    </div>
-    <h2 id="mission-prompt" tabindex="-1"></h2>
-    <p id="mission-hint"></p>
-    <details id="example-panel">
-      <summary>Need a little help?</summary>
-      <p id="mission-example"></p>
-    </details>
-    <details class="speaking-extras" id="speaking-options">
-      <summary>Speaking options</summary>
-      <label for="mission-select">Choose your mission</label>
-      <select id="mission-select" aria-label="Speaking mission"></select>
-      <label class="consent"><input type="checkbox" id="read-aloud"><span>Read the example aloud · pronunciation practice</span></label>
-      <label class="upload-label">Or upload an audio answer (up to 60 seconds)<input id="audio-file" type="file" accept="audio/*"></label>
-      <details class="text-mode">
-        <summary>Practise with a written answer</summary>
-        <label for="written-answer">Your answer in English</label>
-        <textarea id="written-answer" maxlength="2000" placeholder="There is a living room in my house…"></textarea>
-        <p class="storage-note">Written feedback covers grammar and vocabulary. Record your voice to complete the mission.</p>
-        <button id="assess-text" class="speaking-text-action" type="button">Check written answer</button>
-      </details>
-    </details>
-    <div id="recording-review" hidden>
-      <audio id="recording" controls hidden aria-label="Your recording"></audio>
-      <label class="consent"><input id="audio-consent" type="checkbox"><span>I have listened to this recording and agree to send it for feedback.</span></label>
-      <button id="assess" class="speaking-text-action" type="button" disabled>Get AI feedback</button>
-    </div>
-    <label class="consent speaking-consent"><input id="data-consent" type="checkbox"><span>I agree to send my answer to Cloudflare Workers AI for feedback. LOCALINGO does not store audio on its server.</span></label>
-    <p class="status-message" id="record-status" role="status"></p>
-    <p class="status-message" id="ai-status" role="status"></p>
-    <details id="feedback" aria-labelledby="feedback-title" aria-busy="false" hidden>
-      <summary id="feedback-title">BanBan · Your feedback</summary>
-      <div id="feedback-content"></div>
-      <p class="storage-note">AI feedback is for practice. Read-aloud comparison does not grade individual speech sounds.</p>
-    </details>
-    <section id="completion" class="speaking-completion" hidden>
-      <h2>🏅 You earned your Storyteller badge!</h2>
-      <p>You have completed all five My House speaking missions.</p>
-      <a href="./explore.html">Keep exploring →</a>
-    </section>
-    <p class="storage-note" data-storage-note>Tiến độ được lưu trên trình duyệt này.</p>
-    <p class="storage-note" data-badge-status></p>
-  </div>
-  <div class="speaking-controls" role="group" aria-label="Speaking controls">
-    <button class="speaking-control speaking-record" id="record" type="button" aria-pressed="false" aria-label="Record answer" title="Record answer">
-      <span class="speaking-element" aria-hidden="true"><img src="./assets/learn/mic.png" width="2405" height="1805" alt="" draggable="false"></span><span class="sr-only" id="record-label">Record answer</span>
-    </button>
-    <button class="speaking-control speaking-listen" id="listen-prompt" type="button" aria-label="Listen" title="Listen">
-      <span class="speaking-element" aria-hidden="true"><img src="./assets/learn/listen.png" width="2405" height="1805" alt="" draggable="false"></span><span class="sr-only">Listen</span>
-    </button>
-    <button class="speaking-control speaking-retry" id="retry" type="button" aria-label="Try again" title="Try again">
-      <span class="speaking-element" aria-hidden="true"><img src="./assets/learn/retry.png" width="2405" height="1805" alt="" draggable="false"></span><span class="sr-only">Try again</span>
-    </button>
-    <button class="speaking-control speaking-next" id="next-mission" type="button" aria-label="Next mission" title="Next mission" disabled>
-      <span class="speaking-element" aria-hidden="true"><img src="./assets/learn/next.png" width="2405" height="1805" alt="" draggable="false"></span><span class="sr-only" id="next-label">Next mission</span>
-    </button>
-  </div>
+<section class="exercise-shell" id="speaking-exercise" hidden>
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+<a href="./learn.html">Learn</a>
+<span aria-hidden="true">›</span>
+<a href="./my-house.html">My House</a>
+<span aria-hidden="true">›</span>
+<span aria-current="page">Speaking</span>
+</nav>
+<div class="exercise-header">
+<div>
+<p class="eyebrow">E · STORYTELLER'S CAMP</p>
+<h1>Speak up with BanBan!</h1>
+</div>
+<a class="soft-button" href="./my-house.html">← My House</a>
+</div>
+<section class="course-progress" aria-label="My House speaking progress">
+<p>
+<strong>My House · Speaking</strong>
+</p>
+<span data-speaking-count>0/5 speaking missions completed</span>
+<progress data-speaking-progress max="5" value="0" aria-label="Speaking missions completed">
+</progress>
+<p class="storage-note" data-storage-note>Tiến độ được lưu trên trình duyệt này.</p>
+<p data-badge-status>
+</p>
+</section>
+<div class="speaking-board">
+<section class="paper-card" aria-labelledby="mission-prompt">
+<label class="mission-number" for="mission-select">Choose your mission</label>
+<select id="mission-select" aria-label="Speaking mission">
+</select>
+<p class="eyebrow" id="mission-count">
+</p>
+<h2 id="mission-prompt" tabindex="-1">
+</h2>
+<p class="prompt-hint" id="mission-hint">
+</p>
+<div class="read-mode">
+<label>
+<input type="checkbox" id="read-aloud">Read the example aloud · pronunciation practice</label>
+</div>
+<details>
+<summary>Need a little help?</summary>
+<p class="example" id="mission-example">
+</p>
+</details>
+<div class="action-row">
+<button class="audio-button" id="listen-prompt" type="button">
+<span class="audio-icon listen-icon" aria-hidden="true">
+<img src="./assets/learn/listen.png" alt="">
+</span>
+<span>Listen</span>
+</button>
+<button class="primary-button record-button" id="record" aria-pressed="false" type="button">● Record answer</button>
+<button class="audio-button" id="retry" type="button">
+<span class="audio-icon retry-icon" aria-hidden="true">
+<img src="./assets/learn/retry.png" alt="">
+</span>
+<span>Try again</span>
+</button>
+</div>
+<p class="status-message" id="record-status" role="status">Speak in English for 5–60 seconds. You can listen to your recording before sending it.</p>
+<audio id="recording" controls hidden aria-label="Your recording">
+</audio>
+<label class="upload-label">Or upload an audio answer (up to 60 seconds)<input id="audio-file" type="file" accept="audio/*">
+</label>
+<details class="text-mode">
+<summary>Practise with a written answer</summary>
+<label for="written-answer">Your answer in English</label>
+<textarea id="written-answer" maxlength="2000" placeholder="There is a living room in my house…">
+</textarea>
+<p class="storage-note">Written answers receive grammar and vocabulary feedback. Record an answer to receive pronunciation feedback and complete the mission.</p>
+<button class="soft-button" id="assess-text" type="button">Check written answer</button>
+</details>
+<label class="consent">
+<input id="data-consent" type="checkbox">
+<span>I agree to send my answer to Cloudflare Workers AI for feedback. LOCALINGO does not store audio on its server.</span>
+</label>
+<label class="consent">
+<input id="audio-consent" type="checkbox">
+<span>I have listened to this recording and agree to send it for feedback.</span>
+</label>
+<div class="action-row">
+<button class="primary-button" id="assess" type="button" disabled>Get AI feedback</button>
+<button class="soft-button" id="next-mission" type="button" disabled>Next mission →</button>
+</div>
+<p class="status-message" id="ai-status" role="status">Connecting to your AI coach…</p>
+</section>
+<section class="paper-card" aria-labelledby="feedback-title" id="feedback" aria-busy="false">
+<p class="eyebrow">BANBAN · YOUR AI COACH</p>
+<h2 id="feedback-title">A little better, every time.</h2>
+<div id="feedback-content">
+<p class="feedback-empty">Record your answer, then let BanBan help you with grammar, pronunciation, vocabulary and fluency.</p>
+<p class="feedback-empty">You will see what you said, suggested corrections and one thing to try next. Read-aloud mode compares recognised words with the example; it does not grade individual speech sounds.</p>
+</div>
+<p class="storage-note">AI feedback is for practice and may make mistakes. Scores are estimates, not an exam result.</p>
+</section>
+</div>
+<section class="completion" id="completion" hidden>
+<h2>🏅 You earned your Storyteller badge!</h2>
+<p>You have completed all five My House speaking missions.</p>
+<a class="primary-button" href="./explore.html">Keep exploring →</a>
+</section>
 </section>
 </main>
 <nav class="mobile-nav" aria-label="Mobile navigation">
