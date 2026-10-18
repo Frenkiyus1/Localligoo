@@ -41,3 +41,60 @@
 }
 
 .vocab-speaker svg { display: block; width: 100%; height: 100%; }
+
+/* A field-guide table in the same warm palette as the house artwork. */
+.vocab-glossary { width: 88%; max-width: 1200px; margin: 0 auto 36px; border: 2px solid #d8bd7d; border-radius: 28px; background: #fff8e5; box-shadow: 0 7px 0 #a7894930; overflow: hidden; }
+.glossary-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 26px 30px; border-bottom: 2px solid #e3bd61; background: #f5d27b; }
+.glossary-eyebrow { margin: 0 0 8px; color: #735021; font-size: 11px; line-height: 1.5; font-weight: 800; letter-spacing: 1.6px; }
+.glossary-header h3 { margin: 0; font-size: clamp(23px, 2.4vw, 34px); line-height: 1.25; font-weight: 800; }
+.glossary-count { flex-shrink: 0; padding: 10px 14px; border: 1px solid #b8c384; border-radius: 30px; background: #e8edc9; font-size: 12px; font-weight: 700; }
+.glossary-intro { margin: 0; padding: 20px 30px; font-size: 14px; line-height: 1.7; }
+.glossary-table-wrap { margin: 0 22px; overflow-x: auto; border: 1px solid #dfd2aa; border-radius: 16px; scrollbar-color: #a7b56c #f3ebd2; }
+.glossary-table-wrap:focus-visible { outline: 3px solid #728f38; outline-offset: 4px; }
+.glossary-table { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 14px; line-height: 1.6; }
+.glossary-col-number { width: 6%; }
+.glossary-col-word { width: 26%; }
+.glossary-col-ipa { width: 25%; }
+.glossary-col-class { width: 12%; }
+.glossary-col-meaning { width: 31%; }
+.glossary-table thead { background: #e5eac3; }
+.glossary-table th, .glossary-table td { padding: 14px 16px; text-align: left; vertical-align: middle; overflow-wrap: break-word; }
+.glossary-table thead th { color: #4f5b2b; font-size: 12px; font-weight: 800; }
+.glossary-table thead th span { white-space: nowrap; }
+.glossary-table th:first-child, .glossary-table td:first-child { padding-inline: 8px; white-space: nowrap; }
+.glossary-table tbody tr:nth-child(even) { background: #faf1d8; }
+.glossary-table tbody tr + tr > * { border-top: 1px solid #e9dfc0; }
+.glossary-table tbody th { font-weight: 700; }
+.glossary-table tbody th small { display: block; font-size: 12px; line-height: 1.5; font-weight: 500; margin-top: 3px; }
+.glossary-table .glossary-number { color: #8c7546; font-size: 12px; font-weight: 700; text-align: center; }
+.glossary-ipa { font-family: 'Segoe UI', Arial, sans-serif; color: #756449; font-size: 15px; }
+.glossary-class { display: inline-block; padding: 3px 9px; border-radius: 8px; background: #e9edcf; color: #556333; font-size: 11px; font-weight: 700; }
+.glossary-tip { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 0; padding: 20px 24px; color: #6a5b36; font-size: 12px; line-height: 1.6; text-align: center; }
+.glossary-tip > span { display: grid; place-items: center; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #e5eac3; font-size: 18px; }
+.glossary-scroll-hint { display: none; }
+@media (max-width: 900px) {
+  .vocab-glossary { width: calc(100% - 32px); }
+  .glossary-header { align-items: flex-start; flex-direction: column; gap: 14px; padding: 24px; }
+  .glossary-table-wrap { margin-inline: 16px; }
+  .glossary-intro { padding: 18px 24px 10px; }
+  .glossary-scroll-hint { display: block; margin: 0; padding: 0 24px 16px; color: #756449; font-size: 11px; line-height: 1.7; }
+}
+@media (max-width: 640px) {
+  .vocab-glossary { margin-bottom: 24px; border-radius: 22px; }
+  .glossary-header { padding: 20px; }
+  .glossary-header h3 { font-size: 24px; }
+  .glossary-count { padding: 7px 12px; font-size: 11px; }
+  .glossary-intro { padding-inline: 20px; font-size: 13px; }
+  .glossary-scroll-hint { padding-inline: 20px; }
+  .glossary-table-wrap { margin-inline: 12px; border-radius: 12px; }
+  .glossary-tip { padding: 18px 20px; }
+}
+
+.vocabulary { padding-top: clamp(24px, 4vw, 56px); background: radial-gradient(ellipse at top left, #fff6d6cc, transparent 60%), #fae8b5; }
+.vocab-house-card { width: 88%; max-width: 1200px; margin: 0 auto 32px; border: 2px solid #d8bd7d; border-radius: 28px; overflow: hidden; background: #fae8b5; box-shadow: 0 7px 0 #a7894930; }
+@media (max-width: 900px) {
+  .vocab-house-card { width: calc(100% - 32px); }
+}
+@media (max-width: 640px) {
+  .vocab-house-card { border-radius: 22px; }
+}
