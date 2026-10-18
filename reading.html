@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b4c04c">
+<title>Reading · My House — LOCALINGO</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./learn.css">
+<link rel="stylesheet" href="./chrome.css">
+<link rel="stylesheet" href="./reading.css">
+<script src="./app.js" type="module"></script>
+<script src="./reading.js" type="module"></script>
+</head>
+<body class="reading-body">
+<a class="skip-link" href="#reading-content">Skip to Reading activities</a>
+<header class="reading-header">
+  <a class="reading-logo" href="./index.html" aria-label="LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" alt="" width="2405" height="3619"></span></a>
+  <nav class="reading-nav" aria-label="Main navigation">
+    <a href="./index.html">HOME</a><a href="./learn.html">LEARN</a><a href="./explore.html">EXPLORE</a><button data-panel="badges" type="button">BADGES</button>
+  </nav>
+</header>
+<main id="reading-content" tabindex="-1">
+  <h1 class="sr-only">My House · Reading adventures</h1>
+  <div class="reading-toolbar">
+    <a class="reading-back" href="./my-house.html">← My House</a>
+    <nav class="reading-activities" aria-label="Reading activities">
+      <button type="button" data-activity="hunt" aria-current="step" disabled>1. Secret Code Hunt</button>
+      <button type="button" data-activity="home" disabled>2. Discover My Home</button>
+    </nav>
+  </div>
+  <section class="reading-screen" id="hunt-intro" aria-labelledby="hunt-intro-title">
+    <div class="reading-cover">
+      <img class="cover-art" src="./assets/reading/hunt-cover.png" width="2405" height="1805" alt="" fetchpriority="high">
+      <div class="cover-copy">
+        <h2 id="hunt-intro-title" tabindex="-1">1. Secret Code Hunt – Who Am I?</h2>
+        <p>Lan has just sent you an email about her life in the mountains! She told you all about her home, her food, and her traditions – there is so much to discover about her!</p>
+        <p>But… which ethnic group does she belong to?</p>
+        <p>Read her email carefully, follow the clues, and solve the mystery!</p>
+      </div>
+      <button id="start-hunt" disabled class="cover-start hunt-start" type="button"><span>Start the Hunt!</span></button>
+    </div>
+  </section>
+  <section class="reading-screen" id="hunt-email" aria-labelledby="email-title" hidden>
+    <article class="reading-document email-document">
+      <div class="reading-doc-art email-art" aria-hidden="true"><img src="./assets/reading/email.png" width="2405" height="3258" alt=""></div>
+      <div class="document-copy email-copy">
+        <h2 id="email-title" tabindex="-1">1. Secret Code Hunt – Who Am I?</h2>
+        <div class="paper-window">
+          <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><i>− □ ×</i></div>
+          <div id="email-text" class="document-text"></div>
+        </div>
+      </div>
+    </article>
+    <div class="reading-question-area" id="hunt-question-area"></div>
+  </section>
+  <section class="reading-screen clue-reveal-screen" id="hunt-clue" aria-labelledby="clue-reveal-title" hidden>
+    <p class="reading-kicker">SECRET CODE HUNT · A LITTLE CLOSER</p>
+    <h2 id="clue-reveal-title" class="reading-display" tabindex="-1">A new clue!</h2>
+    <div id="clue-reveal-card"></div>
+    <button id="got-clue" class="reading-button" type="button">Got it!</button>
+  </section>
+  <section class="reading-screen reading-collection" id="hunt-collection" aria-labelledby="clues-title" hidden>
+    <p class="reading-kicker">1. SECRET CODE HUNT – WHO AM I?</p>
+    <h2 class="reading-display" id="clues-title" tabindex="-1">My Clues</h2>
+    <div class="paper-window clue-window">
+      <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><i>− □ ×</i></div>
+      <div class="clue-window-content">
+        <div id="clue-grid" class="clue-grid"></div>
+        <div class="reading-actions">
+          <button id="return-to-email" class="reading-link-button" type="button">← Back to Lan’s email</button>
+          <button id="solve-mystery" class="reading-button" type="button" disabled>Solve the Mystery</button>
+        </div>
+        <div id="mystery-area" hidden></div>
+      </div>
+    </div>
+  </section>
+  <section class="reading-screen" id="hunt-success" aria-labelledby="hunt-success-title" hidden>
+    <div class="paper-window celebration-window">
+      <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><i>− □ ×</i></div>
+      <div class="celebration-content">
+        <p class="reading-kicker">MYSTERY SOLVED · 4 / 4 CLUES</p>
+        <h2 id="hunt-success-title" tabindex="-1">Awesome job, Explorer! 🎉</h2>
+        <p>You’ve solved the puzzle! Lan belongs to the <strong>Thai ethnic group.</strong></p>
+        <p>You used the clues about her home, village, and traditions to learn all about her world!</p>
+        <p>Your Localingo expedition continues!</p>
+        <div class="butterfly-discovery">
+          <button class="butterfly-button" id="butterfly-button" aria-expanded="false" aria-controls="butterfly-fact" type="button">
+            <span class="butterfly-art" aria-hidden="true"><img src="./assets/reading/butterfly.png" loading="lazy" width="2405" height="1805" alt=""></span>
+            <span>Hover or tap the butterfly<br>for a little secret!</span>
+          </button>
+          <aside class="butterfly-fact" id="butterfly-fact" aria-labelledby="butterfly-title" hidden>
+            <button class="fact-close" id="close-butterfly" type="button" aria-label="Close butterfly fact">×</button>
+            <p class="reading-kicker">💡 DID YOU KNOW?</p>
+            <h3 id="butterfly-title">The Butterfly Secret of the Thai People!</h3>
+            <div class="butterfly-photo" aria-hidden="true"><img src="./assets/reading/butterfly-fact.png" loading="lazy" width="2405" height="1805" alt=""></div>
+            <p>On a traditional Thai com blouse, the silver buttons are shaped like butterflies, and the number of buttons can tell you if a girl is married!</p>
+            <p>🦋 An <strong>odd number (7, 9, or 11 buttons)</strong> means she is single!</p>
+            <p>🦋 An <strong>even number (8, 10, or 12 buttons)</strong> means she is married!</p>
+          </aside>
+        </div>
+        <button id="continue-home" class="reading-button" type="button">Awesome!</button>
+      </div>
+    </div>
+  </section>
+  <section class="reading-screen" id="home-intro" aria-labelledby="home-intro-title" hidden>
+    <div class="reading-cover home-cover">
+      <img class="cover-art" src="./assets/reading/home-cover.png" width="2405" height="1912" alt="" loading="lazy">
+      <div class="cover-copy">
+        <h2 id="home-intro-title" tabindex="-1">2. Where Am I? – Discover My Home</h2>
+        <p>Minh loves learning English and writing about his life. He’s excited to share his journal with you!</p>
+        <p>Read Minh’s description of his home and the beautiful place where he lives.</p>
+        <p>Can you picture his house and discover his hometown?</p>
+      </div>
+      <button id="start-home" disabled class="cover-start home-start" type="button"><span>Let’s Go</span></button>
+    </div>
+  </section>
+  <section class="reading-screen" id="home-journal" aria-labelledby="journal-title" hidden>
+    <article class="reading-document journal-document">
+      <div class="reading-doc-art journal-art" aria-hidden="true"><img src="./assets/reading/journal.png" width="2405" height="3358" alt="" loading="lazy"></div>
+      <div class="document-copy journal-copy">
+        <h2 tabindex="-1" id="journal-title">2. Where Am I? – Discover My Home</h2>
+        <div class="journal-paper"><h3>My Home Journal</h3><div id="journal-text" class="document-text"></div><div class="journal-sticker" aria-hidden="true"><img src="./assets/reading/journal.png" loading="lazy" width="2405" height="3358" alt=""></div></div>
+      </div>
+    </article>
+    <div class="reading-question-area" id="home-question-area"></div>
+  </section>
+  <noscript><p class="reading-noscript">Enable JavaScript to start the Reading activities and collect clues.</p></noscript>
+</main>
+<button type="button" class="clue-basket" id="clue-basket" aria-label="Open clue basket, 0 of 4 clues collected" hidden>
+  <svg aria-hidden="true" viewBox="0 0 100 105" fill="none"><path d="M25 42C25 2 75 2 75 42" stroke="#d9a93c" stroke-width="8"/><path d="m14 42 9 54h54l9-54Z" fill="#d59c35" stroke="#a16d23" stroke-width="3"/><path d="m25 48 48 43M42 47l35 32M20 64l31 29M74 48 26 91M57 47 22 79M80 64 49 93" stroke="#aa7026" stroke-width="2"/><path d="M13 43h74" stroke="#8c5f21" stroke-width="7"/></svg>
+  <span class="basket-count" id="basket-count">0 / 4</span><span class="basket-alert" id="basket-alert" hidden aria-hidden="true">!</span>
+</button>
+<nav class="mobile-nav" aria-label="Mobile navigation"><a href="./index.html">Home</a><a href="./learn.html">Learn</a><a href="./explore.html">Explore</a><button type="button" data-panel="badges">Badges</button></nav>
+<footer class="site-footer">
+  <a class="footer-logo" href="./index.html" aria-label="Back to LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" alt="" width="2405" height="3619" loading="lazy"></span></a>
+  <div class="footer-details">
+    <p class="footer-tagline">LOCALINGO FROM LOCAL TO GLOBAL</p>
+    <p class="footer-contact-title">CONTACT US:</p>
+    <address class="footer-contact">
+      <a class="footer-email" href="mailto:localingo.workspace@gmail.com"><svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>localingo.workspace@gmail.com</span></a>
+      <span class="footer-address"><svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>2 Pham Van Dong, Cau Giay, Ha Noi</span></span>
+    </address>
+  </div>
+</footer>
+<dialog class="journey-dialog" aria-labelledby="panel-title" aria-describedby="panel-description">
+<form method="dialog"><button class="close-dialog" aria-label="Close" autofocus>×</button></form>
+<p class="dialog-eyebrow">YOUR ENGLISH JOURNEY</p><h2 id="panel-title"></h2><p id="panel-description"></p><p class="panel-note"></p>
+<form method="dialog"><button class="dialog-return">Back to your journey</button></form>
+</dialog>
+</body>
+</html>
