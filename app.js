@@ -5,7 +5,7 @@ const panels = {
   "local-food": ["Local Food", "Taste the local culture"],
   "people-tradition": ["People & Tradition", "Meet local communities."],
   "festivals-seasons": ["Festivals & Seasons", "Explore seasonal traditions."],
-  "coming-soon": ["More adventures are on the way", "Start Unit 2 · My House to meet BanBan and try the speaking missions."],
+  "coming-soon": ["Coming soon", "Start Unit 2 · My House to meet BanBan and try the speaking missions."],
   badges: ["Your badges", "Complete the five My House speaking missions to earn your Storyteller badge."]
 };
 document.querySelectorAll("[data-panel]").forEach(button => {
