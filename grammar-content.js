@@ -1,0 +1,47 @@
+export const possessiveRounds = [
+  {
+    category: "Proper Names", owner: "Vàng",
+    prompt: "Whose bow is this?",
+    choices: ["Vàng bow", "Vàng's bow", "Vàngs bow"], answer: 1,
+    image: "./assets/grammar/magic-round-1.png",
+    alt: "Vàng holding a traditional bow.",
+    tip: "We use ’s after a proper name (a person’s name) to show that something belongs to that person.",
+    example: "This is Vàng’s bow.",
+  },
+  {
+    category: "Proper Names", owner: "Mai",
+    prompt: "Whose scarf is this?",
+    choices: ["Mai's scarf", "Mai scarf", "Mais scarf"], answer: 0,
+    image: "./assets/grammar/magic-round-2.png",
+    alt: "Mai wearing a colourful Pieu scarf.",
+    tip: "Don’t forget the ’s when something belongs to your friend!",
+    example: "This is Mai’s scarf.",
+  },
+  {
+    category: "Singular Nouns", owner: "The tortoise",
+    prompt: "Whose shell is this?",
+    choices: ["The tortoise shell", "The tortoises shell", "The tortoise's shell"], answer: 2,
+    image: "./assets/grammar/magic-round-3.png",
+    alt: "A tortoise, with an arrow pointing to its shell.",
+    tip: "Add ’s to a singular noun (one person, animal or thing) to show that something belongs to it.",
+    example: "This is the tortoise’s shell.",
+  },
+  {
+    category: "Singular Nouns", owner: "The family",
+    prompt: "Whose house is this?",
+    choices: ["The family's house", "The family house", "The familys house"], answer: 0,
+    image: "./assets/grammar/magic-round-4.png",
+    alt: "A traditional wooden Thai stilt house, the family’s home.",
+    tip: "Look! “Family” is ONE group, so we treat it as a singular noun and add ’s!",
+    example: "This is the family’s house.",
+  },
+];
+export const tidyRounds = [
+  { before: "The bamboo-tube rice is", after: "the tray.", choices: ["in", "behind", "on"], answer: "on", image: "./assets/grammar/tidy-1.jpg", alt: "Bamboo-tube rice resting on a woven serving tray.", explanation: "Use “on” when something rests on a surface." },
+  { before: "The brocade seat pad cushion is", after: "the table.", choices: ["under", "in", "next to"], answer: "next to", image: "./assets/grammar/tidy-2.jpg", alt: "A colourful brocade seat pad cushion beside a low wooden table.", explanation: "“Next to” means beside something." },
+  { before: "The firewood is", after: "the stilt house.", choices: ["under", "in front of", "on"], answer: "under", image: "./assets/grammar/tidy-3.jpg", alt: "A pile of firewood beneath the raised floor of a stilt house.", explanation: "“Under” means below something." },
+  { before: "The pair of sandals is", after: "the stairs.", choices: ["behind", "in front of", "between"], answer: "in front of", image: "./assets/grammar/tidy-4.jpg", alt: "A pair of sandals on the ground before the bottom step of the stairs.", explanation: "“In front of” describes a position ahead of something." },
+  { before: "The sticky rice is", after: "the bamboo basket.", choices: ["under", "on", "in"], answer: "in", image: "./assets/grammar/tidy-5.jpg", alt: "Multicoloured sticky rice inside a woven bamboo basket.", explanation: "Use “in” when something is inside a container." },
+  { before: "The plate of pa pỉnh tộp is", after: "the two bowls of sticky rice.", choices: ["behind", "between", "under"], answer: "between", image: "./assets/grammar/tidy-6.jpg", alt: "A plate of grilled fish with one bowl of sticky rice on each side.", explanation: "“Between” means in the space separating two things." },
+  { before: "The broom is", after: "the wooden door.", choices: ["in", "behind", "on"], answer: "behind", image: "./assets/grammar/tidy-7.jpg", alt: "A straw broom partly concealed behind an open wooden door.", explanation: "“Behind” means at the back of something." },
+];

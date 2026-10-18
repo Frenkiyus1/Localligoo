@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b4c04c">
+<title>Grammar · My House — LOCALINGO</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./chrome.css">
+<link rel="stylesheet" href="./grammar.css">
+<script src="./app.js" type="module"></script>
+<script src="./grammar.js" type="module"></script>
+</head>
+<body class="grammar-body">
+<a class="skip-link" href="#grammar-content">Skip to Grammar games</a>
+<header class="grammar-header">
+  <a class="grammar-logo" href="./index.html" aria-label="LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" width="2405" height="3619" alt=""></span></a>
+  <nav class="grammar-nav" aria-label="Main navigation"><a href="./index.html">HOME</a><a href="./learn.html">LEARN</a><a href="./explore.html">EXPLORE</a><button type="button" data-panel="badges">BADGES</button></nav>
+</header>
+<main id="grammar-content" tabindex="-1">
+  <h1 class="sr-only">My House · Grammar games</h1>
+  <div class="grammar-toolbar">
+    <a href="./my-house.html">← My House</a>
+    <nav aria-label="Grammar games"><button type="button" data-game="magic" aria-current="step" disabled>1. The Magic’s Game!</button><button type="button" data-game="tidy" disabled>2. Thai Stilt House Tidy-Up</button></nav>
+  </div>
+  <section id="magic-intro" class="grammar-screen" aria-labelledby="magic-title">
+    <div class="grammar-scene intro-scene">
+      <img class="scene-source" src="./assets/grammar/magic-cover.png" width="2405" height="1805" alt="" fetchpriority="high">
+      <div class="intro-copy"><p class="grammar-eyebrow">GRAMMAR · POSSESSIVE CASE</p><h2 id="magic-title" tabindex="-1">The Magic’s Game!</h2><p>Look at the picture. Who owns the object? Click the correct box!</p></div>
+      <button id="start-magic" class="scene-button start-magic" type="button" disabled><span>Let’s Start</span></button>
+    </div>
+  </section>
+  <section id="magic-game" class="grammar-screen" aria-labelledby="magic-question" hidden>
+    <div class="grammar-scene magic-scene">
+      <img id="magic-art" class="scene-source" src="./assets/grammar/magic-round-1.png" width="2405" height="1805" alt="Vàng holding a traditional bow." loading="lazy">
+      <div class="game-status"><span id="magic-round-label">Round 1 of 4 · Proper Names</span><span id="magic-score-live">0 correct</span></div>
+      <div class="magic-mobile-art"><img id="magic-mobile-image" src="./assets/grammar/magic-round-1.png" width="2405" height="1805" alt="Vàng holding a traditional bow." loading="lazy"></div>
+      <p id="magic-owner" class="magic-owner">Vàng</p>
+      <h2 id="magic-question" tabindex="-1">Whose bow is this?</h2>
+      <div id="magic-choices" class="magic-choices" role="group" aria-labelledby="magic-question"></div>
+      <button id="magic-next" class="grammar-button magic-next" type="button" hidden>Next round →</button>
+    </div>
+  </section>
+  <section id="tidy-intro" class="grammar-screen" aria-labelledby="ban-title" hidden>
+    <div class="grammar-scene intro-scene ban-scene">
+      <img class="scene-source" src="./assets/grammar/ban-cover.png" width="2405" height="1805" alt="" loading="lazy">
+      <div class="intro-copy"><p class="grammar-eyebrow">GRAMMAR · PREPOSITIONS OF PLACE</p><h2 id="ban-title" tabindex="-1">Meet Ban!</h2><div class="ban-mobile-art" aria-hidden="true"><img src="./assets/grammar/ban-cover.png" width="2405" height="1805" alt="" loading="lazy"></div><p>Hello! I’m Ban. Welcome to my Thai stilt house in Moc Chau! Some things are not in the right places. Can you help me tidy up my house?</p></div>
+      <button id="how-to-play" class="scene-button how-to-play" type="button" disabled><span>How to play?</span></button>
+      <button id="start-tidy" class="scene-button start-tidy" type="button" disabled><span>Let’s help Ban!</span></button>
+    </div>
+  </section>
+  <section id="tidy-game" class="grammar-screen tidy-screen" aria-labelledby="tidy-title" hidden>
+    <div class="tidy-card">
+      <div class="game-status tidy-status"><span id="tidy-round-label">Item 1 of 7</span><span id="tidy-score-live">0 correct</span></div>
+      <p class="grammar-eyebrow">PREPOSITIONS OF PLACE</p>
+      <h2 id="tidy-title" tabindex="-1">Help Ban tidy up!</h2>
+      <progress id="tidy-progress" max="7" value="0" aria-label="Tidy-up items answered"></progress>
+      <div class="tidy-board">
+        <figure class="tidy-photo"><img id="tidy-image" src="./assets/grammar/tidy-1.jpg" width="1024" height="1024" alt="Bamboo-tube rice resting on a woven serving tray." loading="lazy"></figure>
+        <div class="tidy-exercise">
+          <p class="tidy-sentence" id="tidy-sentence"><span id="tidy-before"></span> <button id="preposition-blank" class="preposition-blank" type="button" aria-label="Preposition blank. Choose or drop a word here.">______</button> <span id="tidy-after"></span></p>
+          <p id="tidy-help" class="tidy-help">Tap a word, or drag it into the blank.</p>
+          <div id="preposition-choices" class="preposition-choices" role="group" aria-label="Preposition choices" aria-describedby="tidy-help"></div>
+          <button id="check-tidy" class="grammar-button" type="button" disabled>Check answer</button>
+          <p id="tidy-feedback" class="grammar-feedback" role="status" aria-live="polite"></p>
+          <button id="tidy-next" class="grammar-button" type="button" hidden>Next item →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="grammar-result" class="grammar-screen" aria-labelledby="result-title" hidden>
+    <div class="result-card">
+      <p id="result-game-label" class="grammar-eyebrow">THE MAGIC’S GAME!</p>
+      <h2 id="result-title" class="grammar-display" tabindex="-1">Hooray! You Did It!</h2>
+      <p id="result-message"></p>
+      <p id="result-score" class="result-score"></p>
+      <div id="result-stars" class="result-stars" aria-hidden="true"></div>
+      <div class="result-actions"><button id="play-again" class="grammar-button" type="button">Play Again 🔄</button><button id="try-other-game" class="grammar-link-button" type="button">Let’s help Ban! →</button></div>
+    </div>
+  </section>
+  <noscript><p class="grammar-noscript">Enable JavaScript to play the Grammar games.</p></noscript>
+</main>
+<nav class="mobile-nav" aria-label="Mobile navigation"><a href="./index.html">Home</a><a href="./learn.html">Learn</a><a href="./explore.html">Explore</a><button type="button" data-panel="badges">Badges</button></nav>
+<footer class="site-footer">
+  <a class="footer-logo" href="./index.html" aria-label="Back to LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" alt="" width="2405" height="3619" loading="lazy"></span></a>
+  <div class="footer-details">
+    <p class="footer-tagline">LOCALINGO FROM LOCAL TO GLOBAL</p>
+    <p class="footer-contact-title">CONTACT US:</p>
+    <address class="footer-contact">
+      <a class="footer-email" href="mailto:localingo.workspace@gmail.com"><svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>localingo.workspace@gmail.com</span></a>
+      <span class="footer-address"><svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>2 Pham Van Dong, Cau Giay, Ha Noi</span></span>
+    </address>
+  </div>
+</footer>
+<dialog id="grammar-tip" class="grammar-tip" aria-labelledby="tip-title" aria-describedby="tip-rule tip-example">
+  <button id="close-tip" class="tip-close" type="button" aria-label="Close Grammar Tip">×</button>
+  <p class="grammar-eyebrow">GRAMMAR TIP</p>
+  <p id="tip-feedback" class="tip-feedback" role="status"></p>
+  <h2 id="tip-title" tabindex="-1">Magic Tip 1!</h2><p id="tip-rule"></p><p id="tip-example" class="tip-example"></p>
+  <button id="tip-next" class="grammar-button" type="button">Got it! Next →</button>
+</dialog>
+<dialog id="play-instructions" class="play-instructions" aria-labelledby="instructions-title">
+  <h2 id="instructions-title">How to play?</h2><p>Read the sentence and drag the correct preposition into the blank.</p><p>You can also click or tap a word, then choose “Check answer”.</p>
+  <form method="dialog"><button class="grammar-button">Let’s do it!</button></form>
+</dialog>
+<dialog class="journey-dialog" aria-labelledby="panel-title" aria-describedby="panel-description">
+  <form method="dialog"><button class="close-dialog" aria-label="Close" autofocus>×</button></form>
+  <p class="dialog-eyebrow">YOUR ENGLISH JOURNEY</p><h2 id="panel-title"></h2><p id="panel-description"></p><p class="panel-note"></p><form method="dialog"><button class="dialog-return">Back to your journey</button></form>
+</dialog>
+</body>
+</html>
