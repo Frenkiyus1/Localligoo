@@ -24,11 +24,13 @@ function updateControls() {
   $("next-mission").disabled = locked || !readProgress().speaking.includes(missions[current].id);
 }
 function releaseAudio() {
+  $("recording-review").hidden=true;
   wav = null; player.pause(); player.removeAttribute("src"); player.hidden = true; player.load();
   if(audioUrl) URL.revokeObjectURL(audioUrl);
   audioUrl = null;
 }
 function clearFeedback() {
+  $("feedback").hidden=true; $("feedback").open=false;
   $("feedback-content").replaceChildren();
   const p=document.createElement("p"); p.className="feedback-empty"; p.textContent="Record your answer, then get feedback from BanBan."; $("feedback-content").append(p);
 }
@@ -42,7 +44,10 @@ function showMission() {
   $("mission-prompt").textContent=missions[current].prompt;
   $("mission-hint").textContent=missions[current].hint;
   $("mission-example").textContent=missions[current].example;
-  $("next-mission").textContent=current===missions.length-1?"Finish mission ✓":"Next mission →";
+  const nextLabel=current===missions.length-1?"Finish mission":"Next mission";
+  $("next-label").textContent=nextLabel;
+  $("next-mission").setAttribute("aria-label",nextLabel);
+  $("next-mission").title=nextLabel;
   message(status,"Speak in English for 5–60 seconds. Listen to your recording before sending it.");
   clearFeedback(); updateControls();
   $("completion").hidden = readProgress().speaking.length !== 5;
@@ -77,11 +82,15 @@ async function prepare(blob, token) {
   try {
     const ready=await toWav(blob);
     if(token!==generation) return;
-    releaseAudio(); wav=ready; audioUrl=URL.createObjectURL(wav); player.src=audioUrl; player.hidden=false;
+    releaseAudio(); wav=ready; audioUrl=URL.createObjectURL(wav); player.src=audioUrl; player.hidden=false; $("recording-review").hidden=false;
+    $("recording-review").scrollIntoView({block:"nearest"});
     message(status,"Bản ghi đã sẵn sàng. Nghe lại, đồng ý gửi và bấm Get AI feedback.");
     clearFeedback();
   } catch(error) { if(token===generation) message(status,error.message,true); }
   finally { preparing=false; updateControls(); }
+}
+function setRecordLabel(label) {
+  $("record-label").textContent=label; record.setAttribute("aria-label",label); record.title=label;
 }
 record.addEventListener("click",async()=>{
   if(recorder?.state==="recording") { stopRecording(); return; }
@@ -96,11 +105,11 @@ record.addEventListener("click",async()=>{
     recorder=new MediaRecorder(stream);
     recorder.ondataavailable=e=>{if(e.data.size) chunks.push(e.data);};
     recorder.onstop=()=> {
-      stopTracks(); record.setAttribute("aria-pressed","false"); record.textContent="● Record answer";
+      stopTracks(); record.setAttribute("aria-pressed","false"); setRecordLabel("Record answer");
       if(token===generation) prepare(new Blob(chunks,{type:recorder.mimeType}),token);
     };
-    recorder.onerror=()=> { generation++; stopTracks(); message(status,"Micro đã bị ngắt. Hãy thử ghi lại.",true); record.setAttribute("aria-pressed","false");record.textContent="● Record answer"; updateControls(); };
-    recorder.start(); record.setAttribute("aria-pressed","true"); record.textContent="■ Stop recording";
+    recorder.onerror=()=> { generation++; stopTracks(); message(status,"Micro đã bị ngắt. Hãy thử ghi lại.",true); record.setAttribute("aria-pressed","false");setRecordLabel("Record answer"); updateControls(); };
+    recorder.start(); record.setAttribute("aria-pressed","true"); setRecordLabel("Stop recording");
     const started=Date.now();
     message(status,"Đang ghi âm… 0/60 giây");
     timer=setInterval(()=> {
@@ -123,6 +132,7 @@ $("written-answer").addEventListener("input",updateControls);
 $("audio-consent").addEventListener("change",updateControls);
 function element(tag,text,className="") { const el=document.createElement(tag); el.textContent=text; if(className) el.className=className; return el; }
 function renderFeedback(assessment) {
+  $("feedback").hidden=false; $("feedback").open=true;
   const target=$("feedback-content"); target.replaceChildren(element("p",assessment.encouragement));
   const scores=element("div","","feedback-grid");
   for(const [key,label] of [["grammar","Grammar"],["vocabulary","Vocabulary"]]) {
@@ -160,6 +170,8 @@ async function assess(mode) {
     if(!response.ok) throw new Error(data.error || "Chưa nhận được phản hồi. Hãy thử lại.");
     if(token!==generation) return;
     renderFeedback(data.assessment);
+    $("speaking-options").open=false;
+    $("feedback").scrollIntoView({block:"nearest"});
     if(mode==="audio" && data.assessment.hasSpeech) {
       saveProgress(state=>{if(!state.speaking.includes(missions[current].id)) state.speaking.push(missions[current].id);});
       renderProgress(); message(aiStatus,"Đã nhận phản hồi và lưu tiến độ nhiệm vụ!");

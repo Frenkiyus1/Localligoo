@@ -19,6 +19,7 @@ Mở http://localhost:4173. Các trang dùng JavaScript modules nên cần HTTP 
 
 - Loại bỏ mục Practice khỏi menu và hành trình trang chủ.
 - Learn, My House và bìa Speaking dùng ảnh từ thư mục thiết kế `TRANG LEARN`. Bản cần triển khai nằm trong `assets/learn/`; thư mục thiết kế gốc được bỏ qua trong Git để tránh lưu trùng nhiều ảnh lớn.
+- Speaking giữ nguyên canvas 2405 × 1805 của ảnh thiết kế, dùng nền giấy trong thư mục Speaking và bốn element micro/loa/làm lại/tiếp đúng vị trí hàng dưới. Câu hỏi và phản hồi nằm trong khoảng trống của ảnh; tùy chọn phụ thu gọn, không dùng bố cục hai khung.
 - Speaking có 5 nhiệm vụ bổ sung về My House, BanBan hướng dẫn, nghe mẫu, ghi âm tối đa 60 giây, tải file âm thanh, phát lại và thử lại.
 - Explore giữ đúng **24 câu** và các lựa chọn trong file nội dung. File nguồn đánh số 1–25 nhưng thiếu câu 12; không thêm hoặc nhân đôi câu hỏi. Mỗi lần mở trang chọn ngẫu nhiên 5 câu không trùng nhau. Người dùng chỉ chọn đáp án; sau phản hồi đúng/sai, trang tự chuyển câu và cuối lượt hiện điểm trên 5. Không có nút chọn chủ đề, xáo trộn, chuyển câu hay đặt lại bài. Lượt mới không bị khóa bởi các câu trả lời đã lưu.
 - Khóa đáp án trong `questions.js` được suy ra từ các lựa chọn vì tài liệu nguồn không có bảng đáp án riêng. Có thể chỉnh thuộc tính `answer` (chỉ số từ 0).

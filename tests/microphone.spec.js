@@ -18,6 +18,7 @@ test("record start, timed capture, stop and retry release the microphone",async(
  await expect(page.locator("#record")).toHaveAttribute("aria-pressed","false");
  await expect(page.locator("#recording")).toBeVisible();
  expect(await page.evaluate(()=>window.testAudioStream.getTracks().every(track=>track.readyState==="ended"))).toBe(true);
+ await expect(page.locator("#record img")).toBeVisible();
  await page.locator("#retry").click();await expect(page.locator("#recording")).toBeHidden();
  await expect(page.locator("#assess")).toBeDisabled();
 });
