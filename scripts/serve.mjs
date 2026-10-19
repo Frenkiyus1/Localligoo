@@ -15,6 +15,7 @@ const mime = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".ttf": "font/ttf",
+  ".mp3": "audio/mpeg",
 };
 
 createServer(async (request, response) => {

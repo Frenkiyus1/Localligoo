@@ -1,45 +1,42 @@
-﻿const buttons = [...document.querySelectorAll('.vocab-word')];
+const buttons = [...document.querySelectorAll('.vocab-word')];
 const status = document.querySelector('#vocab-audio-status');
-let currentUtterance;
+let currentAudio;
 function clearSpeaking() {
   buttons.forEach(button => button.classList.remove('is-speaking'));
+}
+function stopAudio() {
+  const audio = currentAudio;
+  currentAudio = null;
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+  clearSpeaking();
 }
 buttons.forEach(button => {
   button.addEventListener('click', () => {
     const word = button.dataset.word;
-    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
-      status.textContent = 'English pronunciation is unavailable in this browser. Try Chrome, Edge or Safari.';
-      return;
-    }
-    window.speechSynthesis.cancel();
-    clearSpeaking();
-    const utterance = new SpeechSynthesisUtterance(word);
-    currentUtterance = utterance;
-    utterance.lang = 'en-US';
-    utterance.rate = .8;
-    const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(voice => voice.lang === 'en-US') || voices.find(voice => voice.lang.startsWith('en')) || null;
+    stopAudio();
+    const audio = new Audio(button.dataset.audio);
+    currentAudio = audio;
     button.classList.add('is-speaking');
     status.textContent = `Listen: ${word}`;
-    utterance.onend = () => {
-      if (currentUtterance !== utterance) return;
+    audio.onended = () => {
+      if (currentAudio !== audio) return;
+      currentAudio = null;
       clearSpeaking();
       status.textContent = `Try saying: ${word}`;
     };
-    utterance.onerror = event => {
-      if (currentUtterance !== utterance) return;
-      clearSpeaking();
-      if (event.error !== 'canceled' && event.error !== 'interrupted') {
-        status.textContent = 'Could not play the pronunciation. Check your audio settings and try again.';
-      }
+    const onError = () => {
+      if (currentAudio !== audio) return;
+      stopAudio();
+      status.textContent = 'Could not play the pronunciation. Check your audio settings and try again.';
     };
-    window.speechSynthesis.speak(utterance);
+    audio.onerror = onError;
+    audio.play().catch(onError);
   });
 });
-window.addEventListener('pagehide', () => {
-  currentUtterance = null;
-  window.speechSynthesis?.cancel();
-});
+window.addEventListener('pagehide', stopAudio);
 const facts = [...document.querySelectorAll('.vocab-fact')];
 const position = document.querySelector('.vocab-fact-position');
 facts.forEach((fact, index) => {
