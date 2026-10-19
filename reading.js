@@ -32,10 +32,6 @@ function showScreen(id, target) {
   activity = id.startsWith("hunt-") ? "hunt" : "home";
   if (activity === "hunt") huntScreen = id;
   else homeScreen = id;
-  document.querySelectorAll("[data-activity]").forEach(button => {
-    if (button.dataset.activity === activity) button.setAttribute("aria-current", "step");
-    else button.removeAttribute("aria-current");
-  });
   $("clue-basket").hidden = !(activity === "hunt" && ["hunt-email", "hunt-collection"].includes(id));
   updateBasket();
   const screen = $(id);
@@ -44,13 +40,6 @@ function showScreen(id, target) {
   screen.classList.add("screen-enter");
   focusHeading(target || screen.querySelector("h2"));
 }
-document.querySelectorAll("[data-activity]").forEach(button => {
-  button.addEventListener("click", () => {
-    showButterfly(false);
-    showScreen(button.dataset.activity === "hunt" ? huntScreen : homeScreen);
-  });
-});
-
 // Native radio controls support touch, keyboard navigation and screen readers.
 function choiceGroup(question, name, title) {
   const fieldset = node("fieldset", "", "reading-choices");
@@ -348,4 +337,4 @@ function renderPractice() {
 $("start-home").addEventListener("click", () => { renderHomeQuestions(); showScreen("home-journal"); });
 updateBasket();
 
-document.querySelectorAll("[data-activity], #start-hunt, #start-home").forEach(button => { button.disabled = false; });
+document.querySelectorAll("#start-hunt, #start-home").forEach(button => { button.disabled = false; });

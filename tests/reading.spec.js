@@ -35,8 +35,14 @@ async function collectClues(page, checkWrong = false) {
   }
 }
 async function startHome(page) {
-  await page.goto("/reading.html");
-  await page.getByRole("button", { name: "2. Discover My Home", exact: true }).click();
+  await startHunt(page);
+  await collectClues(page);
+  await page.locator("#clue-basket").click();
+  await page.getByRole("button", { name: "Solve the Mystery", exact: true }).click();
+  const mystery = page.locator("#mystery-answer");
+  await mystery.getByRole("radio").first().check();
+  await mystery.getByRole("button", { name: "Submit", exact: true }).click();
+  await page.getByRole("button", { name: "Awesome!", exact: true }).click();
   await page.getByRole("button", { name: "Let’s Go", exact: true }).click();
 }
 async function chooseHome(page, indexes) {
@@ -156,14 +162,4 @@ test("hometown feedback leads to practice with explanations for correct and inco
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("link", { name: "Back to My House →", exact: true }).click();
   await expect(page).toHaveURL(/my-house\.html$/);
-});
-
-test("switching Reading activities preserves the current hunt answer", async ({ page }) => {
-  await startHunt(page);
-  await page.locator("#hunt-answer").getByRole("radio").first().check();
-  await page.getByRole("button", { name: "2. Discover My Home", exact: true }).click();
-  await expect(page.locator("#clue-basket")).toBeHidden();
-  await page.getByRole("button", { name: "1. Secret Code Hunt", exact: true }).click();
-  await expect(page.locator("#hunt-answer").getByRole("radio").first()).toBeChecked();
-  await expect(page.locator("#clue-basket")).toBeVisible();
 });
