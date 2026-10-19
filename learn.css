@@ -1,5 +1,10 @@
 .course-art { aspect-ratio: 2405 / 1785; }
 .house-art { aspect-ratio: 2405 / 2477; }
+/* Swap only the two description patches in the 2405 x 2477 artwork.
+   Their source rectangles are (1510,1395,380,72) and (1514,1628,380,72). */
+.house-art .lesson-description-art { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; }
+.pronunciation-description-art { clip-path: inset(65.7247% 21.2474% 31.3686% 62.9522%); transform: translate(-.1663%, -9.4065%); }
+.grammar-description-art { clip-path: inset(56.3181% 21.4137% 40.7751% 62.7859%); transform: translate(.1663%, 9.4065%); }
 .speaking-art { aspect-ratio: 2405 / 1805; }
 .course-art .brand, .speaking-art .brand { top: 1.7%; height: 6.9%; }
 .house-art .brand { top: 1.1%; height: 5%; }
