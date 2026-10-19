@@ -47,9 +47,8 @@
 .glossary-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 26px 30px; border-bottom: 2px solid #e3bd61; background: #f5d27b; }
 .glossary-eyebrow { margin: 0 0 8px; color: #735021; font-size: 11px; line-height: 1.5; font-weight: 800; letter-spacing: 1.6px; }
 .glossary-header h3 { margin: 0; font-size: clamp(23px, 2.4vw, 34px); line-height: 1.25; font-weight: 800; }
-.glossary-count { flex-shrink: 0; padding: 10px 14px; border: 1px solid #b8c384; border-radius: 30px; background: #e8edc9; font-size: 12px; font-weight: 700; }
 .glossary-intro { margin: 0; padding: 20px 30px; font-size: 14px; line-height: 1.7; }
-.glossary-table-wrap { margin: 0 22px; overflow-x: auto; border: 1px solid #dfd2aa; border-radius: 16px; scrollbar-color: #a7b56c #f3ebd2; }
+.glossary-table-wrap { margin: 0 22px 22px; overflow-x: auto; border: 1px solid #dfd2aa; border-radius: 16px; scrollbar-color: #a7b56c #f3ebd2; }
 .glossary-table-wrap:focus-visible { outline: 3px solid #728f38; outline-offset: 4px; }
 .glossary-table { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 14px; line-height: 1.6; }
 .glossary-col-number { width: 6%; }
@@ -69,8 +68,6 @@
 .glossary-table .glossary-number { color: #8c7546; font-size: 12px; font-weight: 700; text-align: center; }
 .glossary-ipa { font-family: 'Segoe UI', Arial, sans-serif; color: #756449; font-size: 15px; }
 .glossary-class { display: inline-block; padding: 3px 9px; border-radius: 8px; background: #e9edcf; color: #556333; font-size: 11px; font-weight: 700; }
-.glossary-tip { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 0; padding: 20px 24px; color: #6a5b36; font-size: 12px; line-height: 1.6; text-align: center; }
-.glossary-tip > span { display: grid; place-items: center; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #e5eac3; font-size: 18px; }
 .glossary-scroll-hint { display: none; }
 @media (max-width: 900px) {
   .vocab-glossary { width: calc(100% - 32px); }
@@ -83,11 +80,9 @@
   .vocab-glossary { margin-bottom: 24px; border-radius: 22px; }
   .glossary-header { padding: 20px; }
   .glossary-header h3 { font-size: 24px; }
-  .glossary-count { padding: 7px 12px; font-size: 11px; }
   .glossary-intro { padding-inline: 20px; font-size: 13px; }
   .glossary-scroll-hint { padding-inline: 20px; }
   .glossary-table-wrap { margin-inline: 12px; border-radius: 12px; }
-  .glossary-tip { padding: 18px 20px; }
 }
 
 .vocabulary { padding-top: clamp(24px, 4vw, 56px); background: radial-gradient(ellipse at top left, #fff6d6cc, transparent 60%), #fae8b5; }
