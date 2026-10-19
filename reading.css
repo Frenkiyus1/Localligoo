@@ -24,7 +24,7 @@
 .cover-start { position: absolute; padding: 0; border: 0; border-radius: 100px; cursor: pointer; background: transparent; }
 .cover-start span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .cover-start:hover { box-shadow: 0 0 0 4px #fff6dd; }
-.hunt-start { left: 40%; top: 67%; width: 20.8%; height: 9.4%; }
+.hunt-start { left: 41%; top: 68%; width: 20.8%; height: 9.4%; }
 .home-start { left: 42.1%; top: 63.2%; width: 15.8%; height: 10.4%; }
 .reading-doc-art { overflow: hidden; }
 .reading-doc-art img { display: block; width: 100%; height: auto; margin-top: -7.56%; }
