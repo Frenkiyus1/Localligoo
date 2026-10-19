@@ -7,12 +7,12 @@
 .grammar-nav a, .grammar-nav button { display: flex; align-items: center; min-height: 44px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: inherit; text-decoration: none; font: 800 clamp(13px, 1.56vw, 30px)/1 "Montserrat", Arial, sans-serif; cursor: pointer; }
 .grammar-nav :is(a, button):hover { background: #ffffff25; }
 #grammar-content { max-width: 2405px; min-height: 70vh; margin-inline: auto; padding-bottom: 32px; }
-.grammar-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; padding: 16px 7%; background: #f7e8b3; }
-.grammar-toolbar > a { font-size: 12px; font-weight: 700; text-decoration: none; }
-.grammar-toolbar > a:hover { text-decoration: underline; }
-.grammar-toolbar nav { display: flex; flex-wrap: wrap; gap: 8px; }
-.grammar-toolbar button { min-height: 40px; padding: 9px 16px; border: 1px solid #d3b36a; border-radius: 24px; background: #fff8de; color: inherit; font: 700 12px/1.4 "Montserrat", Arial, sans-serif; cursor: pointer; }
-.grammar-toolbar [aria-current] { background: #f6d17b; border-color: #bb8e35; }
+.grammar-toolbar { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; gap: 14px; padding: 16px 7%; background: #f7e8b3; }
+.grammar-back { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 8px 20px 8px 10px; border: 2px solid #fff8df; border-radius: 999px; background: #f9df8e; box-shadow: 0 3px 0 #9c824c55; color: #684415; font-size: clamp(13px, 1.15vw, 18px); font-weight: 800; line-height: 1.4; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
+.grammar-back-icon { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #fff6d9; }
+.grammar-back-icon svg { display: block; width: 18px; height: 18px; }
+.grammar-back:hover { background: #f4d47b; box-shadow: 0 4px 0 #9c824c55; transform: translateY(-1px); }
+.grammar-back:active { box-shadow: 0 1px 0 #9c824c55; transform: translateY(2px); }
 .grammar-screen { scroll-margin-top: 16px; }
 .grammar-scene { position: relative; overflow: hidden; aspect-ratio: 2405 / 1623; container-type: inline-size; }
 .scene-source { display: block; width: 100%; height: auto; margin-top: -7.56%; }
@@ -97,7 +97,6 @@
   .grammar-nav { padding: 0; gap: 14px; }
   .grammar-nav a, .grammar-nav button { font-size: 12px; }
   .grammar-toolbar { padding: 16px; }
-  .grammar-toolbar button { font-size: 11px; padding-inline: 12px; }
   .grammar-scene { aspect-ratio: auto; padding: 24px 20px 36px; }
   .scene-source { display: none; }
   .intro-copy { position: static; width: auto; height: auto; clip-path: none; overflow: visible; }
@@ -127,8 +126,6 @@
 @media (max-width: 640px) {
   .grammar-header { min-height: 70px; padding: 12px 18px; }
   .grammar-nav { display: none; }
-  .grammar-toolbar nav { width: 100%; }
-  .grammar-toolbar button { flex: 1; }
   .intro-scene, .magic-scene { padding: 24px 16px; }
   .grammar-tip { padding: 30px 22px; border-radius: 25px; }
   .grammar-tip .grammar-button { margin-right: auto; }
@@ -146,4 +143,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .grammar-body { scroll-behavior: auto; }
+  .grammar-back { transition: none; }
 }

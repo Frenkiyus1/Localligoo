@@ -4,9 +4,14 @@ async function enterMagic(page) {
   await page.goto("/grammar.html");
   await page.getByRole("button", { name: "Let’s Start", exact: true }).click();
 }
+async function enterTidyIntro(page) {
+  await enterMagic(page);
+  await playMagic(page, [1, 0, 2, 0]);
+  await page.locator("#try-other-game").click();
+  await expect(page.locator("#tidy-intro")).toBeVisible();
+}
 async function enterTidy(page) {
-  await page.goto("/grammar.html");
-  await page.getByRole("button", { name: "2. Thai Stilt House Tidy-Up", exact: true }).click();
+  await enterTidyIntro(page);
   await page.getByRole("button", { name: "Let’s help Ban!", exact: true }).click();
 }
 async function screenshot(page, testInfo, name) {
@@ -46,6 +51,9 @@ test("My House opens Grammar with the supplied cover and round artwork", async (
   await page.getByRole("link", { name: "Grammar — The Magic’s Game and Thai Stilt House Tidy-Up", exact: true }).click();
   await expect(page).toHaveURL(/grammar\.html$/);
   await expect(page).toHaveTitle("Grammar · My House — LOCALINGO");
+  await expect(page.locator(".grammar-toolbar nav, .grammar-toolbar button")).toHaveCount(0);
+  await expect(page.locator(".grammar-back")).toHaveAccessibleName("My House");
+  await expect(page.locator(".grammar-back")).toHaveAttribute("href", "./my-house.html");
   await page.locator("#magic-intro .scene-source").evaluate(img => img.decode());
   await screenshot(page, testInfo, "grammar-intro");
   await page.getByRole("button", { name: "Let’s Start", exact: true }).click();
@@ -55,6 +63,8 @@ test("My House opens Grammar with the supplied cover and round artwork", async (
   await screenshot(page, testInfo, "grammar-round");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(errors).toEqual([]);
+  await page.locator(".grammar-back").click();
+  await expect(page).toHaveURL(/my-house\.html$/);
 });
 
 test("each choice shows its Grammar Tip and the mixed score counts only correct answers", async ({ page }, testInfo) => {
@@ -113,9 +123,8 @@ test("all incorrect possessive answers finish with zero stars", async ({ page })
   await expect(page.locator("#result-stars .earned-star")).toHaveCount(0);
 });
 
-test("Ban introduction, instructions, choice editing and activity switching preserve the answer", async ({ page }, testInfo) => {
-  await page.goto("/grammar.html");
-  await page.getByRole("button", { name: "2. Thai Stilt House Tidy-Up", exact: true }).click();
+test("Ban introduction, instructions and choice editing work after completing Magic", async ({ page }, testInfo) => {
+  await enterTidyIntro(page);
   await page.locator("#tidy-intro .scene-source").evaluate(img => { img.loading = "eager"; return img.decode(); });
   await screenshot(page, testInfo, "ban-intro");
   await page.getByRole("button", { name: "How to play?", exact: true }).click();
@@ -129,8 +138,6 @@ test("Ban introduction, instructions, choice editing and activity switching pres
   await page.locator("#preposition-blank").click();
   await expect(page.locator("#check-tidy")).toBeDisabled();
   await page.locator("#preposition-choices").getByRole("button", { name: "on", exact: true }).press("Enter");
-  await page.getByRole("button", { name: "1. The Magic’s Game!", exact: true }).click();
-  await page.getByRole("button", { name: "2. Thai Stilt House Tidy-Up", exact: true }).click();
   await expect(page.locator("#preposition-blank")).toHaveText("on");
   await expect(page.locator("#tidy-feedback")).toBeEmpty();
   await page.locator("#tidy-image").evaluate(img => img.decode());

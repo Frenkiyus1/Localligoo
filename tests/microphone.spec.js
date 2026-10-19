@@ -24,7 +24,7 @@ test("record start, timed capture, stop and retry release the microphone",async(
 test("microphone permission denial gives an upload alternative",async({page})=>{
  await page.addInitScript(()=>{navigator.mediaDevices.getUserMedia=async()=>{throw new DOMException("Denied","NotAllowedError");};});
  await page.goto("/speaking.html#missions");await page.locator("#record").click();
- await expect(page.locator("#record-status")).toContainText("Bạn chưa cho phép micro");
+ await expect(page.locator("#record-status")).toContainText("permission was denied");
  await expect(page.locator("#audio-file")).toBeEnabled();
  await expect(page.locator("#record")).toHaveAttribute("aria-pressed","false");
 });

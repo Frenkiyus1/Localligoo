@@ -71,3 +71,36 @@ test("word alignment handles missing, substituted and extra words",()=>{
  assert.deepEqual(compareWords("I’m here.","I’m here!").tokens.map(t=>t.status),["matched","matched"]);
  assert.equal(speechMetrics("one two three",6,[{start:0,end:1},{start:3,end:6}]).longestPauseSeconds,2);
 });
+
+
+test("all supplied complete-sentence variants pass while fragments, wrong locations and negation fail",async()=>{
+ const {missions}=await import('../missions.js');const {evaluateSpeaking}=await import('../speaking-assessment.js');
+ for(const mission of missions.filter(m=>m.activity===2)){
+  for(const answer of mission.accepted)assert.equal(evaluateSpeaking(mission,answer,response,true).passed,true,answer);
+  for(const answer of ['under','fireplace','The table is in the living room.','The fireplace is not in the living room.','The piece of wood is on the stilt house.'])assert.equal(evaluateSpeaking(mission,answer,response,true).passed,false,answer);
+ }
+});
+test("read-aloud accepts expanded contractions and identifies a missing content word without inventing acoustic scores",async()=>{
+ const {missions}=await import('../missions.js');const {evaluateSpeaking}=await import('../speaking-assessment.js');
+ const good=evaluateSpeaking(missions[0],"It is my grandmother's blanket. It is on the floor next to the fireplace.",response,true);
+ assert.equal(good.passed,true);
+ const retry=evaluateSpeaking(missions[0],missions[0].example.replace('fireplace',''),response,true);
+ assert.equal(retry.passed,false);assert.equal(retry.practiceWord,'fireplace');
+ assert.equal(evaluateSpeaking(missions[0],missions[0].example,response,false).passed,false);
+});
+test("open description uses the learner's transcript and only completes a relevant spoken response",async()=>{
+ const {missions}=await import('../missions.js');const {evaluateSpeaking}=await import('../speaking-assessment.js');
+ const learner="This is Nhinh's house. A basket is by the window. The table is in front of her.";
+ assert.equal(evaluateSpeaking(missions[4],learner,{...response,taskCompleted:true},true).passed,true);
+ assert.equal(evaluateSpeaking(missions[4],learner,{...response,taskCompleted:false},true).passed,false);
+ assert.equal(evaluateSpeaking(missions[4],'a basket',{...response,taskCompleted:true},true).passed,false);
+ const audio=Buffer.from(await encodeWav(Float32Array.from({length:32000},(_,i)=>.1*Math.sin(i/10))).arrayBuffer()).toString('base64');
+ let trusted;
+ const result=await handleApi(req({mode:'audio',missionId:'house-5',audio,consent:true}),{AI:{run:async(model,input)=>{
+  if(model.includes('whisper'))return {text:learner};
+  trusted=JSON.parse(input.messages[1].content);return {response:JSON.stringify({...response,taskCompleted:true,correctedAnswer:learner})};
+ }}});
+ const {assessment}=await result.json();assert.equal(assessment.correctedAnswer,learner);assert.equal(assessment.passed,true);
+ assert.equal(trusted.learnerTranscript,learner);assert.equal(trusted.modelAnswer,undefined);assert.match(trusted.pictureContext,/Nhinh/);
+ assert.equal(assessment.pronunciation.score,null);
+});

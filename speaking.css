@@ -1,0 +1,64 @@
+/* The supplied Speaking artwork provides the scenes, paper and action icons. */
+.speaking-body { font-family:"Montserrat",Arial,sans-serif; color:#684415; background:#fae9bb; }
+.speaking-body [hidden] { display:none !important; }
+.speaking-body .exercise-shell { max-width:2405px; padding:0 0 32px; }
+.speaking-header { display:flex; align-items:center; gap:20px; min-height:clamp(70px,7.56vw,182px); padding:12px 4%; background:#b4c04c url('./assets/speaking/header.webp') repeat; }
+.speaking-logo { display:block; width:clamp(90px,10vw,240px); flex-shrink:0; }
+.speaking-nav { display:flex; justify-content:center; gap:clamp(18px,3.4vw,72px); margin:auto; padding-right:12%; }
+.speaking-nav a,.speaking-nav button { border:0; border-radius:8px; background:transparent; color:inherit; text-decoration:none; padding:6px; min-height:44px; font:800 clamp(13px,1.56vw,30px)/1 'Montserrat',sans-serif; cursor:pointer; }
+.speaking-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 7%; background:#f7e8b3; }
+.speaking-toolbar p { font-size:13px; font-weight:800; }
+.speaking-back { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 8px 20px 8px 10px; border: 2px solid #fff8df; border-radius: 999px; background: #f9df8e; box-shadow: 0 3px 0 #9c824c55; color: #684415; font-size: clamp(13px, 1.15vw, 18px); font-weight: 800; line-height: 1.4; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
+.speaking-back-icon { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #fff6d9; }
+.speaking-back-icon svg { display: block; width: 18px; height: 18px; }
+.speaking-back:hover { background: #f4d47b; box-shadow: 0 4px 0 #9c824c55; transform: translateY(-1px); }
+.speaking-back:active { box-shadow: 0 1px 0 #9c824c55; transform: translateY(2px); }
+.speaking-progress { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:12px; padding:12px 6%; font-size:12px; }
+.speaking-progress progress { width:min(220px,30vw); margin:0; }
+.speaking-progress [data-badge-status] { display:none; }
+.speaking-activity { text-align:center; padding:28px 5% 20px; background:#fae9bb url('./assets/speaking/paper.webp') repeat; }
+.activity-label { display:table; margin:0 0 26px 2%; padding:14px 26px; border-radius:60px; background:#f8d77f; font-size:clamp(18px,2.4vw,36px); font-weight:900; }
+.question-number { margin:12px 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:2px; font-weight:800; }
+.speaking-activity h1 { max-width:1100px; margin:8px auto; font-size:clamp(24px,3.2vw,52px); line-height:1.35; font-weight:900; }
+.question-replay { border:0; background:transparent; text-decoration:underline; color:inherit; font:700 12px/1.4 'Montserrat',sans-serif; padding:10px; cursor:pointer; }
+.speaking-picture { width:min(72%,1000px); margin:18px auto 24px; }
+.speaking-picture img { display:block; width:100%; height:auto; border-radius:4px; }
+.speaking-answer { max-width:1100px; margin:18px auto; }
+.answer-label { margin:0 0 8px; font-weight:900; font-size:18px; }
+#mission-example { margin:0; font-size:clamp(18px,2.1vw,32px); font-weight:800; line-height:1.6; }
+.speaking-instruction { max-width:900px; margin:18px auto; font-size:clamp(14px,1.2vw,18px); line-height:1.6; }
+.word-bank { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin:22px auto; }
+.word-bank button { border:2px solid transparent; border-radius:50px; padding:12px 24px; background:#f8d77f; color:inherit; font:800 clamp(15px,1.8vw,26px)/1.4 'Montserrat',sans-serif; cursor:pointer; }
+.word-bank button:hover { border-color:#a57b35; }
+.speaking-controls { display:flex; justify-content:center; gap:clamp(18px,5vw,90px); margin:28px 0 18px; }
+.speaking-control { display:flex; flex-direction:column; gap:8px; align-items:center; border:0; padding:0; min-width:64px; background:transparent; color:inherit; cursor:pointer; font:800 13px/1.5 'Montserrat',sans-serif; }
+.speaking-control img { width:clamp(60px,8vw,120px); height:auto; }
+.speaking-control:hover:not(:disabled) { transform:translateY(-3px); }
+.speaking-control[aria-pressed='true'] img { outline:4px solid #ae493b; border-radius:50%; }
+.speaking-control:disabled { opacity:.45; }
+.practice-panel { max-width:960px; margin:20px auto; padding:24px 30px; border:2px solid #e4ca86; border-radius:24px; background:#fff5d5; }
+.practice-panel #feedback { border-top:1px solid #dcc58a; padding-top:14px; }
+.feedback-actions { margin-top:20px; }
+.practice-note { font-size:12px; line-height:1.6; }
+.feedback-detail p { white-space:pre-wrap; }
+#feedback-content>p:first-child { font-weight:800; font-size:18px; line-height:1.6; }
+.feedback-word { border:1px solid #bd9852; border-radius:20px; padding:8px 16px; background:#f9df8e; color:inherit; cursor:pointer; margin:6px; font:700 14px/1.4 'Montserrat',sans-serif; }
+.banban-hint { max-width:900px; margin:18px auto; padding:18px; border-radius:22px; background:#f8d77f; display:flex; align-items:center; gap:18px; text-align:left; }
+.banban-hint img { width:80px; height:100px; object-fit:contain; }
+.banban-hint p { flex:1; line-height:1.6; font-weight:700; }
+.banban-hint button { background:#fff5d5; border:0; border-radius:20px; padding:10px 15px; color:inherit; font-weight:700; cursor:pointer; }
+.greeting-listen { position:absolute; right:9%; bottom:3%; min-height:44px; border:2px solid #fff5d5; background:#f9df8e; border-radius:25px; padding:10px 20px; color:#684415; font:800 13px/1.4 'Montserrat',sans-serif; cursor:pointer; }
+.speaking-body .completion { max-width:960px; margin:24px auto; }
+@media(max-width:640px) {
+ .speaking-nav { display:none; } .speaking-header { min-height:70px; padding:12px 18px; }
+ .speaking-toolbar { padding:16px; } .speaking-toolbar p { max-width:145px; text-align:right; font-size:11px; }
+ .speaking-progress { gap:8px; font-size:11px; } .speaking-progress progress { width:80px; }
+ .speaking-activity { padding:24px 16px 16px; } .activity-label { font-size:18px; padding:12px 18px; margin:0 auto 20px; }
+ .speaking-picture { width:100%; margin:14px auto 20px; }
+ .speaking-controls { gap:12px; justify-content:space-between; } .speaking-control { flex:1; min-width:0; font-size:11px; } .speaking-control img { width:60px; }
+ .word-bank { gap:10px; } .word-bank button { padding:10px 15px; }
+ .practice-panel { margin:16px; padding:20px; } .speaking-body .completion { margin:16px; }
+ .banban-hint { flex-wrap:wrap; gap:10px; } .banban-hint img { width:60px; height:80px; }
+ .greeting-listen { right:4%; bottom:0; font-size:11px; padding:6px 10px; min-height:32px; }
+}
+@media(prefers-reduced-motion:reduce) { .speaking-back { transition:none; } }

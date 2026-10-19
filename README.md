@@ -21,7 +21,7 @@ Mở http://localhost:4173. Các trang dùng JavaScript modules nên cần HTTP 
 - Learn, My House và bìa Speaking dùng ảnh từ thư mục thiết kế `TRANG LEARN`. Bản cần triển khai nằm trong `assets/learn/`; thư mục thiết kế gốc được bỏ qua trong Git để tránh lưu trùng nhiều ảnh lớn.
 - Grammar mở từ My House, dùng layout gốc trong `GRAMMAR` và đúng 7 ảnh trong `Ảnh gram` (tài nguyên triển khai: `assets/grammar/`). The Magic’s Game có 4 round sở hữu cách và Grammar Tip sau mỗi đáp án. Thai Stilt House Tidy-Up có 7 câu giới từ, hỗ trợ chọn từ, kéo thả chuột hoặc cảm ứng. Cả hai game tính điểm theo đáp án đúng và có Play Again.
 - Reading mở từ My House, dùng layout và ảnh gốc trong `B. READING` (tài nguyên triển khai: `assets/reading/`). Secret Code Hunt gồm email của Lan, 4 câu hỏi thu thập clue, giỏ clue và câu hỏi cuối; bướm mở fact bằng hover, bàn phím hoặc chạm. Discover My Home gồm nhật ký, 3 câu trả lời cùng lúc, đoán Mộc Châu và luyện tập kèm giải thích cho mọi đáp án.
-- Speaking có 5 nhiệm vụ bổ sung về My House, BanBan hướng dẫn, nghe mẫu, ghi âm tối đa 60 giây, tải file âm thanh, phát lại và thử lại.
+- Speaking has three activities and five supplied questions, with source artwork, recorded questions and answers, microphone recording, retry, next-question controls and feedback.
 - Explore giữ đúng **24 câu** và các lựa chọn trong file nội dung. File nguồn đánh số 1–25 nhưng thiếu câu 12; không thêm hoặc nhân đôi câu hỏi. Mỗi lần mở trang chọn ngẫu nhiên 5 câu không trùng nhau. Người dùng chỉ chọn đáp án; sau phản hồi đúng/sai, trang tự chuyển câu và cuối lượt hiện điểm trên 5. Không có nút chọn chủ đề, xáo trộn, chuyển câu hay đặt lại bài. Lượt mới không bị khóa bởi các câu trả lời đã lưu.
 - Khóa đáp án trong `questions.js` được suy ra từ các lựa chọn vì tài liệu nguồn không có bảng đáp án riêng. Có thể chỉnh thuộc tính `answer` (chỉ số từ 0).
 - Tiến độ Speaking và câu trả lời Explore lưu ở `localStorage` trên từng trình duyệt, không đồng bộ tài khoản. Huy hiệu Storyteller mở khi hoàn thành 5 nhiệm vụ nói.
@@ -97,3 +97,11 @@ Dry-run không xuất bản website và không xác minh suy luận AI thật. G
 Tài liệu: [Workers AI binding](https://developers.cloudflare.com/workers-ai/configuration/bindings/), [Whisper](https://developers.cloudflare.com/workers-ai/models/whisper-large-v3-turbo/), [Llama](https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/), [Rate limit](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
 
 Font Montserrat dùng giấy phép SIL Open Font License trong `assets/montserrat-OFL.txt`.
+
+## Speaking activities (updated)
+
+Speaking uses the five supplied questions in three activities: Listen and repeat (2), Complete and Speak (2), and Look, Think and Speak (1). Deployed images and recordings are in `assets/speaking/`, prepared from `E. SPEAKING/` and `Audio/`. The four actions are Record, Listen, Try again, and Next. Question audio plays on entry; Activity 1 also has recorded model answers. Activity 3 offers a spoken hint after 90 seconds without an answer and reads back an improvement based on the learner's response.
+
+Cloudflare Workers AI transcribes recordings. Complete and Speak accepts only full sentences matching the allowed location phrases; Activity 1 compares recognised words with the model. The current integration does not produce phoneme-level pronunciation scores. Activity 3 uses AI to correct the learner's own response. Without AI, all five questions remain available for listening and recording practice, without awarding assessed completion. Browser speech synthesis reads the greeting and dynamic corrections because no corresponding fixed recordings were supplied.
+
+The revised five-question speaking course uses speaking progress version 2; old speaking completions are reset while Explore progress is preserved.

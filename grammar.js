@@ -35,10 +35,6 @@ function showGame(game) {
     else renderTidy();
   }
   document.querySelectorAll(".grammar-screen").forEach(screen => { screen.hidden = screen.id !== id; });
-  document.querySelectorAll("[data-game]").forEach(button => {
-    if (button.dataset.game === game) button.setAttribute("aria-current", "step");
-    else button.removeAttribute("aria-current");
-  });
   focusScreen($(id));
 }
 function startGame(game) {
@@ -49,7 +45,6 @@ function startGame(game) {
   if (game === "tidy") state.selected = null;
   showGame(game);
 }
-document.querySelectorAll("[data-game]").forEach(button => button.addEventListener("click", () => showGame(button.dataset.game)));
 $("start-magic").addEventListener("click", () => startGame("magic"));
 $("start-tidy").addEventListener("click", () => startGame("tidy"));
 $("how-to-play").addEventListener("click", () => $("play-instructions").showModal());
@@ -274,4 +269,4 @@ function renderResult(game) {
   $("result-stars").replaceChildren(...Array.from({ length: total }, (_, index) => element("span", index < correct ? "★" : "☆", index < correct ? "earned-star" : "empty-star")));
   $("try-other-game").textContent = game === "magic" ? "Let’s help Ban! →" : "Play The Magic’s Game! →";
 }
-document.querySelectorAll("[data-game], #start-magic, #start-tidy, #how-to-play").forEach(button => { button.disabled = false; });
+document.querySelectorAll("#start-magic, #start-tidy, #how-to-play").forEach(button => { button.disabled = false; });

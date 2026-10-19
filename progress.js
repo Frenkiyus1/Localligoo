@@ -1,9 +1,9 @@
 const KEY = "localingo.progress.v1";
-let memory = { speaking: [], explore: {} };
+let memory = { speaking: [], speakingVersion: 2, explore: {} };
 export function readProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || JSON.stringify(memory));
-    memory = { speaking: Array.isArray(saved.speaking) ? [...new Set(saved.speaking.filter(id => /^house-[1-5]$/.test(id)))] : [], explore: saved.explore && typeof saved.explore === "object" && !Array.isArray(saved.explore) ? saved.explore : {} };
+    memory = { speakingVersion: 2, speaking: saved.speakingVersion === 2 && Array.isArray(saved.speaking) ? [...new Set(saved.speaking.filter(id => /^house-[1-5]$/.test(id)))] : [], explore: saved.explore && typeof saved.explore === "object" && !Array.isArray(saved.explore) ? saved.explore : {} };
   } catch {}
   return structuredClone(memory);
 }
