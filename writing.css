@@ -57,12 +57,14 @@
 #sent-preview { padding: 35px 0; }
 #preview-title { margin: 0 20px 15px; font-size: clamp(28px, 4vw, 60px); font-weight: 900; text-align: center; }
 .preview-note { margin: 0 20px 30px; text-align: center; line-height: 1.8; }
-.answer-tooltip { position: fixed; z-index: 30; width: min(480px, calc(100vw - 48px), calc((100dvh - 32px) * 1263 / 786)); padding: 0; border: 0; background: transparent; --bubble-fill: #f3c869; }
-#explanation-art { display: block; width: 100%; height: auto; }
+.answer-tooltip { position: fixed; z-index: 30; width: min(240px, calc((100vw - 48px) / 2), calc((100dvh - 32px) * 1263 / 1572)); padding: 0; border: 0; background: transparent; --bubble-fill: #f3c869; }
+#explanation-art { display: block; width: 100%; height: auto; clip-path: inset(0 0 22.7735% 0); }
+.explanation-pointer { position: absolute; top: calc(77.2265% - .25px); left: var(--pointer-x, 50%); width: 28%; height: calc(22.7735% + .25px); transform: translateX(-50%); clip-path: polygon(0 0, 100% 0, 50% 100%); background: var(--bubble-fill); pointer-events: none; }
 /* Cover only the baked button, preserving the supplied explanation artwork. */
 .answer-tooltip.is-correct { --bubble-fill: #dbe28d; }
 .explanation-button-area { position: absolute; left: 70%; top: 51%; width: 26%; height: 23%; display: grid; place-items: center; background: var(--bubble-fill); }
-#close-explanation { position: static; width: calc(100% - 8px); min-height: 44px; padding: 7px 8px; border: 3px solid #fffdf1; border-radius: 999px; background: #e3f4f1; color: #684415; box-shadow: 0 3px 0 #876b3b88; font: 800 13px/1.25 "Montserrat", Arial, sans-serif; white-space: nowrap; text-transform: uppercase; cursor: pointer; transition: background .15s, transform .15s; }
+#close-explanation { position: relative; width: calc(100% - 4px); min-height: 24px; padding: 3px 4px; border: 2px solid #fffdf1; border-radius: 999px; background: #e3f4f1; color: #684415; box-shadow: 0 1.5px 0 #876b3b88; font: 800 8px/1.25 "Montserrat", Arial, sans-serif; white-space: nowrap; text-transform: uppercase; cursor: pointer; transition: background .15s, transform .15s; }
+#close-explanation::before { content: ""; position: absolute; inset: -10px -3px; }
 #close-explanation:hover { background: #cdeae6; transform: translateY(-1px); }
 #close-explanation:active { transform: translateY(1px); box-shadow: 0 1px 0 #876b3b88; }
 .writing-noscript { padding: 20px; text-align: center; }

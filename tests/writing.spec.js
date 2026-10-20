@@ -15,6 +15,13 @@ async function screenshot(page, testInfo, name) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath(`${name}.png`), fullPage: true, animations: 'disabled', style: '.skip-link { visibility: hidden; }' });
 }
+async function assertPointer(page, target) {
+  const arrow = await page.locator('.explanation-pointer').boundingBox();
+  const answer = await target.boundingBox();
+  expect(arrow.x + arrow.width / 2).toBeCloseTo(answer.x + answer.width / 2, 0);
+  expect(arrow.y + arrow.height).toBeCloseTo(answer.y - 4, 0);
+}
+
 test('Writing opens the supplied artwork and preserves a draft when rereading Alex’s email', async ({ page }, testInfo) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -61,10 +68,13 @@ test('wrong answers show corrections and explanations; retry keeps correct answe
   await expect(page.locator('#answer-explanation')).toBeVisible();
   const bubble = await page.locator('#answer-explanation').boundingBox();
   const gotIt = await page.locator('#close-explanation').boundingBox();
-  expect(bubble.width).toBeLessThanOrEqual(480);
+  const expectedWidth = await page.evaluate(() => Math.min(480, innerWidth - 48, (innerHeight - 32) * 1263 / 786) / 2);
+  expect(bubble.width).toBeCloseTo(expectedWidth, 1);
+  await assertPointer(page, wrong);
   expect(gotIt.width).toBeLessThan(bubble.width / 2);
-  expect(gotIt.height).toBeGreaterThanOrEqual(44);
+  expect(gotIt.height).toBeGreaterThanOrEqual(24);
   await page.locator('#answer-explanation').screenshot({ path: testInfo.outputPath('writing-incorrect-explanation.png') });
+  await page.screenshot({ path: testInfo.outputPath('writing-explanation-pointer.png'), animations: 'disabled', style: '.skip-link { visibility: hidden; }' });
   await expect(page.locator('#answer-explanation')).toBeInViewport();
   await page.locator('#close-explanation').click();
   await expect(page.locator('#answer-explanation')).toBeHidden();
@@ -153,6 +163,7 @@ test('every blank opens its supplied incorrect and correct explanation images', 
     await image.evaluate(element => element.decode());
     expect(await image.evaluate(element => element.naturalWidth)).toBeGreaterThan(0);
     await expect(page.locator('#answer-explanation')).toBeInViewport();
+    await assertPointer(page, page.locator(`#reply-text [data-answer="${index}"]`));
     await page.locator('#close-explanation').click();
   }
   await page.locator('#try-again').click();
@@ -165,6 +176,7 @@ test('every blank opens its supplied incorrect and correct explanation images', 
     await image.evaluate(element => element.decode());
     expect(await image.evaluate(element => element.naturalWidth)).toBeGreaterThan(0);
     await expect(page.locator('#answer-explanation')).toBeInViewport();
+    await assertPointer(page, page.locator(`#reply-text [data-answer="${index}"]`));
     if (index === 5) await page.locator('#answer-explanation').screenshot({ path: testInfo.outputPath('writing-correct-explanation.png') });
     await page.keyboard.press('Escape');
   }

@@ -96,16 +96,22 @@ $('#try-again').addEventListener('click', () => {
   $(`[data-blank="${firstWrong}"]`)?.focus();
 });
 
-function positionExplanation() {
+function positionExplanation(reveal = false) {
   if (!activeAnswer || popup.hidden) return;
-  const anchor = activeAnswer.getBoundingClientRect();
-  const width = popup.offsetWidth;
-  const height = popup.offsetHeight;
-  const left = Math.max(16, Math.min(anchor.left + anchor.width / 2 - width / 2, innerWidth - width - 16));
-  let top = anchor.bottom + 10;
-  if (top + height > innerHeight - 16) top = anchor.top - height - 10;
+  let anchor = activeAnswer.getBoundingClientRect();
+  const { width, height } = popup.getBoundingClientRect();
+  // Keep the explanation above its answer, with room for the downward pointer.
+  if (reveal === true && anchor.top < height + 20) {
+    suppressHover = true;
+    window.scrollBy({ top: anchor.top - height - 20, behavior: 'instant' });
+    anchor = activeAnswer.getBoundingClientRect();
+  }
+  const targetX = anchor.left + anchor.width / 2;
+  const left = Math.max(16, Math.min(targetX - width / 2, innerWidth - width - 16));
   popup.style.left = `${left}px`;
-  popup.style.top = `${Math.max(16, Math.min(top, innerHeight - height - 16))}px`;
+  popup.style.top = `${anchor.top - height - 4}px`;
+  // Move the pointer independently when the card is clamped at a viewport edge.
+  popup.style.setProperty('--pointer-x', `${targetX - left}px`);
 }
 function explain(button) {
   clearTimeout(hideTimer);
@@ -121,7 +127,7 @@ function explain(button) {
   artwork.alt = `${correct ? item.good : item.retry} Explain: ${item.explain} Answer: ${item.meaning}`;
   button.setAttribute('aria-expanded', 'true');
   popup.hidden = false;
-  positionExplanation();
+  positionExplanation(true);
 }
 function closeExplanation(returnFocus = false) {
   clearTimeout(hideTimer);
@@ -143,9 +149,9 @@ function scheduleClose() {
   }, 180);
 }
 for (const region of [$('#reply-text'), $('#sent-email-text')]) {
-  region.addEventListener('pointerover', event => {
+  region.addEventListener('pointermove', event => {
     const button = event.target.closest('[data-answer]');
-    if (button && !suppressHover && event.pointerType !== 'touch') explain(button);
+    if (button && !suppressHover && event.pointerType !== 'touch' && (button !== activeAnswer || popup.hidden)) explain(button);
   });
   region.addEventListener('pointerout', event => {
     if (event.target.closest('[data-answer]') && !event.relatedTarget?.closest?.('[data-answer]')) scheduleClose();
