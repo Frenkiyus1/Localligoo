@@ -6,9 +6,9 @@ let current = Math.min(readProgress().speaking.length, missions.length - 1);
 let wav=null, audioUrl=null, recorder=null, stream=null, timer=null, controller=null;
 let busy=false, preparing=false, configured=false, connected=false, generation=0, acquiring=false, practiced=false, passed=false;
 let narration=null, finishNarration=null, hintTimer=null, hintIndex=0, answered=false;
-const record=$("record"), player=$("recording"), status=$("record-status"), aiStatus=$("ai-status");
+const record=$("record"), player=$("recording"), status=$("record-status"), aiStatus=status;
 const mission=()=>missions[current];
-function message(el,text,error=false){el.textContent=text;el.classList.toggle("error",error);}
+function message(el,text,error=false){el.textContent=text;el.classList.toggle("error",error);el.hidden=!text;}
 function element(tag,text,className=""){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el;}
 function stopNarration(){
  const finish=finishNarration; finishNarration=null;
@@ -38,9 +38,7 @@ function say(text){
 function listenQuestion(){return playClip("a"+mission().activity+"-question-"+mission().question+".mp3");}
 function updateControls(){
  const recording=recorder?.state==="recording",locked=busy||preparing||acquiring||recording;
- $("assess").disabled=!configured||!wav||!$("data-consent").checked||!$("audio-consent").checked||locked;
- $("audio-file").disabled=locked;
- $("retry").disabled=busy||preparing||acquiring;
+ $("retry").disabled=acquiring;
  record.disabled=busy||preparing||acquiring||!window.MediaRecorder||!navigator.mediaDevices?.getUserMedia;
  $("listen-prompt").disabled=locked;$("listen-question").disabled=locked;$("listen-hint").disabled=locked;
  $("next-mission").disabled=locked||!(passed||(!configured&&connected&&practiced));
@@ -50,7 +48,7 @@ function releaseAudio(){
  wav=null;player.pause();player.removeAttribute("src");player.hidden=true;player.load();
  if(audioUrl)URL.revokeObjectURL(audioUrl);audioUrl=null;
 }
-function clearFeedback(){ $("feedback-content").replaceChildren(element("p","Listen, record, and let Banban help you practise.")); }
+function clearFeedback(){ $("feedback-content").replaceChildren();$("feedback").hidden=true;$("feedback").setAttribute("aria-busy","false"); }
 function scheduleHint(){
  clearTimeout(hintTimer);
  if(mission().activity!==3||answered||document.hidden||$("speaking-exercise").hidden)return;
@@ -66,13 +64,13 @@ function scheduleHint(){
 function showMission(autoplay=true){
  generation++;controller?.abort();stopNarration();releaseAudio();clearTimeout(hintTimer);
  practiced=false;passed=readProgress().speaking.includes(mission().id);answered=false;hintIndex=0;
- $("audio-file").value="";$("audio-consent").checked=false;$("banban-hint").hidden=true;
+ $("banban-hint").hidden=true;
  $("activity-title").textContent="Activity "+mission().activity+": "+activities[mission().activity-1];
  $("activity-position").textContent="Activity "+mission().activity+" of 3";
  $("mission-count").textContent="Question "+mission().question+" of "+(mission().activity===3?1:2);
  $("mission-prompt").textContent=mission().prompt;$("mission-hint").textContent=mission().hint;
  $("mission-image").src="./assets/speaking/"+mission().image+".webp";$("mission-image").alt=mission().alt;
- $("answer-panel").hidden=mission().activity===3;$("pronunciation-note").hidden=mission().activity!==1;
+ $("answer-panel").hidden=mission().activity===3;
  $("answer-label").textContent=mission().activity===1?"Model answer":"Complete the sentence";
  $("mission-example").textContent=mission().activity===1?mission().example:mission().sentence||"";
  $("word-bank").replaceChildren(...(mission().options||[]).map(word=>{
@@ -80,8 +78,7 @@ function showMission(autoplay=true){
  }));
  $("listen-prompt").querySelector("span").textContent=mission().activity===1?"Listen":"Hear question";
  $("next-mission").querySelector("span").textContent=current===4?"Finish":missions[current+1].activity!==mission().activity?"Next activity":"Next question";
- message(status,"Record your answer. You can listen back before sending it.");
- if(connected)message(aiStatus,configured?"Banban is ready to check your speaking.":"Feedback is unavailable here. You can still listen, record, and practise all three activities.",!configured);
+ message(status,"");
  clearFeedback();updateControls();
  $("completion").hidden=readProgress().speaking.length!==5;
  if(autoplay)listenQuestion();scheduleHint();
@@ -103,20 +100,25 @@ async function prepare(blob,token){
  try{
   const ready=await toWav(blob);if(token!==generation)return;
   releaseAudio();wav=ready;audioUrl=URL.createObjectURL(wav);player.src=audioUrl;player.hidden=false;practiced=true;
-  message(status,configured?"Listen to your recording, agree to send it, then choose Check my speaking.":"Listen to your recording and practise again, or continue to the next question.");clearFeedback();
+  await connection;if(token!==generation)return;
+  preparing=false;
+  if(configured)await assess();
+  else message(status,"Feedback is unavailable right now. You can listen to your recording, practise again, or continue.",true);
  }catch(error){if(token===generation)message(status,error.message,true);}
- finally{preparing=false;updateControls();scheduleHint();}
+ finally{if(token===generation){preparing=false;updateControls();scheduleHint();}}
 }
 record.addEventListener("click",async()=>{
  if(recorder?.state==="recording"){stopRecording();return;}
- if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){message(status,"Microphone unavailable. Use HTTPS or localhost, or upload a recording.",true);return;}
- acquiring=true;stopNarration();player.pause();clearTimeout(hintTimer);updateControls();const token=++generation;
+ if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){message(status,"Microphone unavailable. Use HTTPS or localhost and allow microphone access.",true);return;}
+ acquiring=true;stopNarration();releaseAudio();clearFeedback();practiced=false;clearTimeout(hintTimer);updateControls();const token=++generation;
  try{
   const acquired=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
   if(token!==generation){acquired.getTracks().forEach(track=>track.stop());return;}stream=acquired;
   const chunks=[],activeRecorder=new MediaRecorder(stream);recorder=activeRecorder;
   activeRecorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
   activeRecorder.onstop=()=>{
+   acquired.getTracks().forEach(track=>track.stop());
+   if(recorder!==activeRecorder)return;
    stopTracks();record.setAttribute("aria-pressed","false");record.querySelector("span").textContent="Record answer";
    if(token===generation)prepare(new Blob(chunks,{type:activeRecorder.mimeType}),token);
   };
@@ -124,18 +126,16 @@ record.addEventListener("click",async()=>{
   activeRecorder.start();record.setAttribute("aria-pressed","true");record.querySelector("span").textContent="Stop recording";
   const started=Date.now();message(status,"Recording... 0/60 seconds");
   timer=setInterval(()=>{const seconds=Math.floor((Date.now()-started)/1000);message(status,"Recording... "+seconds+"/60 seconds");if(seconds>=60)stopRecording();},250);
- }catch(error){stopTracks();message(status,error.name==="NotAllowedError"?"Microphone permission was denied. Allow the microphone or upload an audio answer.":"Could not open the microphone. Check your device or upload an audio answer.",true);scheduleHint();}
+ }catch(error){stopTracks();message(status,error.name==="NotAllowedError"?"Microphone permission was denied. Allow the microphone, then tap Record answer again.":"Could not open the microphone. Check your device and try again.",true);scheduleHint();}
  finally{acquiring=false;updateControls();}
 });
-$("audio-file").addEventListener("change",async()=>{const file=$("audio-file").files[0];if(!file)return;stopNarration();releaseAudio();$("audio-consent").checked=false;await prepare(file,++generation);});
 $("retry").addEventListener("click",()=>{
- generation++;stopRecording();stopNarration();releaseAudio();clearFeedback();practiced=false;answered=false;$("audio-file").value="";$("audio-consent").checked=false;
- message(status,"Ready to try again. Listen, then record your answer.");updateControls();scheduleHint();
+ generation++;controller?.abort();busy=false;preparing=false;stopRecording();stopNarration();releaseAudio();clearFeedback();practiced=false;answered=false;
+ message(status,"");updateControls();scheduleHint();
 });
-$("audio-consent").addEventListener("change",updateControls);$("data-consent").addEventListener("change",updateControls);
 function renderFeedback(assessment){
- const target=$("feedback-content");target.replaceChildren(element("p",assessment.encouragement));
- for(const [label,text] of [["What you said",assessment.transcript],["Try saying",mission().activity===3?assessment.correctedAnswer:""],["Your next step",assessment.nextStep]]){
+ const target=$("feedback-content");target.replaceChildren(element("p",assessment.encouragement));$("feedback").hidden=false;
+ for(const [label,text] of (mission().activity===3?[["What you said",assessment.transcript],["Try saying",assessment.correctedAnswer]]:[])){
   if(!text)continue;const section=element("div","","feedback-detail");section.append(element("h3",label),element("p",text));target.append(section);
  }
  if(assessment.practiceWord){
@@ -155,33 +155,31 @@ async function speakFeedback(assessment){
  }
 }
 async function assess(){
- if(busy||preparing||!configured||!wav||!$("data-consent").checked||!$("audio-consent").checked)return;
- busy=true;answered=true;stopNarration();player.pause();clearTimeout(hintTimer);controller=new AbortController();updateControls();$("feedback").setAttribute("aria-busy","true");
- message(aiStatus,"Banban is listening to your answer...");const token=generation;const timeout=setTimeout(()=>controller.abort(),75000);
+ if(busy||preparing||!configured||!wav)return;
+ busy=true;answered=true;stopNarration();player.pause();clearTimeout(hintTimer);controller=new AbortController();const requestController=controller;updateControls();$("feedback").setAttribute("aria-busy","true");
+ message(aiStatus,"Banban is listening to your answer...");const token=generation;const timeout=setTimeout(()=>requestController.abort(),75000);
  try{
   const payload={missionId:mission().id,mode:"audio",consent:true,readAloud:mission().activity===1,audio:await base64Audio(wav)};
-  const response=await fetch("./api/speaking/assess",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),signal:controller.signal});
+  const response=await fetch("./api/speaking/assess",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),signal:requestController.signal});
   const data=await response.json();if(!response.ok)throw new Error(data.error||"Could not check the recording. Please try again.");if(token!==generation)return;
   const assessment=data.assessment;renderFeedback(assessment);passed=assessment.hasSpeech===true&&assessment.passed===true;
-  if(passed){saveProgress(state=>{if(!state.speaking.includes(mission().id))state.speaking.push(mission().id);});renderProgress();message(aiStatus,"Well done! Your progress has been saved.");}
-  else{answered=false;message(aiStatus,"Listen to Banban's feedback and try again.");scheduleHint();}
+  if(passed){saveProgress(state=>{if(!state.speaking.includes(mission().id))state.speaking.push(mission().id);});renderProgress();message(status,"");}
+  else{answered=false;message(status,"");scheduleHint();}
   $("completion").hidden=readProgress().speaking.length!==5;speakFeedback(assessment);
- }catch(error){if(token===generation){answered=false;message(aiStatus,error.name==="AbortError"?"The connection took too long. Your recording is ready to send again.":error.message,true);scheduleHint();}}
- finally{clearTimeout(timeout);busy=false;$("feedback").setAttribute("aria-busy","false");updateControls();}
+ }catch(error){if(token===generation){answered=false;message(aiStatus,error.name==="AbortError"?"The connection took too long. Tap Try again to record a new answer.":error.message,true);scheduleHint();}}
+ finally{clearTimeout(timeout);if(token===generation){busy=false;$("feedback").setAttribute("aria-busy","false");updateControls();}}
 }
-$("assess").addEventListener("click",assess);
 $("next-mission").addEventListener("click",()=>{
  if($("next-mission").disabled)return;
  if(current===4){stopNarration();clearTimeout(hintTimer);$("completion").hidden=false;$("completion").querySelector("h2").textContent=readProgress().speaking.length===5?"You earned your Storyteller badge!":"You practised all three activities!";$("completion").querySelector("p").textContent=readProgress().speaking.length===5?"You have completed all five speaking questions.":"Come back when feedback is available to check your answers and earn your badge.";$("completion").scrollIntoView({behavior:"smooth"});}
  else{current++;showMission();$("mission-prompt").focus();}
 });
-document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(hintTimer);stopNarration();if(recorder?.state==="recording")stopRecording();}else if(!$("speaking-exercise").hidden)scheduleHint();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(hintTimer);stopNarration();if(recorder?.state==="recording"){generation++;stopRecording();message(status,"Recording stopped. Tap Record answer to try again.");updateControls();}}else if(!$("speaking-exercise").hidden)scheduleHint();});
 window.addEventListener("pagehide",()=>{generation++;controller?.abort();clearTimeout(hintTimer);stopRecording();stopNarration();releaseAudio();});
 async function connect(){
- try{const response=await fetch("./api/speaking/status",{signal:AbortSignal.timeout(8000)});if(!response.ok)throw Error("Status");const data=await response.json();configured=data.configured===true;
-  message(aiStatus,configured?"Banban is ready to check your speaking.":"Feedback is unavailable here. You can still listen, record, and practise all three activities.",!configured);
- }catch{message(aiStatus,"Could not connect to feedback. You can still listen and record your answers.",true);}
+ try{const response=await fetch("./api/speaking/status",{signal:AbortSignal.timeout(8000)});if(!response.ok)throw Error("Status");const data=await response.json();configured=data.configured===true;}
+ catch{configured=false;}
  connected=true;updateControls();
 }
-showMission(false);connect();
+showMission(false);const connection=connect();
 if(location.hash==="#missions"){$("speaking-intro").hidden=true;$("speaking-exercise").hidden=false;listenQuestion();scheduleHint();}

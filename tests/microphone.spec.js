@@ -5,6 +5,7 @@ test.use({
 });
 test("record start, timed capture, stop and retry release the microphone",async({page})=>{
  await page.route("**/api/speaking/status",route=>route.fulfill({json:{configured:true}}));
+ await page.route("**/api/speaking/assess",route=>route.fulfill({json:{assessment:{hasSpeech:true,passed:true,encouragement:"Well done!"}}}));
  await page.addInitScript(()=>{
   const original=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
   navigator.mediaDevices.getUserMedia=async constraints=>{
@@ -19,12 +20,15 @@ test("record start, timed capture, stop and retry release the microphone",async(
  await expect(page.locator("#recording")).toBeVisible();
  expect(await page.evaluate(()=>window.testAudioStream.getTracks().every(track=>track.readyState==="ended"))).toBe(true);
  await page.locator("#retry").click();await expect(page.locator("#recording")).toBeHidden();
- await expect(page.locator("#assess")).toBeDisabled();
+ await expect(page.locator("#feedback")).toBeHidden();
+ await expect(page.locator("#assess, .practice-panel, .consent")).toHaveCount(0);
 });
-test("microphone permission denial gives an upload alternative",async({page})=>{
+test("microphone permission denial keeps the microphone retry available",async({page})=>{
  await page.addInitScript(()=>{navigator.mediaDevices.getUserMedia=async()=>{throw new DOMException("Denied","NotAllowedError");};});
  await page.goto("/speaking.html#missions");await page.locator("#record").click();
  await expect(page.locator("#record-status")).toContainText("permission was denied");
- await expect(page.locator("#audio-file")).toBeEnabled();
+ await expect(page.locator("#audio-file")).toHaveCount(0);
+ await expect(page.locator("#retry")).toBeEnabled();
+ await expect(page.locator("#feedback")).toBeHidden();
  await expect(page.locator("#record")).toHaveAttribute("aria-pressed","false");
 });

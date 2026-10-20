@@ -1,0 +1,123 @@
+/* Supplied WRITING canvases, with a live email editor and responsive text. */
+.writing-body { color: #684415; background: #eff0ba url("./assets/writing/background.webp") repeat; font-family: "Montserrat", Arial, sans-serif; }
+.writing-body [hidden] { display: none !important; }
+.writing-header { display: flex; align-items: center; min-height: clamp(70px, 7.4vw, 178px); padding: 12px 4%; gap: 20px; background: #b4c04c url("./assets/background.png") center top / 100% auto; }
+.writing-logo { display: block; flex: 0 0 auto; width: clamp(90px, 10vw, 240px); }
+.writing-nav { display: flex; justify-content: center; gap: clamp(18px, 3.4vw, 72px); margin: 0 auto; padding-right: 12%; }
+.writing-nav a, .writing-nav button { display: flex; align-items: center; min-height: 44px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: #684415; text-decoration: none; font: 800 clamp(13px, 1.56vw, 30px)/1 "Montserrat", Arial, sans-serif; cursor: pointer; }
+.writing-nav :is(a, button):hover { background: #ffffff25; }
+#writing-content { max-width: 2405px; min-height: 70vh; margin: auto; padding-bottom: 40px; }
+.writing-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 5%; background: #e4e9b766; }
+.writing-toolbar a, .writing-toolbar button { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 18px; border: 2px solid #fff8df; border-radius: 30px; background: #f9df8e; color: inherit; font: 800 13px/1.5 "Montserrat", Arial, sans-serif; text-decoration: none; cursor: pointer; }
+.writing-screen { scroll-margin-top: 16px; }
+.writing-canvas { position: relative; container-type: inline-size; }
+.canvas-art, .homestay-art { display: block; width: 100%; height: auto; }
+.guest-copy, .sent-copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.writing-button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; max-width: 100%; padding: 14px 28px; border: 4px solid #fffdf1; border-radius: 80px; background: #e3f4f1; box-shadow: 0 3px 0 #876b3b88; color: #684415; font: 800 clamp(13px, 1.5vw, 28px)/1.35 "Montserrat", Arial, sans-serif; text-align: center; text-decoration: none; cursor: pointer; }
+.writing-button:hover:not(:disabled) { background: #d1eeeb; }
+.writing-button:disabled { opacity: .55; cursor: not-allowed; }
+.writing-body :is(button, a, select):focus-visible { outline: 3px solid #765021; outline-offset: 4px; }
+.guest-reply { position: absolute; left: 38%; top: 80%; width: 24%; height: 10.5%; border-width: .5cqw; padding: 0 1cqw; font-size: 2.25cqw; text-transform: uppercase; }
+.writing-task { width: 70%; margin: 30px auto 60px; font-size: clamp(16px, 1.65vw, 29px); font-weight: 600; line-height: 1.6; }
+.writing-task h3 { margin: 0 0 20px; font-size: clamp(30px, 4vw, 64px); font-weight: 900; text-align: center; text-transform: uppercase; paint-order: stroke fill; -webkit-text-stroke: 6px #fffaf1; }
+.writing-task p { margin: 5px 0; }
+.mail-window { border: clamp(4px, .5vw, 9px) solid #64793b; border-radius: clamp(24px, 3vw, 56px); background: #ffefc3 url("./assets/writing/paper.webp") repeat; }
+.reply-window { width: 83%; margin: 0 auto 40px; }
+.mail-bar { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 10px 20px; border-radius: clamp(18px, 2.4vw, 48px) clamp(18px, 2.4vw, 48px) 0 0; background: #fffdf1; }
+.mail-bar > span { width: 13px; height: 13px; border-radius: 50%; background: #f0b52b; }
+.mail-bar > span:nth-child(2) { background: #9bae64; }
+.mail-bar > span:nth-child(3) { background: #f7d880; }
+.mail-bar i { margin-left: auto; color: #91a757; font-size: 25px; line-height: 1; font-style: normal; font-weight: 800; letter-spacing: 5px; }
+.mail-copy { padding: clamp(24px, 3.4vw, 70px); font-size: clamp(15px, 1.5vw, 26px); font-weight: 600; line-height: 2.2; overflow-wrap: anywhere; }
+.mail-copy p { margin: 0 0 10px; }
+.mail-address { margin-bottom: 30px; font-size: .95em; line-height: 1.6; }
+.mail-address p { margin: 0 0 5px; }
+.mail-signature { padding-top: 22px; }
+.answer-slot { display: inline; white-space: nowrap; }
+.blank-number { margin-right: 5px; font-weight: 800; }
+.answer-slot select { width: 150px; max-width: 100%; min-height: 44px; margin: 4px 5px 4px 0; padding: 6px 9px; border: 2px solid #a7ad69; border-radius: 8px; background: #fffbea; color: #684415; font: 700 .88em/1.5 "Montserrat", Arial, sans-serif; vertical-align: baseline; }
+.answer-result { display: inline; min-height: 44px; max-width: 100%; margin: 2px 4px 2px 0; padding: 4px 7px; border: 2px solid currentColor; border-radius: 8px; background: #f6f8df; color: #24733c; font: 800 1em/1.6 "Montserrat", Arial, sans-serif; white-space: normal; cursor: help; }
+.answer-result.is-incorrect { background: #fff0dc; color: #b32e2e; }
+.answer-result del { text-decoration-thickness: 2px; }
+.answer-result .corrected-answer { color: #24733c; }
+.writing-feedback { margin: 22px 0 8px !important; padding: 12px 16px; border-radius: 12px; background: #eaf0d0; color: #316a32; text-align: center; font-weight: 800; line-height: 1.7; }
+.writing-feedback:empty { display: none; }
+.writing-feedback.needs-retry { color: #a2332b; background: #ffe2ca; }
+.explanation-hint { font-size: .8em; text-align: center; line-height: 1.7; }
+.writing-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; margin-top: 24px; }
+.suggested-answers { width: 66%; margin: 45px auto; text-align: center; }
+.suggested-answers h3 { margin: 0 0 22px; font-size: clamp(25px, 3.1vw, 52px); font-weight: 900; }
+.suggested-answers ul { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0; margin: 0; border-top: 3px solid #a38a59; border-left: 3px solid #a38a59; list-style: none; }
+.suggested-answers li { padding: 14px 10px; border-right: 3px solid #a38a59; border-bottom: 3px solid #a38a59; font-size: clamp(14px, 1.7vw, 28px); font-weight: 700; }
+.sent-actions { position: absolute; top: 68%; left: 17%; width: 66%; justify-content: space-between; margin: 0; }
+.sent-actions .writing-button { width: 37%; min-height: 7cqw; padding: 1cqw; border-width: .5cqw; font-size: 2cqw; text-transform: uppercase; }
+.send-flourish { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.flying-letter { position: absolute; top: 57%; left: 46%; width: 8%; opacity: 0; }
+.is-celebrating .flying-letter { animation: letter-send 1.2s ease-in both; }
+.confetti-piece { position: absolute; left: var(--x); top: 44%; width: 9px; height: 16px; background: var(--color); opacity: 0; }
+.is-celebrating .confetti-piece { animation: confetti-fall 1.8s var(--delay) ease-out both; }
+@keyframes letter-send { 0% { transform: translate(-40px, 50px) rotate(-15deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(260px, -280px) rotate(18deg) scale(.2); opacity: 0; } }
+@keyframes confetti-fall { 0% { opacity: 0; transform: translateY(0) rotate(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 200px) rotate(540deg); } }
+#sent-preview { padding: 35px 0; }
+#preview-title { margin: 0 20px 15px; font-size: clamp(28px, 4vw, 60px); font-weight: 900; text-align: center; }
+.preview-note { margin: 0 20px 30px; text-align: center; line-height: 1.8; }
+.answer-tooltip { position: fixed; z-index: 30; width: min(450px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 24px; border: 3px solid #b49242; border-radius: 16px; background: #f7d276; box-shadow: 0 10px 35px #54370f45; color: #684415; font: 600 14px/1.8 "Montserrat", Arial, sans-serif; }
+.answer-tooltip h3 { margin: 0 0 12px; font-size: 19px; line-height: 1.5; font-weight: 900; }
+.answer-tooltip p { margin: 12px 0; }
+#explanation-meaning { font-weight: 800; }
+.answer-tooltip .writing-button { display: flex; margin-left: auto; min-height: 44px; padding: 8px 20px; font-size: 13px; }
+.writing-noscript { padding: 20px; text-align: center; }
+@media (max-width: 1000px) {
+  .writing-header { padding-inline: 20px; background-position: right top; background-size: 1000px auto; }
+  .writing-logo { width: 85px; }
+  .writing-nav { padding: 0; gap: 14px; }
+  .writing-nav a, .writing-nav button { font-size: 12px; }
+  .canvas-art { display: none; }
+  .guest-copy, .sent-copy { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+  .writing-canvas { padding: 25px 20px 38px; background: #d7e3a377; }
+  .mobile-badge { display: block; width: min(100%, 440px); height: auto; margin: 0 0 25px; }
+  .guest-copy h2, .sent-copy h2 { margin: 15px 0 25px; font-size: clamp(28px, 5vw, 45px); font-weight: 900; text-align: center; text-transform: uppercase; paint-order: stroke fill; -webkit-text-stroke: 5px #fffaf1; }
+  .guest-reply { position: relative; left: auto; top: auto; display: flex; width: auto; height: auto; margin: -8px auto 0; padding: 14px 28px; border-width: 4px; font-size: 16px; }
+  .mail-copy { font-size: 15px; line-height: 2; padding: 24px; }
+  .mail-copy p { margin-bottom: 12px; }
+  .reply-window { width: 92%; }
+  .writing-task { width: 88%; margin: 25px auto 35px; font-size: 16px; }
+  .writing-task h3 { font-size: 32px; }
+  .suggested-answers { width: 88%; margin: 35px auto; }
+  .sent-actions { position: relative; top: auto; left: auto; width: auto; justify-content: center; margin: -8px 0 0; }
+  .sent-actions .writing-button { width: auto; min-height: 48px; padding: 14px 24px; border-width: 4px; font-size: 14px; }
+  .sent-copy .mail-copy { padding: 35px 25px 50px; text-align: center; }
+  .sent-copy h3 { margin: 0 0 20px; font-size: clamp(24px, 4vw, 36px); line-height: 1.5; }
+  .sent-copy .mail-copy p { font-size: 17px; font-weight: 700; }
+}
+@media (max-width: 640px) {
+  .writing-header { justify-content: center; min-height: 72px; }
+  .writing-nav { display: none; }
+  .writing-logo { width: 90px; }
+  .writing-toolbar { padding: 10px 16px; }
+  .writing-toolbar a, .writing-toolbar button { font-size: 11px; padding-inline: 12px; }
+  .writing-canvas { padding-inline: 16px; }
+  .mail-copy { padding: 20px 16px; font-size: 14px; }
+  .mail-bar { padding-inline: 16px; }
+  .mail-bar i { font-size: 20px; }
+  .answer-slot { white-space: normal; }
+  .answer-slot select { width: 145px; font-size: 13px; }
+  .writing-button { padding: 13px 18px; font-size: 13px; }
+  .suggested-answers li { font-size: 12px; padding: 12px 5px; }
+  .sent-actions { gap: 12px; }
+  .sent-actions .writing-button { padding: 12px 15px; font-size: 12px; }
+  .homestay-art { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-celebrating .flying-letter, .is-celebrating .confetti-piece { animation: none; }
+}
+
+.writing-word-notes { width: 83%; margin: 35px auto; padding: 18px 22px; border: 2px solid #b2ad6e; border-radius: 18px; background: #fff3d2b8; font-size: 14px; line-height: 1.7; }
+.writing-word-notes summary { min-height: 32px; font-weight: 800; cursor: pointer; }
+.writing-word-notes summary:focus-visible { outline: 3px solid #765021; outline-offset: 4px; }
+.word-note-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.word-note-groups h3 { margin: 12px 0; font-size: 16px; font-weight: 800; }
+.word-note-groups dl { margin: 0; }
+.word-note-groups dt { font-weight: 800; }
+.word-note-groups dd { margin: 0 0 16px; }
+@media (max-width: 800px) { .word-note-groups { grid-template-columns: 1fr; gap: 8px; } .writing-word-notes { width: 88%; } }

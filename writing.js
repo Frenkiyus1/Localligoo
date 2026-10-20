@@ -1,0 +1,205 @@
+const items = [
+  { answer: "stilt house", prompt: "type of house", meaning: "stilt house = nhà sàn", good: "You did a great job!", retry: "Oops! Don’t worry, let’s try again!", explain: 'It stands after “traditional Thai”. We need a noun for a type of house. The picture shows a house raised on wooden posts.' },
+  { answer: "brocade", prompt: "blanket material or pattern", meaning: "brocade blankets = chăn thổ cẩm", good: "Perfect! Alex is very happy with your email!", retry: "Nice try! Keep going!", explain: 'It stands before “blankets”. We need a word for their material or pattern. Brocade has colourful woven patterns.' },
+  { answer: "plum", prompt: "kind of tree", meaning: "plum trees = những cây mận", good: "Awesome! Alex loves your answer!", retry: "Almost there! Check again!", explain: 'It stands before “trees”. We need a fruit name. Keep “plum” singular here; “trees” already has -s for more than one tree.' },
+  { answer: "fireplace", prompt: "source of warmth", meaning: "fireplace = bếp lửa / lò sưởi", good: "Great job! You made Alex smile!", retry: "So close! Give it another shot!", explain: 'It comes after “sit around a warm…”. We need a noun for a heat source. The picture shows a central fire where people can sit together.' },
+  { answer: "hills", prompt: "tea landscape", meaning: "tea hills = các đồi chè", good: "Bingo! Alex is so proud of you!", retry: "Don’t give up! You can do it!", explain: 'It comes after “tea”. We need a noun for small mountains. Add -s because there are several hills.' },
+  { answer: "Pine Forest", prompt: "place near Ban Ang", meaning: "Pine Forest = rừng thông", good: "Fantastic! You got it right!", retry: "Oops! Take a close look!", explain: 'It comes after “Ban Ang”. This is the name of a famous place, so use capital letters: Ban Ang Pine Forest.' },
+];
+const $ = selector => document.querySelector(selector);
+const screens = [...document.querySelectorAll('.writing-screen')];
+const choices = items.map(item => item.answer);
+let values = Array(6).fill('');
+let checked = false;
+let delivered = false;
+let activeAnswer = null;
+let hideTimer;
+let returningFocus = false;
+let audioContext;
+const popup = $('#answer-explanation');
+const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+
+function showScreen(id) {
+  closeExplanation();
+  screens.forEach(screen => { screen.hidden = screen.id !== id; });
+  $('#read-alex').hidden = id !== 'compose-screen';
+  const screen = document.getElementById(id);
+  screen.querySelector('h2')?.focus({ preventScroll: true });
+  screen.scrollIntoView({ block: 'start', behavior: 'instant' });
+}
+
+function slot(index, mode) {
+  const item = items[index];
+  const number = `<span class="blank-number">(${index + 1})</span>`;
+  if (mode === 'edit') {
+    const options = choices.map(value => `<option value="${escape(value)}"${values[index] === value ? ' selected' : ''}>${escape(value)}</option>`).join('');
+    return `<span class="answer-slot">${number}<select name="blank-${index + 1}" data-blank="${index}" aria-label="Blank ${index + 1}: ${item.prompt}"><option value="" disabled${values[index] ? '' : ' selected'}>Choose…</option>${options}</select></span>`;
+  }
+  const correct = mode === 'sent' || values[index] === item.answer;
+  const text = correct ? `<span aria-hidden="true">✓ </span>${escape(item.answer)}` : `<del>${escape(values[index])}</del> <span aria-hidden="true">→</span> <span class="corrected-answer">${escape(item.answer)}</span>`;
+  const label = `Blank ${index + 1}: ${correct ? 'Correct, ' + item.answer : 'Incorrect, ' + values[index] + '. Correct answer: ' + item.answer}. Show explanation`;
+  return `<span class="answer-slot">${number}<button type="button" class="answer-result${correct ? '' : ' is-incorrect'}" data-answer="${index}" data-correct="${correct}" aria-controls="answer-explanation" aria-expanded="false" aria-label="${escape(label)}">${text}</button></span>`;
+}
+
+function email(mode) {
+  const blank = index => slot(index, mode);
+  return `<div class="mail-address"><p><strong>To:</strong> <em>alex2042002@gmail.com</em></p><p>Reply to your inquiry about Moc Chau Stilt House Homestay</p><p><strong>Subject:</strong> Re: Inquiry about your traditional stilt house homestay</p></div>
+    <p>Dear Alex,</p><p>We are very excited to welcome you to Moc Chau!</p>
+    <p>Our homestay is a traditional Thai ${blank(0)} with a modern design.</p>
+    <p>We have cozy rooms with wooden ceilings. Each room has a bed with colourful ${blank(1)} blankets, and a small table with chairs. From the big window, you can see a beautiful green valley with ${blank(2)} trees. In the evening, we can sit around a warm ${blank(3)} together and join cultural exchanges with local people.</p>
+    <p>Also, our homestay is close to beautiful tea ${blank(4)}, Ban Ang ${blank(5)}, and a short walk to Moc Chau Night Market. It is also very convenient to try local food and visit nearby cafés.</p>
+    <p>Looking forward to having you in <span lang="vi">Mộc Châu</span> soon!</p><p class="mail-signature">Best regards,<br>Localingo</p>`;
+}
+
+function renderDraft() {
+  closeExplanation();
+  $('#reply-text').innerHTML = email(checked ? 'checked' : 'edit');
+  $('#check-answers').hidden = checked;
+  $('#try-again').hidden = !checked || values.every((value, i) => value === items[i].answer);
+  $('#send-email').hidden = !checked || !values.every((value, i) => value === items[i].answer);
+  $('#explanation-hint').hidden = !checked;
+  if (!checked) {
+    $('#answer-feedback').textContent = '';
+    $('#answer-feedback').classList.remove('needs-retry');
+    updateCheckButton();
+  }
+}
+function updateCheckButton() {
+  $('#check-answers').disabled = !values.every(Boolean);
+}
+$('#reply-text').addEventListener('change', event => {
+  if (!event.target.matches('select[data-blank]') || checked) return;
+  values[Number(event.target.dataset.blank)] = event.target.value;
+  updateCheckButton();
+});
+$('#reply-alex').addEventListener('click', () => { renderDraft(); showScreen('compose-screen'); });
+$('#read-alex').addEventListener('click', () => showScreen('guest-screen'));
+$('#reply-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (checked || !values.every(Boolean)) return;
+  checked = true;
+  renderDraft();
+  const score = values.filter((value, i) => value === items[i].answer).length;
+  const feedback = $('#answer-feedback');
+  feedback.textContent = score === 6 ? 'Excellent! You got all the answers right!' : `Good try! You got ${score}/6 correct. Check the red boxes and try again!`;
+  feedback.classList.toggle('needs-retry', score !== 6);
+  feedback.tabIndex = -1;
+  feedback.focus({ preventScroll: true });
+  feedback.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+});
+$('#try-again').addEventListener('click', () => {
+  const firstWrong = values.findIndex((value, i) => value !== items[i].answer);
+  values = values.map((value, i) => value === items[i].answer ? value : '');
+  checked = false;
+  renderDraft();
+  $(`[data-blank="${firstWrong}"]`)?.focus();
+});
+
+function positionExplanation() {
+  if (!activeAnswer || popup.hidden) return;
+  const anchor = activeAnswer.getBoundingClientRect();
+  const width = popup.offsetWidth;
+  const height = popup.offsetHeight;
+  const left = Math.max(16, Math.min(anchor.left + anchor.width / 2 - width / 2, innerWidth - width - 16));
+  let top = anchor.bottom + 10;
+  if (top + height > innerHeight - 16) top = anchor.top - height - 10;
+  popup.style.left = `${left}px`;
+  popup.style.top = `${Math.max(16, Math.min(top, innerHeight - height - 16))}px`;
+}
+function explain(button) {
+  clearTimeout(hideTimer);
+  if (activeAnswer && activeAnswer !== button) activeAnswer.setAttribute('aria-expanded', 'false');
+  activeAnswer = button;
+  const item = items[Number(button.dataset.answer)];
+  $('#explanation-title').textContent = button.dataset.correct === 'true' ? item.good : item.retry;
+  $('#explanation-copy').textContent = 'Explain: ' + item.explain;
+  $('#explanation-meaning').textContent = 'Answer: ' + item.meaning;
+  button.setAttribute('aria-expanded', 'true');
+  popup.hidden = false;
+  positionExplanation();
+}
+function closeExplanation(returnFocus = false) {
+  clearTimeout(hideTimer);
+  const previous = activeAnswer;
+  activeAnswer?.setAttribute('aria-expanded', 'false');
+  activeAnswer = null;
+  popup.hidden = true;
+  if (returnFocus && previous?.isConnected) {
+    returningFocus = true;
+    previous.focus({ preventScroll: true });
+    returningFocus = false;
+  }
+}
+function scheduleClose() {
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    if (document.activeElement !== activeAnswer && !popup.contains(document.activeElement)) closeExplanation();
+  }, 180);
+}
+for (const region of [$('#reply-text'), $('#sent-email-text')]) {
+  region.addEventListener('pointerover', event => {
+    const button = event.target.closest('[data-answer]');
+    if (button && event.pointerType !== 'touch') explain(button);
+  });
+  region.addEventListener('pointerout', event => {
+    if (event.target.closest('[data-answer]') && !event.relatedTarget?.closest?.('[data-answer]')) scheduleClose();
+  });
+  region.addEventListener('focusin', event => { if (!returningFocus && event.target.matches('[data-answer]')) explain(event.target); });
+  region.addEventListener('focusout', scheduleClose);
+  region.addEventListener('click', event => { const button = event.target.closest('[data-answer]'); if (button) explain(button); });
+}
+popup.addEventListener('pointerenter', () => clearTimeout(hideTimer));
+popup.addEventListener('pointerleave', scheduleClose);
+popup.addEventListener('focusout', scheduleClose);
+$('#close-explanation').addEventListener('click', () => closeExplanation(true));
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && !popup.hidden) { event.preventDefault(); closeExplanation(true); } });
+document.addEventListener('pointerdown', event => { if (!popup.hidden && !popup.contains(event.target) && !event.target.closest('[data-answer]')) closeExplanation(); });
+window.addEventListener('resize', positionExplanation);
+window.addEventListener('scroll', positionExplanation, { passive: true });
+
+function playSendSound() {
+  try {
+    const Audio = window.AudioContext || window.webkitAudioContext;
+    if (!Audio) return;
+    const context = audioContext = new Audio();
+    void context.resume().then(() => {
+      [523.25, 659.25, 783.99].forEach((frequency, index) => {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const start = context.currentTime + index * .09;
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(.08, start + .015);
+        gain.gain.exponentialRampToValueAtTime(.001, start + .25);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start(start);
+        oscillator.stop(start + .27);
+        if (index === 2) oscillator.onended = () => { void context.close().catch(() => {}); };
+      });
+    }).catch(() => {});
+  } catch { /* The learning flow also works when sound is unavailable. */ }
+}
+$('#send-email').addEventListener('click', () => {
+  if (!checked || delivered || !values.every((value, i) => value === items[i].answer)) return;
+  delivered = true;
+  $('#sent-email-text').innerHTML = email('sent');
+  $('#confetti').replaceChildren(...Array.from({ length: 32 }, (_, i) => {
+    const piece = document.createElement('i');
+    piece.className = 'confetti-piece';
+    piece.style.setProperty('--x', `${15 + (i * 17 % 70)}%`);
+    piece.style.setProperty('--color', ['#e2a72d', '#83a34d', '#ef8f72', '#8ccdc5'][i % 4]);
+    piece.style.setProperty('--delay', `${i % 6 * .055}s`);
+    piece.style.setProperty('--drift', `${i % 2 ? 60 : -60}px`);
+    return piece;
+  }));
+  showScreen('sent-screen');
+  $('#sent-screen').classList.add('is-celebrating');
+  playSendSound();
+});
+$('#view-sent').addEventListener('click', () => showScreen('sent-preview'));
+$('#back-to-sent').addEventListener('click', () => { $('#sent-screen').classList.remove('is-celebrating'); showScreen('sent-screen'); });
+window.addEventListener('pagehide', () => { clearTimeout(hideTimer); void audioContext?.close().catch(() => {}); });
+renderDraft();
+$('#reply-alex').disabled = false;

@@ -57,18 +57,9 @@
 <button class="speaking-control" id="listen-prompt" type="button"><img src="./assets/speaking/listen.webp" alt="" width="88" height="88"><span>Listen</span></button>
 <button class="speaking-control" id="retry" type="button"><img src="./assets/speaking/retry.webp" alt="" width="88" height="88"><span>Try again</span></button>
 <button class="speaking-control" id="next-mission" type="button"><img src="./assets/speaking/next.webp" alt="" width="88" height="88"><span>Next question</span></button></div>
-<p class="status-message" id="record-status" role="status">Record your answer. You can listen back before sending it.</p>
-</section>
-<section class="practice-panel" aria-label="Your recording and feedback">
+<p class="status-message" id="record-status" role="status" hidden></p>
 <audio id="recording" controls hidden aria-label="Your recording"></audio>
-<details class="upload-panel"><summary>Upload a recording instead</summary><label class="upload-label">Audio answer, up to 60 seconds<input id="audio-file" type="file" accept="audio/*"></label></details>
-<label class="consent"><input id="data-consent" type="checkbox"><span>I agree to send my answer for feedback. My recording is not stored on the server.</span></label>
-<label class="consent"><input id="audio-consent" type="checkbox"><span>I have listened to this recording and agree to send it for feedback.</span></label>
-<div class="feedback-actions"><button class="primary-button" id="assess" type="button" disabled>Check my speaking</button></div>
-<p class="status-message" id="ai-status" role="status">Connecting to Banban...</p>
-<section id="feedback" aria-labelledby="feedback-title" aria-busy="false"><h2 id="feedback-title">Banban's feedback</h2><div id="feedback-content"><p>Listen, record, and let Banban help you practise.</p></div></section>
-<p class="practice-note" id="pronunciation-note">Word practice uses the words recognised in your recording. Detailed pronunciation scoring is not connected yet.</p>
-<p class="storage-note" data-storage-note>Progress is saved in this browser.</p>
+<section class="speaking-response" id="feedback" aria-label="Banban's response" aria-live="polite" aria-busy="false" hidden><div id="feedback-content"></div></section>
 </section>
 <section class="completion" id="completion" hidden><h2>You earned your Storyteller badge!</h2><p>You have completed all three activities and five speaking questions.</p><a class="primary-button" href="./my-house.html">Back to My House</a></section>
 </section>

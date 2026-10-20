@@ -36,11 +36,10 @@
 .speaking-control:hover:not(:disabled) { transform:translateY(-3px); }
 .speaking-control[aria-pressed='true'] img { outline:4px solid #ae493b; border-radius:50%; }
 .speaking-control:disabled { opacity:.45; }
-.practice-panel { max-width:960px; margin:20px auto; padding:24px 30px; border:2px solid #e4ca86; border-radius:24px; background:#fff5d5; }
-.practice-panel #feedback { border-top:1px solid #dcc58a; padding-top:14px; }
-.feedback-actions { margin-top:20px; }
-.practice-note { font-size:12px; line-height:1.6; }
+.speaking-response { max-width:900px; margin:24px auto 0; text-align:left; line-height:1.7; }
+.speaking-response .feedback-detail { border:0; padding:0; margin:12px 0; }
 .feedback-detail p { white-space:pre-wrap; }
+.speaking-activity #recording { max-width:800px; margin:18px auto 0; }
 #feedback-content>p:first-child { font-weight:800; font-size:18px; line-height:1.6; }
 .feedback-word { border:1px solid #bd9852; border-radius:20px; padding:8px 16px; background:#f9df8e; color:inherit; cursor:pointer; margin:6px; font:700 14px/1.4 'Montserrat',sans-serif; }
 .banban-hint { max-width:900px; margin:18px auto; padding:18px; border-radius:22px; background:#f8d77f; display:flex; align-items:center; gap:18px; text-align:left; }
@@ -57,7 +56,7 @@
  .speaking-picture { width:100%; margin:14px auto 20px; }
  .speaking-controls { gap:12px; justify-content:space-between; } .speaking-control { flex:1; min-width:0; font-size:11px; } .speaking-control img { width:60px; }
  .word-bank { gap:10px; } .word-bank button { padding:10px 15px; }
- .practice-panel { margin:16px; padding:20px; } .speaking-body .completion { margin:16px; }
+ .speaking-body .completion { margin:16px; }
  .banban-hint { flex-wrap:wrap; gap:10px; } .banban-hint img { width:60px; height:80px; }
  .greeting-listen { right:4%; bottom:0; font-size:11px; padding:6px 10px; min-height:32px; }
 }
