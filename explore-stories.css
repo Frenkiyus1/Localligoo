@@ -1,0 +1,44 @@
+/* Topic stories use the provided EXPLORE artwork, with reflowing mobile text. */
+.explore-story-body { color: #684415; background: #f6e1a3 url("./assets/explore/stories/paper.webp") repeat; font-family: "Montserrat", Arial, sans-serif; }
+.story-header { display: flex; align-items: center; min-height: clamp(70px, 7.4vw, 178px); padding: 12px 4%; gap: 20px; background: #b4c04c url("./assets/background.png") center top / 100% auto; }
+.story-logo { display: block; flex: 0 0 auto; width: clamp(90px, 10vw, 240px); }
+.story-nav { display: flex; justify-content: center; gap: clamp(18px, 3.4vw, 72px); margin: 0 auto; padding-right: 12%; }
+.story-nav a, .story-nav button { display: flex; align-items: center; min-height: 44px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: #684415; text-decoration: none; font: 800 clamp(13px, 1.56vw, 30px)/1 "Montserrat", Arial, sans-serif; cursor: pointer; }
+.story-nav :is(a, button):hover { background: #ffffff25; }
+.story-nav [aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+#story-content { max-width: 2405px; min-height: 70vh; margin-inline: auto; padding-bottom: 45px; }
+.story-toolbar { padding: 16px 6%; background: #fae8ae55; }
+.story-back { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 20px; border: 2px solid #fff9e5; border-radius: 999px; background: #f5d17b; color: #684415; box-shadow: 0 3px 0 #ad884b44; font-size: 13px; font-weight: 800; line-height: 1.6; text-decoration: none; }
+.story-back:hover { background: #f2c563; }
+.topic-title-art { display: block; width: auto; max-width: 88%; height: clamp(48px, 5.6vw, 135px); object-fit: contain; margin: clamp(30px, 4.5vw, 90px) auto clamp(35px, 4vw, 75px); }
+.topic-story-list { display: grid; gap: clamp(45px, 5vw, 100px); width: 73%; max-width: 1770px; margin-inline: auto; }
+.topic-story { min-width: 0; position: relative; }
+.story-art { display: block; width: 100%; height: auto; border-radius: clamp(16px, 2.5vw, 40px); box-shadow: 0 5px 10px #72501b30; }
+.story-copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.story-bottom-nav { margin: 45px auto 10px; text-align: center; }
+@media (max-width: 1000px) {
+  .story-header { padding-inline: 20px; background-position: right top; background-size: 1000px auto; }
+  .story-logo { width: 85px; }
+  .story-nav { padding: 0; gap: 14px; }
+  .story-nav a, .story-nav button { font-size: 12px; }
+  .topic-story-list { width: 90%; gap: 32px; }
+  .story-art { display: none; }
+  .story-copy { position: static; width: auto; height: auto; overflow: hidden; clip-path: none; border-radius: 24px; background: #ffe5a8 url("./assets/explore/stories/card-paper.webp") repeat; box-shadow: 0 5px 9px #72501b30; }
+  .story-copy h2 { margin: 0; padding: 24px; background: #f5d17bcc; font-size: clamp(19px, 3vw, 26px); font-weight: 800; line-height: 1.5; }
+  .story-paragraphs { padding: 22px 25px; font-size: 16px; font-weight: 600; line-height: 1.9; }
+  .story-paragraphs p { margin: 0 0 22px; }
+  .story-paragraphs p:last-child { margin-bottom: 0; }
+  .topic-title-art { width: auto; max-width: calc(100% - 40px); height: clamp(44px, 6vw, 60px); margin-block: 35px; }
+}
+@media (max-width: 640px) {
+  .story-header { min-height: 72px; justify-content: center; }
+  .story-logo { width: 90px; }
+  .story-nav { display: none; }
+  .story-toolbar { padding: 12px 16px; }
+  .story-back { font-size: 12px; padding-inline: 16px; }
+  .topic-story-list { width: calc(100% - 32px); gap: 26px; }
+  .story-copy { border-radius: 20px; }
+  .story-copy h2 { padding: 20px; font-size: 20px; }
+  .story-paragraphs { padding: 20px; font-size: 15px; }
+  .topic-title-art { max-width: calc(100% - 40px); }
+}

@@ -12,7 +12,7 @@ test("each visit shows five distinct source questions with answer-only controls"
   await expect(page.locator("#explore-quiz button:not(.question-choice), #explore-quiz select")).toHaveCount(0);
   await expect(page.locator("[data-quiz-category], #reset-dialog")).toHaveCount(0);
   await expect(page.locator("#question-position")).toHaveText("Question 1 of 5");
-  await expect(page.locator(".explore-topics article")).toHaveCount(4);
+  await expect(page.locator(".explore-topics a.topic-button")).toHaveCount(4);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: testInfo.outputPath("explore.png"), fullPage: true, animations: "disabled" });
