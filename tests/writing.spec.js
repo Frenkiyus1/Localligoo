@@ -56,6 +56,14 @@ test('wrong answers show corrections and explanations; retry keeps correct answe
   await expect(page.locator('#explanation-art')).toHaveAttribute('src', './assets/writing/explanation-2-incorrect.webp');
   await expect(page.locator('#explanation-art')).toHaveAttribute('alt', /brocade blankets = chăn thổ cẩm/);
   await page.locator('#explanation-art').evaluate(image => image.decode());
+  await expect(page.locator('#close-explanation')).toHaveText('Got it!');
+  await page.locator('#explanation-art').click({ position: { x: 20, y: 20 } });
+  await expect(page.locator('#answer-explanation')).toBeVisible();
+  const bubble = await page.locator('#answer-explanation').boundingBox();
+  const gotIt = await page.locator('#close-explanation').boundingBox();
+  expect(bubble.width).toBeLessThanOrEqual(480);
+  expect(gotIt.width).toBeLessThan(bubble.width / 2);
+  expect(gotIt.height).toBeGreaterThanOrEqual(44);
   await page.locator('#answer-explanation').screenshot({ path: testInfo.outputPath('writing-incorrect-explanation.png') });
   await expect(page.locator('#answer-explanation')).toBeInViewport();
   await page.locator('#close-explanation').click();

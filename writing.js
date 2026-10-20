@@ -114,6 +114,7 @@ function explain(button) {
   const index = Number(button.dataset.answer);
   const item = items[index];
   const correct = button.dataset.correct === 'true';
+  popup.classList.toggle('is-correct', correct);
   const artwork = $('#explanation-art');
   // The visible explanation is the supplied image. Alt text transcribes it for accessibility.
   artwork.src = `./assets/writing/explanation-${index + 1}-${correct ? 'correct' : 'incorrect'}.webp`;
@@ -138,7 +139,7 @@ function closeExplanation(returnFocus = false) {
 function scheduleClose() {
   clearTimeout(hideTimer);
   hideTimer = setTimeout(() => {
-    if (document.activeElement !== activeAnswer && !popup.contains(document.activeElement)) closeExplanation();
+    if (document.activeElement !== activeAnswer && !popup.contains(document.activeElement) && !popup.matches(':hover')) closeExplanation();
   }, 180);
 }
 for (const region of [$('#reply-text'), $('#sent-email-text')]) {
@@ -160,6 +161,12 @@ document.addEventListener('pointermove', event => {
   suppressHover = false;
   const button = event.target.closest('[data-answer]');
   if (button && event.pointerType !== 'touch') explain(button);
+});
+popup.addEventListener('pointerdown', event => {
+  if (!event.target.closest('button')) {
+    event.preventDefault();
+    popup.focus({ preventScroll: true });
+  }
 });
 popup.addEventListener('pointerenter', () => clearTimeout(hideTimer));
 popup.addEventListener('pointerleave', scheduleClose);
