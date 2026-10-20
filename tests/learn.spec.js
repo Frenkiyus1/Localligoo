@@ -46,7 +46,10 @@ test('Learn to My House to Speaking opens supplied artwork and the first activit
  const questionAudio=page.waitForResponse(r=>r.url().endsWith('/a1-question-1.mp3'));
  await page.getByRole('button',{name:'Start speaking with BanBan'}).click();expect((await questionAudio).ok()).toBe(true);
  await expect(page.locator('#mission-prompt')).toHaveText('Whose blanket is this?');
- await expect(page.locator('#mission-example')).toHaveText(missions[0].example);
+ await expect(page.locator('#answer-panel')).toBeHidden();
+ await expect(page.locator('#mission-example')).toBeEmpty();
+ await expect(page.getByText(/Model answer|Hear the question again|Listen to the model, then record both sentences|Tap Listen to play the audio/)).toHaveCount(0);
+ await expect(page.locator('#next-mission')).toBeDisabled();
  await expect(page.locator('.speaking-controls button')).toHaveCount(4);
  await expect(page.locator('.practice-panel, .upload-panel, .consent, #assess')).toHaveCount(0);
  await expect(page.locator('#feedback')).toBeHidden();await expect(page.locator('#feedback-content')).toBeEmpty();
@@ -77,11 +80,12 @@ test('all five recorded answers follow the three activities, save progress and r
  await page.reload();await expect(page.locator('[data-speaking-count]')).toHaveText('5/5 speaking missions completed');
  await page.locator('#retry').click();await expect(page.locator('#recording')).toBeHidden();
 });
-test('a wrong or incomplete sentence requires another attempt and cannot earn completion',async({page})=>{
+test('an incorrect answer allows Next and another attempt without earning completion',async({page})=>{
  await start(page);await backend(page,['fireplace',missions[0].example]);
  await submit(page);await expect(page.locator('#feedback-content')).toContainText('Nice try!');
- await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');await expect(page.locator('#next-mission')).toBeDisabled();
- await expect(page.locator('.feedback-word')).toBeVisible();await page.locator('#retry').click();await submit(page);
+ await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');await expect(page.locator('#next-mission')).toBeEnabled();
+ await expect(page.locator('.feedback-word')).toBeVisible();await page.locator('#retry').click();
+ await expect(page.locator('#next-mission')).toBeEnabled();await submit(page);
  await expect(page.locator('#next-mission')).toBeEnabled();
 });
 test('unavailable feedback permits listening and recording practice without awarding a badge',async({page})=>{
@@ -105,7 +109,7 @@ test('Activity 3 gives a hint after 90 seconds without revealing a model answer'
 test('failed assessment keeps the recording and does not advance progress',async({page})=>{
  await start(page);await page.route('**/api/speaking/assess',r=>r.fulfill({status:502,json:{error:'Feedback is busy. Try again.'}}));
  await submit(page);await expect(page.locator('#record-status')).toContainText('Feedback is busy');
- await expect(page.locator('#recording')).toBeVisible();await expect(page.locator('#next-mission')).toBeDisabled();
+ await expect(page.locator('#recording')).toBeVisible();await expect(page.locator('#next-mission')).toBeEnabled();
 });
 test('Try again cancels a pending assessment and clears the response before recording again',async({page})=>{
  await start(page);
@@ -126,4 +130,74 @@ test('the revised course resets old speaking completions and preserves Explore p
  await page.addInitScript(()=>localStorage.setItem('localingo.progress.v1',JSON.stringify({speaking:['house-1','house-2'],explore:{1:0}})));
  await start(page);await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');
  expect(await page.evaluate(async()=>{const {readProgress}=await import('./progress.js');return readProgress().explore;})).toEqual({'1':0});
+});
+
+
+test('Next opens immediately after capture while decoding is still pending',async({page})=>{
+ await start(page);
+ await page.evaluate(()=>{
+  const decode=AudioContext.prototype.decodeAudioData;
+  AudioContext.prototype.decodeAudioData=function(...args){
+   return new Promise((resolve,reject)=>{
+    window.finishDecoding=()=>decode.apply(this,args).then(resolve,reject);
+   });
+  };
+ });
+ await page.locator('#record').click();
+ await expect(page.locator('#next-mission')).toBeDisabled();
+ await expect(page.locator('#record-status')).toContainText('2/60');
+ await page.locator('#record').click();
+ await expect(page.locator('#record-status')).toContainText('Preparing your recording');
+ await expect(page.locator('#next-mission')).toBeEnabled();
+ await page.locator('#next-mission').click();
+ await expect(page.locator('#mission-prompt')).toHaveText(missions[1].prompt);
+ await page.evaluate(()=>window.finishDecoding());
+ await expect(page.locator('#record')).toBeEnabled();
+ await expect(page.locator('#next-mission')).toBeDisabled();
+ await expect(page.locator('#recording')).toBeHidden();
+ await expect(page.locator('#feedback')).toBeHidden();
+});
+
+test('Next cancels pending feedback and ignores a late result on the following question',async({page})=>{
+ await start(page);
+ let release;const hold=new Promise(resolve=>{release=resolve;});
+ await page.route('**/api/speaking/assess',async route=>{
+  await hold;
+  await route.fulfill({json:{assessment:{hasSpeech:true,passed:true,encouragement:'Late response from question one'}}}).catch(()=>{});
+ });
+ await recordAnswer(page);
+ await expect(page.locator('#feedback')).toHaveAttribute('aria-busy','true');
+ await expect(page.locator('#next-mission')).toBeEnabled();
+ await page.locator('#next-mission').click();
+ await expect(page.locator('#mission-prompt')).toHaveText(missions[1].prompt);
+ await expect(page.locator('#record')).toBeEnabled();
+ await expect(page.locator('#next-mission')).toBeDisabled();
+ release();
+ await expect(page.locator('#feedback')).toBeHidden();
+ await expect(page.locator('#feedback-content')).toBeEmpty();
+ await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');
+});
+
+test('Complete and Speak repeats picture hints after an incorrect full sentence and permits retry',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('localingo.progress.v1',JSON.stringify({speakingVersion:2,speaking:['house-1','house-2'],explore:{}})));
+ await start(page);await backend(page,['The piece of wood is on the stilt house.',missions[2].accepted[1]]);
+ await expect(page.locator('#answer-panel')).toBeVisible();
+ await expect(page.locator('#mission-example')).toHaveText('The piece of wood is ____ the stilt house.');
+ await submit(page);
+ await expect(page.locator('#feedback-content')).toHaveText('Look at the picture again. You can use the words below to help you.');
+ await expect(page.locator('#word-bank button')).toHaveText(missions[2].options);
+ await expect(page.locator('#next-mission')).toBeEnabled();
+ await expect(page.locator('[data-speaking-count]')).toHaveText('2/5 speaking missions completed');
+ await page.locator('#retry').click();await submit(page);
+ await expect(page.locator('#feedback-content')).toHaveText('Well done!');
+ await expect(page.locator('[data-speaking-count]')).toHaveText('3/5 speaking missions completed');
+});
+
+
+test('reopening Speaking returns to the first incomplete question after skipped answers',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('localingo.progress.v1',JSON.stringify({speakingVersion:2,speaking:['house-2','house-4'],explore:{}})));
+ await start(page);
+ await expect(page.locator('#mission-prompt')).toHaveText(missions[0].prompt);
+ await expect(page.locator('[data-speaking-count]')).toHaveText('2/5 speaking missions completed');
+ await expect(page.locator('#next-mission')).toBeDisabled();
 });

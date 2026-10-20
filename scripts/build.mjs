@@ -1,3 +1,4 @@
+import "./prepare-speaking-audio.mjs";
 import { cp, mkdir, readdir, unlink } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 const project=new URL("../",import.meta.url), output=new URL("../dist/",import.meta.url);

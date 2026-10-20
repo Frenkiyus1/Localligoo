@@ -22,7 +22,7 @@ export function evaluateSpeaking(mission, transcript, model, audio) {
   :mission.activity===2?"Look at the picture again. You can use the words below to help you."
   :"Nice try! Look at the picture again and describe the room in two or three sentences.";
  const nextStep=passed?(mission.activity===3?"Listen to your improved answer, then finish.":"You can practise again or continue.")
-  :mission.activity===1?"Listen to the model and record both sentences again. Word recognition can make mistakes."
+  :mission.activity===1?"Listen to the word and record your answer again."
   :mission.activity===2?"Use the words below and say the whole sentence again."
   :"Tell Banban what you can see, where things are, and whose house this is.";
  return {hasSpeech,passed,practiceWord:passed?null:practiceWord,comparison,encouragement,nextStep};

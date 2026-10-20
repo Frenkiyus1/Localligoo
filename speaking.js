@@ -2,9 +2,11 @@ import { missions, activities, greeting } from "./missions.js";
 import { readProgress, saveProgress, renderProgress } from "./progress.js";
 import { toWav, base64Audio } from "./audio.js";
 const $ = id => document.getElementById(id);
-let current = Math.min(readProgress().speaking.length, missions.length - 1);
+const completed = new Set(readProgress().speaking);
+let current = missions.findIndex(item => !completed.has(item.id));
+if(current < 0)current = missions.length - 1;
 let wav=null, audioUrl=null, recorder=null, stream=null, timer=null, controller=null;
-let busy=false, preparing=false, configured=false, connected=false, generation=0, acquiring=false, practiced=false, passed=false;
+let busy=false, preparing=false, configured=false, generation=0, acquiring=false, practiced=false;
 let narration=null, finishNarration=null, hintTimer=null, hintIndex=0, answered=false;
 const record=$("record"), player=$("recording"), status=$("record-status"), aiStatus=status;
 const mission=()=>missions[current];
@@ -22,7 +24,7 @@ function playClip(file){
   const finish=ok=>{if(narration===audio){narration=null;finishNarration=null;}resolve(ok);};
   finishNarration=finish;audio.onended=()=>finish(true);
   audio.onerror=()=>{if(narration===audio)message(status,"Could not play this audio. Try Listen again.",true);finish(false);};
-  audio.play().catch(()=>{if(narration===audio)message(status,"Tap Listen to play the audio.");finish(false);});
+  audio.play().catch(()=>finish(false));
  });
 }
 function say(text){
@@ -40,8 +42,8 @@ function updateControls(){
  const recording=recorder?.state==="recording",locked=busy||preparing||acquiring||recording;
  $("retry").disabled=acquiring;
  record.disabled=busy||preparing||acquiring||!window.MediaRecorder||!navigator.mediaDevices?.getUserMedia;
- $("listen-prompt").disabled=locked;$("listen-question").disabled=locked;$("listen-hint").disabled=locked;
- $("next-mission").disabled=locked||!(passed||(!configured&&connected&&practiced));
+ $("listen-prompt").disabled=locked;$("listen-hint").disabled=locked;
+ $("next-mission").disabled=acquiring||recording||!practiced;
  $("word-bank").querySelectorAll("button").forEach(b=>b.disabled=locked);
 }
 function releaseAudio(){
@@ -62,21 +64,20 @@ function scheduleHint(){
  },90000);
 }
 function showMission(autoplay=true){
- generation++;controller?.abort();stopNarration();releaseAudio();clearTimeout(hintTimer);
- practiced=false;passed=readProgress().speaking.includes(mission().id);answered=false;hintIndex=0;
+ generation++;controller?.abort();busy=false;preparing=false;stopNarration();releaseAudio();clearTimeout(hintTimer);
+ practiced=false;answered=false;hintIndex=0;
  $("banban-hint").hidden=true;
  $("activity-title").textContent="Activity "+mission().activity+": "+activities[mission().activity-1];
  $("activity-position").textContent="Activity "+mission().activity+" of 3";
  $("mission-count").textContent="Question "+mission().question+" of "+(mission().activity===3?1:2);
- $("mission-prompt").textContent=mission().prompt;$("mission-hint").textContent=mission().hint;
+ $("mission-prompt").textContent=mission().prompt;message($("mission-hint"),mission().hint);
  $("mission-image").src="./assets/speaking/"+mission().image+".webp";$("mission-image").alt=mission().alt;
- $("answer-panel").hidden=mission().activity===3;
- $("answer-label").textContent=mission().activity===1?"Model answer":"Complete the sentence";
- $("mission-example").textContent=mission().activity===1?mission().example:mission().sentence||"";
+ $("answer-panel").hidden=mission().activity!==2;
+ $("mission-example").textContent=mission().sentence||"";
+ $("word-bank").hidden=mission().activity!==2;
  $("word-bank").replaceChildren(...(mission().options||[]).map(word=>{
   const button=element("button",word);button.type="button";button.addEventListener("click",()=>say(word));return button;
  }));
- $("listen-prompt").querySelector("span").textContent=mission().activity===1?"Listen":"Hear question";
  $("next-mission").querySelector("span").textContent=current===4?"Finish":missions[current+1].activity!==mission().activity?"Next activity":"Next question";
  message(status,"");
  clearFeedback();updateControls();
@@ -91,7 +92,6 @@ $("start-speaking").addEventListener("click",async()=>{
  if(finished&&token===generation&&!acquiring&&recorder?.state!=="recording")listenQuestion();
 });
 $("listen-prompt").addEventListener("click",()=>mission().activity===1?playClip("a1-answer-"+mission().question+".mp3"):listenQuestion());
-$("listen-question").addEventListener("click",listenQuestion);
 $("listen-hint").addEventListener("click",()=>playClip("a3-hint-"+(((hintIndex||1)-1)%3+1)+".mp3"));
 function stopTracks(){stream?.getTracks().forEach(track=>track.stop());stream=null;clearInterval(timer);timer=null;}
 function stopRecording(){if(recorder?.state==="recording")recorder.stop();stopTracks();}
@@ -99,7 +99,7 @@ async function prepare(blob,token){
  preparing=true;updateControls();message(status,"Preparing your recording...");
  try{
   const ready=await toWav(blob);if(token!==generation)return;
-  releaseAudio();wav=ready;audioUrl=URL.createObjectURL(wav);player.src=audioUrl;player.hidden=false;practiced=true;
+  releaseAudio();wav=ready;audioUrl=URL.createObjectURL(wav);player.src=audioUrl;player.hidden=false;
   await connection;if(token!==generation)return;
   preparing=false;
   if(configured)await assess();
@@ -110,7 +110,7 @@ async function prepare(blob,token){
 record.addEventListener("click",async()=>{
  if(recorder?.state==="recording"){stopRecording();return;}
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){message(status,"Microphone unavailable. Use HTTPS or localhost and allow microphone access.",true);return;}
- acquiring=true;stopNarration();releaseAudio();clearFeedback();practiced=false;clearTimeout(hintTimer);updateControls();const token=++generation;
+ acquiring=true;stopNarration();releaseAudio();clearFeedback();answered=false;clearTimeout(hintTimer);updateControls();const token=++generation;
  try{
   const acquired=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
   if(token!==generation){acquired.getTracks().forEach(track=>track.stop());return;}stream=acquired;
@@ -120,7 +120,7 @@ record.addEventListener("click",async()=>{
    acquired.getTracks().forEach(track=>track.stop());
    if(recorder!==activeRecorder)return;
    stopTracks();record.setAttribute("aria-pressed","false");record.querySelector("span").textContent="Record answer";
-   if(token===generation)prepare(new Blob(chunks,{type:activeRecorder.mimeType}),token);
+   if(token===generation){practiced=true;prepare(new Blob(chunks,{type:activeRecorder.mimeType}),token);}
   };
   activeRecorder.onerror=()=>{generation++;stopTracks();record.setAttribute("aria-pressed","false");record.querySelector("span").textContent="Record answer";message(status,"Microphone disconnected. Try recording again.",true);updateControls();scheduleHint();};
   activeRecorder.start();record.setAttribute("aria-pressed","true");record.querySelector("span").textContent="Stop recording";
@@ -130,11 +130,12 @@ record.addEventListener("click",async()=>{
  finally{acquiring=false;updateControls();}
 });
 $("retry").addEventListener("click",()=>{
- generation++;controller?.abort();busy=false;preparing=false;stopRecording();stopNarration();releaseAudio();clearFeedback();practiced=false;answered=false;
+ generation++;controller?.abort();busy=false;preparing=false;stopRecording();stopNarration();releaseAudio();clearFeedback();answered=false;
  message(status,"");updateControls();scheduleHint();
 });
 function renderFeedback(assessment){
  const target=$("feedback-content");target.replaceChildren(element("p",assessment.encouragement));$("feedback").hidden=false;
+ if(mission().activity===2&&!assessment.passed)$("word-bank").hidden=false;
  for(const [label,text] of (mission().activity===3?[["What you said",assessment.transcript],["Try saying",assessment.correctedAnswer]]:[])){
   if(!text)continue;const section=element("div","","feedback-detail");section.append(element("h3",label),element("p",text));target.append(section);
  }
@@ -162,7 +163,7 @@ async function assess(){
   const payload={missionId:mission().id,mode:"audio",consent:true,readAloud:mission().activity===1,audio:await base64Audio(wav)};
   const response=await fetch("./api/speaking/assess",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),signal:requestController.signal});
   const data=await response.json();if(!response.ok)throw new Error(data.error||"Could not check the recording. Please try again.");if(token!==generation)return;
-  const assessment=data.assessment;renderFeedback(assessment);passed=assessment.hasSpeech===true&&assessment.passed===true;
+  const assessment=data.assessment;renderFeedback(assessment);const passed=assessment.hasSpeech===true&&assessment.passed===true;
   if(passed){saveProgress(state=>{if(!state.speaking.includes(mission().id))state.speaking.push(mission().id);});renderProgress();message(status,"");}
   else{answered=false;message(status,"");scheduleHint();}
   $("completion").hidden=readProgress().speaking.length!==5;speakFeedback(assessment);
@@ -171,7 +172,7 @@ async function assess(){
 }
 $("next-mission").addEventListener("click",()=>{
  if($("next-mission").disabled)return;
- if(current===4){stopNarration();clearTimeout(hintTimer);$("completion").hidden=false;$("completion").querySelector("h2").textContent=readProgress().speaking.length===5?"You earned your Storyteller badge!":"You practised all three activities!";$("completion").querySelector("p").textContent=readProgress().speaking.length===5?"You have completed all five speaking questions.":"Come back when feedback is available to check your answers and earn your badge.";$("completion").scrollIntoView({behavior:"smooth"});}
+ if(current===4){generation++;controller?.abort();busy=false;preparing=false;answered=true;stopNarration();player.pause();clearTimeout(hintTimer);message(status,"");$("feedback").setAttribute("aria-busy","false");updateControls();$("completion").hidden=false;$("completion").querySelector("h2").textContent=readProgress().speaking.length===5?"You earned your Storyteller badge!":"You practised all three activities!";$("completion").querySelector("p").textContent=readProgress().speaking.length===5?"You have completed all five speaking questions.":"Keep practising your answers to complete all five questions and earn your badge.";$("completion").scrollIntoView({behavior:"smooth"});}
  else{current++;showMission();$("mission-prompt").focus();}
 });
 document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(hintTimer);stopNarration();if(recorder?.state==="recording"){generation++;stopRecording();message(status,"Recording stopped. Tap Record answer to try again.");updateControls();}}else if(!$("speaking-exercise").hidden)scheduleHint();});
@@ -179,7 +180,7 @@ window.addEventListener("pagehide",()=>{generation++;controller?.abort();clearTi
 async function connect(){
  try{const response=await fetch("./api/speaking/status",{signal:AbortSignal.timeout(8000)});if(!response.ok)throw Error("Status");const data=await response.json();configured=data.configured===true;}
  catch{configured=false;}
- connected=true;updateControls();
+ updateControls();
 }
 showMission(false);const connection=connect();
 if(location.hash==="#missions"){$("speaking-intro").hidden=true;$("speaking-exercise").hidden=false;listenQuestion();scheduleHint();}

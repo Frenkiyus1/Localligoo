@@ -47,16 +47,15 @@
 <p class="activity-label" id="activity-title"></p>
 <p class="question-number" id="mission-count"></p>
 <h1 id="mission-prompt" tabindex="-1"></h1>
-<button class="question-replay" id="listen-question" type="button">Hear the question again</button>
 <figure class="speaking-picture"><img id="mission-image" src="./assets/speaking/blanket.webp" alt="" width="1186" height="636"></figure>
-<div class="speaking-answer" id="answer-panel"><p class="answer-label" id="answer-label">Model answer</p><p id="mission-example"></p></div>
+<div class="speaking-answer" id="answer-panel" hidden><p class="answer-label">Complete the sentence</p><p id="mission-example"></p></div>
 <p id="mission-hint" class="speaking-instruction"></p>
 <div class="word-bank" id="word-bank" aria-label="Words to help you"></div>
 <div class="banban-hint" id="banban-hint" hidden role="status"><img src="./assets/speaking/banban.webp" alt="Banban" width="100" height="120"><p id="hint-text"></p><button id="listen-hint" type="button">Listen to the hint</button></div>
 <div class="speaking-controls"><button class="speaking-control" id="record" type="button" aria-pressed="false"><img src="./assets/speaking/mic.webp" alt="" width="88" height="88"><span>Record answer</span></button>
 <button class="speaking-control" id="listen-prompt" type="button"><img src="./assets/speaking/listen.webp" alt="" width="88" height="88"><span>Listen</span></button>
 <button class="speaking-control" id="retry" type="button"><img src="./assets/speaking/retry.webp" alt="" width="88" height="88"><span>Try again</span></button>
-<button class="speaking-control" id="next-mission" type="button"><img src="./assets/speaking/next.webp" alt="" width="88" height="88"><span>Next question</span></button></div>
+<button class="speaking-control" id="next-mission" type="button" disabled><img src="./assets/speaking/next.webp" alt="" width="88" height="88"><span>Next question</span></button></div>
 <p class="status-message" id="record-status" role="status" hidden></p>
 <audio id="recording" controls hidden aria-label="Your recording"></audio>
 <section class="speaking-response" id="feedback" aria-label="Banban's response" aria-live="polite" aria-busy="false" hidden><div id="feedback-content"></div></section>

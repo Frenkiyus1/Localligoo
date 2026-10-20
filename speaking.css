@@ -20,7 +20,6 @@
 .activity-label { display:table; margin:0 0 26px 2%; padding:14px 26px; border-radius:60px; background:#f8d77f; font-size:clamp(18px,2.4vw,36px); font-weight:900; }
 .question-number { margin:12px 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:2px; font-weight:800; }
 .speaking-activity h1 { max-width:1100px; margin:8px auto; font-size:clamp(24px,3.2vw,52px); line-height:1.35; font-weight:900; }
-.question-replay { border:0; background:transparent; text-decoration:underline; color:inherit; font:700 12px/1.4 'Montserrat',sans-serif; padding:10px; cursor:pointer; }
 .speaking-picture { width:min(72%,1000px); margin:18px auto 24px; }
 .speaking-picture img { display:block; width:100%; height:auto; border-radius:4px; }
 .speaking-answer { max-width:1100px; margin:18px auto; }
