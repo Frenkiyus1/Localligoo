@@ -16,7 +16,7 @@
 .writing-button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; max-width: 100%; padding: 14px 28px; border: 4px solid #fffdf1; border-radius: 80px; background: #e3f4f1; box-shadow: 0 3px 0 #876b3b88; color: #684415; font: 800 clamp(13px, 1.5vw, 28px)/1.35 "Montserrat", Arial, sans-serif; text-align: center; text-decoration: none; cursor: pointer; }
 .writing-button:hover:not(:disabled) { background: #d1eeeb; }
 .writing-button:disabled { opacity: .55; cursor: not-allowed; }
-.writing-body :is(button, a, select):focus-visible { outline: 3px solid #765021; outline-offset: 4px; }
+.writing-body :is(button, a, input):focus-visible { outline: 3px solid #765021; outline-offset: 4px; }
 .guest-reply { position: absolute; left: 38%; top: 80%; width: 24%; height: 10.5%; border-width: .5cqw; padding: 0 1cqw; font-size: 2.25cqw; text-transform: uppercase; }
 .writing-task { width: 70%; margin: 30px auto 60px; font-size: clamp(16px, 1.65vw, 29px); font-weight: 600; line-height: 1.6; }
 .writing-task h3 { margin: 0 0 20px; font-size: clamp(30px, 4vw, 64px); font-weight: 900; text-align: center; text-transform: uppercase; paint-order: stroke fill; -webkit-text-stroke: 6px #fffaf1; }
@@ -35,7 +35,7 @@
 .mail-signature { padding-top: 22px; }
 .answer-slot { display: inline; white-space: nowrap; }
 .blank-number { margin-right: 5px; font-weight: 800; }
-.answer-slot select { width: 150px; max-width: 100%; min-height: 44px; margin: 4px 5px 4px 0; padding: 6px 9px; border: 2px solid #a7ad69; border-radius: 8px; background: #fffbea; color: #684415; font: 700 .88em/1.5 "Montserrat", Arial, sans-serif; vertical-align: baseline; }
+.answer-slot input { width: 150px; max-width: 100%; min-height: 44px; margin: 4px 5px 4px 0; padding: 6px 9px; border: 2px solid #a7ad69; border-radius: 8px; background: #fffbea; color: #684415; font: 700 .88em/1.5 "Montserrat", Arial, sans-serif; vertical-align: baseline; }
 .answer-result { display: inline; min-height: 44px; max-width: 100%; margin: 2px 4px 2px 0; padding: 4px 7px; border: 2px solid currentColor; border-radius: 8px; background: #f6f8df; color: #24733c; font: 800 1em/1.6 "Montserrat", Arial, sans-serif; white-space: normal; cursor: help; }
 .answer-result.is-incorrect { background: #fff0dc; color: #b32e2e; }
 .answer-result del { text-decoration-thickness: 2px; }
@@ -101,7 +101,7 @@
   .mail-bar { padding-inline: 16px; }
   .mail-bar i { font-size: 20px; }
   .answer-slot { white-space: normal; }
-  .answer-slot select { width: 145px; font-size: 13px; }
+  .answer-slot input { width: 145px; font-size: 16px; }
   .writing-button { padding: 13px 18px; font-size: 13px; }
   .sent-actions { gap: 12px; }
   .sent-actions .writing-button { padding: 12px 15px; font-size: 12px; }

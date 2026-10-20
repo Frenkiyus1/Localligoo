@@ -6,8 +6,8 @@ async function enter(page) {
   await expect(page).toHaveURL(/writing\.html$/);
   await page.getByRole('button', { name: 'Reply to Alex', exact: true }).click();
 }
-async function choose(page, answers = correct) {
-  for (const [index, answer] of answers.entries()) if (answer) await page.locator(`[data-blank="${index}"]`).selectOption(answer);
+async function fillAnswers(page, answers = correct) {
+  for (const [index, answer] of answers.entries()) if (answer) await page.locator(`[data-blank="${index}"]`).fill(answer);
 }
 async function screenshot(page, testInfo, name) {
   await page.evaluate(() => document.fonts.ready);
@@ -35,11 +35,12 @@ test('Writing opens the supplied artwork and preserves a draft when rereading Al
   await expect(page.locator('#reply-alex img')).toHaveAttribute('src', './assets/writing/reply-alex.webp');
   await screenshot(page, testInfo, 'writing-guest');
   await page.locator('#reply-alex').click();
-  await expect(page.locator('[data-blank]')).toHaveCount(6);
+  await expect(page.locator('input[type="text"][data-blank]')).toHaveCount(6);
+  await expect(page.locator('#reply-text select')).toHaveCount(0);
   await expect(page.locator('#check-answers img')).toHaveAttribute('src', './assets/writing/check-answers.webp');
   await expect(page.locator('#check-answers')).toBeDisabled();
   await expect(page.locator('#send-email')).toBeHidden();
-  await choose(page, ['stilt house']);
+  await fillAnswers(page, ['stilt house']);
   await expect(page.locator('#check-answers')).toBeDisabled();
   await page.locator('#read-alex').click();
   await expect(page.locator('#guest-screen')).toBeVisible();
@@ -50,7 +51,7 @@ test('Writing opens the supplied artwork and preserves a draft when rereading Al
 });
 test('wrong answers show corrections and explanations; retry keeps correct answers and gates sending', async ({ page }, testInfo) => {
   await enter(page);
-  await choose(page, ['stilt house', 'plum', 'plum', 'fireplace', 'fireplace', 'Pine Forest']);
+  await fillAnswers(page, ['stilt house', 'plum', 'plum', 'fireplace', 'fireplace', 'Pine Forest']);
   await page.locator('#check-answers').click();
   await expect(page.locator('#answer-feedback')).toHaveText('Good try! You got 4/6 correct. Check the red boxes and try again!');
   await expect(page.locator('#reply-text .is-incorrect')).toHaveCount(2);
@@ -86,7 +87,7 @@ test('wrong answers show corrections and explanations; retry keeps correct answe
   await expect(page.locator('[data-blank="4"]')).toHaveValue('');
   await expect(page.locator('#check-answers')).toBeDisabled();
   await expect(page.locator('[data-blank="1"]')).toBeFocused();
-  await choose(page);
+  await fillAnswers(page);
   await page.locator('#check-answers').click();
   await expect(page.locator('#answer-feedback')).toHaveText('Excellent! You got all the answers right!');
   await expect(page.locator('#reply-text [data-correct="true"]')).toHaveCount(6);
@@ -99,7 +100,7 @@ test('six correct answers send once, allow reading all explanations, and continu
   page.on('pageerror', error => errors.push(error.message));
   page.on('request', request => { if (!request.url().startsWith('http://127.0.0.1:4173/')) external.push(request.url()); });
   await enter(page);
-  await choose(page);
+  await fillAnswers(page);
   await page.locator('#check-answers').click();
   const plum = page.locator('#reply-text [data-answer="2"]');
   await plum.focus();
@@ -123,7 +124,7 @@ test('six correct answers send once, allow reading all explanations, and continu
   await screenshot(page, testInfo, 'writing-sent');
   await page.locator('#view-sent').click();
   await expect(page.locator('#sent-preview')).toBeVisible();
-  await expect(page.locator('#sent-email-text select, #sent-email-text del')).toHaveCount(0);
+  await expect(page.locator('#sent-email-text input, #sent-email-text select, #sent-email-text del')).toHaveCount(0);
   await expect(page.locator('#sent-email-text [data-correct="true"]')).toHaveCount(6);
   for (let index = 0; index < 6; index++) {
     await page.locator(`#sent-email-text [data-answer="${index}"]`).click();
@@ -142,7 +143,7 @@ test('six correct answers send once, allow reading all explanations, and continu
 });
 test('a fresh Writing visit starts a new exercise', async ({ page }) => {
   await enter(page);
-  await choose(page);
+  await fillAnswers(page);
   await page.locator('#check-answers').click();
   await page.reload();
   await expect(page.locator('#guest-screen')).toBeVisible();
@@ -153,7 +154,7 @@ test('a fresh Writing visit starts a new exercise', async ({ page }) => {
 
 test('every blank opens its supplied incorrect and correct explanation images', async ({ page }, testInfo) => {
   await enter(page);
-  await choose(page, ['brocade', 'plum', 'fireplace', 'hills', 'Pine Forest', 'stilt house']);
+  await fillAnswers(page, ['brocade', 'plum', 'fireplace', 'hills', 'Pine Forest', 'stilt house']);
   await page.locator('#check-answers').click();
   await expect(page.locator('#answer-feedback')).toContainText('0/6');
   for (let index = 0; index < 6; index++) {
@@ -167,7 +168,7 @@ test('every blank opens its supplied incorrect and correct explanation images', 
     await page.locator('#close-explanation').click();
   }
   await page.locator('#try-again').click();
-  await choose(page);
+  await fillAnswers(page);
   await page.locator('#check-answers').click();
   for (let index = 0; index < 6; index++) {
     await page.locator(`#reply-text [data-answer="${index}"]`).click();
@@ -180,4 +181,65 @@ test('every blank opens its supplied incorrect and correct explanation images', 
     if (index === 5) await page.locator('#answer-explanation').screenshot({ path: testInfo.outputPath('writing-correct-explanation.png') });
     await page.keyboard.press('Escape');
   }
+});
+
+
+test('typed answers accept an initial capital and preserve that spelling through retry and sending', async ({ page }) => {
+  await enter(page);
+  const answers = ['Stilt house', 'Brocade', 'Plum', 'Fireplace', 'Hills', 'pine forest'];
+  await fillAnswers(page, answers);
+  await page.locator('[data-blank="5"]').press('Enter');
+  await expect(page.locator('#answer-feedback')).toContainText('5/6');
+  await expect(page.locator('#send-email')).toBeHidden();
+  await page.locator('#try-again').click();
+  for (let index = 0; index < 5; index++) await expect(page.locator(`[data-blank="${index}"]`)).toHaveValue(answers[index]);
+  await expect(page.locator('[data-blank="5"]')).toHaveValue('');
+  await page.locator('[data-blank="5"]').fill('Pine Forest');
+  await page.locator('[data-blank="5"]').press('Enter');
+  await expect(page.locator('#answer-feedback')).toHaveText('Excellent! You got all the answers right!');
+  await expect(page.locator('#try-again')).toBeHidden();
+  await page.locator('#send-email').click();
+  await page.locator('#view-sent').click();
+  for (let index = 0; index < 5; index++) await expect(page.locator(`#sent-email-text [data-answer="${index}"]`)).toContainText(answers[index]);
+});
+
+test('typed answers reject capitals inside common words, misspellings, and incorrect proper name casing', async ({ page }) => {
+  await enter(page);
+  const invalid = [
+    ['STILT HOUSE', 'BROCADE', 'PLUM', 'FIREPLACE', 'HILLS', 'PINE FOREST'],
+    ['Stilt House', 'bRocade', 'pLum', 'FirePlace', 'hILLS', 'Pine forest'],
+    ['stilt  house', 'brocades', 'plums', 'fire place', 'hill', 'pine Forest'],
+  ];
+  for (const answers of invalid) {
+    await fillAnswers(page, answers);
+    await page.locator('#check-answers').click();
+    await expect(page.locator('#answer-feedback')).toContainText('0/6');
+    await expect(page.locator('#reply-text .is-incorrect')).toHaveCount(6);
+    await expect(page.locator('#reply-text del')).toHaveText(answers);
+    await expect(page.locator('#send-email')).toBeHidden();
+    await page.locator('#try-again').click();
+    for (let index = 0; index < 6; index++) await expect(page.locator(`[data-blank="${index}"]`)).toHaveValue('');
+  }
+});
+
+test('typing requires nonblank answers and renders arbitrary text safely', async ({ page }) => {
+  await enter(page);
+  await fillAnswers(page);
+  const first = page.locator('[data-blank="0"]');
+  await first.fill('   ');
+  await expect(page.locator('#check-answers')).toBeDisabled();
+  await first.press('Enter');
+  await expect(first).toBeVisible();
+  await expect(page.locator('#answer-feedback')).toBeEmpty();
+  const text = '<img src=x onerror="window.unexpected=true">';
+  await first.fill(text);
+  await page.locator('#check-answers').click();
+  await expect(page.locator('#answer-feedback')).toContainText('5/6');
+  await expect(page.locator('#reply-text del')).toHaveText(text);
+  await expect(page.locator('#reply-text img')).toHaveCount(0);
+  expect(await page.evaluate(() => window.unexpected)).toBeUndefined();
+  await page.locator('#try-again').click();
+  await first.fill('  stilt house  ');
+  await page.locator('#check-answers').click();
+  await expect(page.locator('#answer-feedback')).toHaveText('Excellent! You got all the answers right!');
 });

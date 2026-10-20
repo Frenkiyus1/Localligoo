@@ -8,7 +8,12 @@ const items = [
 ];
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.writing-screen')];
-const choices = items.map(item => item.answer);
+function isCorrect(value, index) {
+  const answer = items[index].answer;
+  const typed = value.trim();
+  return typed === answer || typed === answer[0].toUpperCase() + answer.slice(1);
+}
+const isComplete = () => values.every(value => value.trim().length > 0);
 let values = Array(6).fill('');
 let checked = false;
 let delivered = false;
@@ -33,12 +38,11 @@ function slot(index, mode) {
   const item = items[index];
   const number = `<span class="blank-number">(${index + 1})</span>`;
   if (mode === 'edit') {
-    const options = choices.map(value => `<option value="${escape(value)}"${values[index] === value ? ' selected' : ''}>${escape(value)}</option>`).join('');
-    return `<span class="answer-slot">${number}<select name="blank-${index + 1}" data-blank="${index}" aria-label="Blank ${index + 1}: ${item.prompt}"><option value="" disabled${values[index] ? '' : ' selected'}>Choose…</option>${options}</select></span>`;
+    return `<span class="answer-slot">${number}<input type="text" name="blank-${index + 1}" data-blank="${index}" value="${escape(values[index])}" aria-label="Blank ${index + 1}: ${item.prompt}" placeholder="Type here" maxlength="60" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" required></span>`;
   }
-  const correct = mode === 'sent' || values[index] === item.answer;
-  const text = correct ? `<span aria-hidden="true">✓ </span>${escape(item.answer)}` : `<del>${escape(values[index])}</del> <span aria-hidden="true">→</span> <span class="corrected-answer">${escape(item.answer)}</span>`;
-  const label = `Blank ${index + 1}: ${correct ? 'Correct, ' + item.answer : 'Incorrect, ' + values[index] + '. Correct answer: ' + item.answer}. Show explanation`;
+  const correct = isCorrect(values[index], index);
+  const text = correct ? `<span aria-hidden="true">✓ </span>${escape(values[index].trim())}` : `<del>${escape(values[index])}</del> <span aria-hidden="true">→</span> <span class="corrected-answer">${escape(item.answer)}</span>`;
+  const label = `Blank ${index + 1}: ${correct ? 'Correct, ' + values[index].trim() : 'Incorrect, ' + values[index] + '. Correct answer: ' + item.answer}. Show explanation`;
   return `<span class="answer-slot">${number}<button type="button" class="answer-result${correct ? '' : ' is-incorrect'}" data-answer="${index}" data-correct="${correct}" aria-controls="answer-explanation" aria-expanded="false" aria-label="${escape(label)}">${text}</button></span>`;
 }
 
@@ -56,8 +60,8 @@ function renderDraft() {
   closeExplanation();
   $('#reply-text').innerHTML = email(checked ? 'checked' : 'edit');
   $('#check-answers').hidden = checked;
-  $('#try-again').hidden = !checked || values.every((value, i) => value === items[i].answer);
-  $('#send-email').hidden = !checked || !values.every((value, i) => value === items[i].answer);
+  $('#try-again').hidden = !checked || values.every(isCorrect);
+  $('#send-email').hidden = !checked || !values.every(isCorrect);
   $('#explanation-hint').hidden = !checked;
   if (!checked) {
     $('#answer-feedback').textContent = '';
@@ -66,10 +70,10 @@ function renderDraft() {
   }
 }
 function updateCheckButton() {
-  $('#check-answers').disabled = !values.every(Boolean);
+  $('#check-answers').disabled = !isComplete();
 }
-$('#reply-text').addEventListener('change', event => {
-  if (!event.target.matches('select[data-blank]') || checked) return;
+$('#reply-text').addEventListener('input', event => {
+  if (!event.target.matches('input[data-blank]') || checked) return;
   values[Number(event.target.dataset.blank)] = event.target.value;
   updateCheckButton();
 });
@@ -77,10 +81,10 @@ $('#reply-alex').addEventListener('click', () => { renderDraft(); showScreen('co
 $('#read-alex').addEventListener('click', () => showScreen('guest-screen'));
 $('#reply-form').addEventListener('submit', event => {
   event.preventDefault();
-  if (checked || !values.every(Boolean)) return;
+  if (checked || !isComplete()) return;
   checked = true;
   renderDraft();
-  const score = values.filter((value, i) => value === items[i].answer).length;
+  const score = values.filter(isCorrect).length;
   const feedback = $('#answer-feedback');
   feedback.textContent = score === 6 ? 'Excellent! You got all the answers right!' : `Good try! You got ${score}/6 correct. Check the red boxes and try again!`;
   feedback.classList.toggle('needs-retry', score !== 6);
@@ -89,8 +93,8 @@ $('#reply-form').addEventListener('submit', event => {
   feedback.scrollIntoView({ block: 'nearest', behavior: 'instant' });
 });
 $('#try-again').addEventListener('click', () => {
-  const firstWrong = values.findIndex((value, i) => value !== items[i].answer);
-  values = values.map((value, i) => value === items[i].answer ? value : '');
+  const firstWrong = values.findIndex((value, i) => !isCorrect(value, i));
+  values = values.map((value, i) => isCorrect(value, i) ? value : '');
   checked = false;
   renderDraft();
   $(`[data-blank="${firstWrong}"]`)?.focus();
@@ -209,7 +213,7 @@ function playSendSound() {
   } catch { /* The learning flow also works when sound is unavailable. */ }
 }
 $('#send-email').addEventListener('click', () => {
-  if (!checked || delivered || !values.every((value, i) => value === items[i].answer)) return;
+  if (!checked || delivered || !values.every(isCorrect)) return;
   delivered = true;
   $('#sent-email-text').innerHTML = email('sent');
   $('#confetti').replaceChildren(...Array.from({ length: 32 }, (_, i) => {
