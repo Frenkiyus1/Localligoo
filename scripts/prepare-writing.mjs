@@ -16,4 +16,17 @@ await crop("2/2 o elm.png", "homestay.webp", { left: 0, top: 178, width: 2405, h
 await crop("1/1 O ELM.png", "badge.webp", { left: 65, top: 240, width: 880, height: 200 }, 660);
 await crop("2/2 o elm.png", "paper.webp", { left: 650, top: 2700, width: 500, height: 500 });
 await crop("1/1 O ELM.png", "background.webp", { left: 0, top: 500, width: 50, height: 500 });
+// Keep the supplied feedback bubbles and buttons intact; trim export padding only.
+async function element(file, name) {
+  await sharp(fileURLToPath(new URL(file, source))).trim().webp({ lossless: true }).toFile(fileURLToPath(new URL(name, target)));
+}
+for (let number = 1; number <= 6; number++) {
+  for (const [label, state] of [["ĐÚNG", "correct"], ["SAI", "incorrect"]]) {
+    await element(`2/PHẦN GIẢI THÍCH PHƯƠNG ÁN/(${number}) ${label}.png`, `explanation-${number}-${state}.webp`);
+  }
+}
+await element("1/REPLY ALEX.png", "reply-alex.webp");
+await element("2/CHECK ANS.png", "check-answers.webp");
+await element("3/VIEW SENT EMAIL.png", "view-sent-email.webp");
+await element("3/NEXT CHALLENGE.png", "next-challenge.webp");
 console.log("Writing artwork prepared in assets/writing/");

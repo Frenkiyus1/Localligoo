@@ -45,10 +45,6 @@
 .writing-feedback.needs-retry { color: #a2332b; background: #ffe2ca; }
 .explanation-hint { font-size: .8em; text-align: center; line-height: 1.7; }
 .writing-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; margin-top: 24px; }
-.suggested-answers { width: 66%; margin: 45px auto; text-align: center; }
-.suggested-answers h3 { margin: 0 0 22px; font-size: clamp(25px, 3.1vw, 52px); font-weight: 900; }
-.suggested-answers ul { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0; margin: 0; border-top: 3px solid #a38a59; border-left: 3px solid #a38a59; list-style: none; }
-.suggested-answers li { padding: 14px 10px; border-right: 3px solid #a38a59; border-bottom: 3px solid #a38a59; font-size: clamp(14px, 1.7vw, 28px); font-weight: 700; }
 .sent-actions { position: absolute; top: 68%; left: 17%; width: 66%; justify-content: space-between; margin: 0; }
 .sent-actions .writing-button { width: 37%; min-height: 7cqw; padding: 1cqw; border-width: .5cqw; font-size: 2cqw; text-transform: uppercase; }
 .send-flourish { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -61,11 +57,9 @@
 #sent-preview { padding: 35px 0; }
 #preview-title { margin: 0 20px 15px; font-size: clamp(28px, 4vw, 60px); font-weight: 900; text-align: center; }
 .preview-note { margin: 0 20px 30px; text-align: center; line-height: 1.8; }
-.answer-tooltip { position: fixed; z-index: 30; width: min(450px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 24px; border: 3px solid #b49242; border-radius: 16px; background: #f7d276; box-shadow: 0 10px 35px #54370f45; color: #684415; font: 600 14px/1.8 "Montserrat", Arial, sans-serif; }
-.answer-tooltip h3 { margin: 0 0 12px; font-size: 19px; line-height: 1.5; font-weight: 900; }
-.answer-tooltip p { margin: 12px 0; }
-#explanation-meaning { font-weight: 800; }
-.answer-tooltip .writing-button { display: flex; margin-left: auto; min-height: 44px; padding: 8px 20px; font-size: 13px; }
+.answer-tooltip { position: fixed; z-index: 30; width: min(680px, calc(100vw - 32px), calc((100dvh - 32px) * 1263 / 786)); padding: 0; border: 0; background: transparent; }
+#explanation-art { display: block; width: 100%; height: auto; }
+#close-explanation { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; }
 .writing-noscript { padding: 20px; text-align: center; }
 @media (max-width: 1000px) {
   .writing-header { padding-inline: 20px; background-position: right top; background-size: 1000px auto; }
@@ -83,7 +77,6 @@
   .reply-window { width: 92%; }
   .writing-task { width: 88%; margin: 25px auto 35px; font-size: 16px; }
   .writing-task h3 { font-size: 32px; }
-  .suggested-answers { width: 88%; margin: 35px auto; }
   .sent-actions { position: relative; top: auto; left: auto; width: auto; justify-content: center; margin: -8px 0 0; }
   .sent-actions .writing-button { width: auto; min-height: 48px; padding: 14px 24px; border-width: 4px; font-size: 14px; }
   .sent-copy .mail-copy { padding: 35px 25px 50px; text-align: center; }
@@ -103,7 +96,6 @@
   .answer-slot { white-space: normal; }
   .answer-slot select { width: 145px; font-size: 13px; }
   .writing-button { padding: 13px 18px; font-size: 13px; }
-  .suggested-answers li { font-size: 12px; padding: 12px 5px; }
   .sent-actions { gap: 12px; }
   .sent-actions .writing-button { padding: 12px 15px; font-size: 12px; }
   .homestay-art { width: 100%; }
@@ -112,12 +104,14 @@
   .is-celebrating .flying-letter, .is-celebrating .confetti-piece { animation: none; }
 }
 
-.writing-word-notes { width: 83%; margin: 35px auto; padding: 18px 22px; border: 2px solid #b2ad6e; border-radius: 18px; background: #fff3d2b8; font-size: 14px; line-height: 1.7; }
-.writing-word-notes summary { min-height: 32px; font-weight: 800; cursor: pointer; }
-.writing-word-notes summary:focus-visible { outline: 3px solid #765021; outline-offset: 4px; }
-.word-note-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
-.word-note-groups h3 { margin: 12px 0; font-size: 16px; font-weight: 800; }
-.word-note-groups dl { margin: 0; }
-.word-note-groups dt { font-weight: 800; }
-.word-note-groups dd { margin: 0 0 16px; }
-@media (max-width: 800px) { .word-note-groups { grid-template-columns: 1fr; gap: 8px; } .writing-word-notes { width: 88%; } }
+/* Use the supplied button exports from WRITING/1, /2 and /3. */
+.writing-button.writing-art-button { display: inline-block; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; line-height: 0; }
+.writing-button.writing-art-button:hover:not(:disabled) { background: transparent; filter: brightness(1.035); }
+.writing-art-button img { display: block; width: 100%; height: auto; }
+.guest-reply.writing-art-button { height: auto; }
+#check-answers.writing-art-button { width: clamp(230px, 24vw, 520px); }
+.sent-actions .writing-art-button { width: 37%; }
+@media (max-width: 1000px) {
+  .guest-reply.writing-art-button { width: 220px; }
+  .sent-actions .writing-art-button { width: min(44%, 300px); }
+}

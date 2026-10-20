@@ -1,10 +1,10 @@
 const items = [
-  { answer: "stilt house", prompt: "type of house", meaning: "stilt house = nhà sàn", good: "You did a great job!", retry: "Oops! Don’t worry, let’s try again!", explain: 'It stands after “traditional Thai”. We need a noun for a type of house. The picture shows a house raised on wooden posts.' },
-  { answer: "brocade", prompt: "blanket material or pattern", meaning: "brocade blankets = chăn thổ cẩm", good: "Perfect! Alex is very happy with your email!", retry: "Nice try! Keep going!", explain: 'It stands before “blankets”. We need a word for their material or pattern. Brocade has colourful woven patterns.' },
-  { answer: "plum", prompt: "kind of tree", meaning: "plum trees = những cây mận", good: "Awesome! Alex loves your answer!", retry: "Almost there! Check again!", explain: 'It stands before “trees”. We need a fruit name. Keep “plum” singular here; “trees” already has -s for more than one tree.' },
-  { answer: "fireplace", prompt: "source of warmth", meaning: "fireplace = bếp lửa / lò sưởi", good: "Great job! You made Alex smile!", retry: "So close! Give it another shot!", explain: 'It comes after “sit around a warm…”. We need a noun for a heat source. The picture shows a central fire where people can sit together.' },
-  { answer: "hills", prompt: "tea landscape", meaning: "tea hills = các đồi chè", good: "Bingo! Alex is so proud of you!", retry: "Don’t give up! You can do it!", explain: 'It comes after “tea”. We need a noun for small mountains. Add -s because there are several hills.' },
-  { answer: "Pine Forest", prompt: "place near Ban Ang", meaning: "Pine Forest = rừng thông", good: "Fantastic! You got it right!", retry: "Oops! Take a close look!", explain: 'It comes after “Ban Ang”. This is the name of a famous place, so use capital letters: Ban Ang Pine Forest.' },
+  { answer: "stilt house", prompt: "type of house", meaning: "stilt house = nhà sàn", good: "You did a great job!!", retry: "Oops! Don’t worry, let’s try again!", explain: 'It stands after the phrase “traditional Thai” → We need a NOUN for a type of house.' },
+  { answer: "brocade", prompt: "blanket material or pattern", meaning: "brocade blankets = chăn thổ cẩm", good: "Perfect! Alex is very happy with your email!", retry: "Nice try! Keep going!", explain: 'Stands before “blankets”. We need a word for material/pattern.' },
+  { answer: "plum", prompt: "kind of tree", meaning: "plum trees = những cây mận", good: "Awesome! Alex loves your answer!", retry: "Almost there! Check again!", explain: 'Stands before “trees”. We need a fruit name (add -s for many trees).' },
+  { answer: "fireplace", prompt: "source of warmth", meaning: "fireplace = bếp lửa / lò sưởi", good: "Great job! You made Alex smile!", retry: "So close! Give it another shot!", explain: 'Comes after “sit around a warm…”. We need a noun for a heat source.' },
+  { answer: "hills", prompt: "tea landscape", meaning: "tea hills = các đồi chè", good: "Bingo! Alex is so proud of you!", retry: "Don’t give up! You can do it!", explain: 'Comes after “tea”. We need a noun for small mountains (add -s for many hills).' },
+  { answer: "Pine Forest", prompt: "place near Ban Ang", meaning: "Pine Forest = Rừng thông", good: "Fantastic! You got it right!", retry: "Oops! Take a close look!", explain: 'Comes after “Ban Ang”. A famous place, remember to capitalize (pine forest → Pine Forest!).' },
 ];
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.writing-screen')];
@@ -15,6 +15,7 @@ let delivered = false;
 let activeAnswer = null;
 let hideTimer;
 let returningFocus = false;
+let suppressHover = false;
 let audioContext;
 const popup = $('#answer-explanation');
 const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -110,16 +111,20 @@ function explain(button) {
   clearTimeout(hideTimer);
   if (activeAnswer && activeAnswer !== button) activeAnswer.setAttribute('aria-expanded', 'false');
   activeAnswer = button;
-  const item = items[Number(button.dataset.answer)];
-  $('#explanation-title').textContent = button.dataset.correct === 'true' ? item.good : item.retry;
-  $('#explanation-copy').textContent = 'Explain: ' + item.explain;
-  $('#explanation-meaning').textContent = 'Answer: ' + item.meaning;
+  const index = Number(button.dataset.answer);
+  const item = items[index];
+  const correct = button.dataset.correct === 'true';
+  const artwork = $('#explanation-art');
+  // The visible explanation is the supplied image. Alt text transcribes it for accessibility.
+  artwork.src = `./assets/writing/explanation-${index + 1}-${correct ? 'correct' : 'incorrect'}.webp`;
+  artwork.alt = `${correct ? item.good : item.retry} Explain: ${item.explain} Answer: ${item.meaning}`;
   button.setAttribute('aria-expanded', 'true');
   popup.hidden = false;
   positionExplanation();
 }
 function closeExplanation(returnFocus = false) {
   clearTimeout(hideTimer);
+  if (returnFocus) suppressHover = true;
   const previous = activeAnswer;
   activeAnswer?.setAttribute('aria-expanded', 'false');
   activeAnswer = null;
@@ -139,7 +144,7 @@ function scheduleClose() {
 for (const region of [$('#reply-text'), $('#sent-email-text')]) {
   region.addEventListener('pointerover', event => {
     const button = event.target.closest('[data-answer]');
-    if (button && event.pointerType !== 'touch') explain(button);
+    if (button && !suppressHover && event.pointerType !== 'touch') explain(button);
   });
   region.addEventListener('pointerout', event => {
     if (event.target.closest('[data-answer]') && !event.relatedTarget?.closest?.('[data-answer]')) scheduleClose();
@@ -148,12 +153,21 @@ for (const region of [$('#reply-text'), $('#sent-email-text')]) {
   region.addEventListener('focusout', scheduleClose);
   region.addEventListener('click', event => { const button = event.target.closest('[data-answer]'); if (button) explain(button); });
 }
+// Hiding a bubble can expose an answer under the stationary pointer.
+// Wait for actual pointer movement before allowing hover to reopen it.
+document.addEventListener('pointermove', event => {
+  if (!suppressHover) return;
+  suppressHover = false;
+  const button = event.target.closest('[data-answer]');
+  if (button && event.pointerType !== 'touch') explain(button);
+});
 popup.addEventListener('pointerenter', () => clearTimeout(hideTimer));
 popup.addEventListener('pointerleave', scheduleClose);
 popup.addEventListener('focusout', scheduleClose);
 $('#close-explanation').addEventListener('click', () => closeExplanation(true));
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && !popup.hidden) { event.preventDefault(); closeExplanation(true); } });
 document.addEventListener('pointerdown', event => { if (!popup.hidden && !popup.contains(event.target) && !event.target.closest('[data-answer]')) closeExplanation(); });
+$('#explanation-art').addEventListener('load', positionExplanation);
 window.addEventListener('resize', positionExplanation);
 window.addEventListener('scroll', positionExplanation, { passive: true });
 

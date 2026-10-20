@@ -25,9 +25,11 @@ test('Writing opens the supplied artwork and preserves a draft when rereading Al
   await expect(page.locator('#compose-screen')).toBeHidden();
   await expect(page.locator('#guest-screen .canvas-art')).toHaveAttribute('src', './assets/writing/guest.webp');
   await expect(page.locator('.guest-copy')).toContainText('alex2042002@gmail.com');
+  await expect(page.locator('#reply-alex img')).toHaveAttribute('src', './assets/writing/reply-alex.webp');
   await screenshot(page, testInfo, 'writing-guest');
   await page.locator('#reply-alex').click();
   await expect(page.locator('[data-blank]')).toHaveCount(6);
+  await expect(page.locator('#check-answers img')).toHaveAttribute('src', './assets/writing/check-answers.webp');
   await expect(page.locator('#check-answers')).toBeDisabled();
   await expect(page.locator('#send-email')).toBeHidden();
   await choose(page, ['stilt house']);
@@ -36,11 +38,6 @@ test('Writing opens the supplied artwork and preserves a draft when rereading Al
   await expect(page.locator('#guest-screen')).toBeVisible();
   await page.locator('#reply-alex').click();
   await expect(page.locator('[data-blank="0"]')).toHaveValue('stilt house');
-  await page.locator('.writing-word-notes summary').click();
-  await expect(page.locator('.writing-word-notes')).toContainText('earthen house / rammed-earth house');
-  await expect(page.locator('.writing-word-notes')).toContainText('woven mat');
-  await expect(page.locator('.writing-word-notes')).toContainText('waterfall');
-  await page.locator('.writing-word-notes summary').click();
   await screenshot(page, testInfo, 'writing-compose');
   expect(errors).toEqual([]);
 });
@@ -56,8 +53,10 @@ test('wrong answers show corrections and explanations; retry keeps correct answe
   const wrong = page.locator('#reply-text [data-answer="1"]');
   await wrong.click();
   await expect(page.locator('#answer-explanation')).toBeVisible();
-  await expect(page.locator('#explanation-title')).toHaveText('Nice try! Keep going!');
-  await expect(page.locator('#explanation-meaning')).toContainText('brocade blankets = chăn thổ cẩm');
+  await expect(page.locator('#explanation-art')).toHaveAttribute('src', './assets/writing/explanation-2-incorrect.webp');
+  await expect(page.locator('#explanation-art')).toHaveAttribute('alt', /brocade blankets = chăn thổ cẩm/);
+  await page.locator('#explanation-art').evaluate(image => image.decode());
+  await page.locator('#answer-explanation').screenshot({ path: testInfo.outputPath('writing-incorrect-explanation.png') });
   await expect(page.locator('#answer-explanation')).toBeInViewport();
   await page.locator('#close-explanation').click();
   await expect(page.locator('#answer-explanation')).toBeHidden();
@@ -86,7 +85,7 @@ test('six correct answers send once, allow reading all explanations, and continu
   await page.locator('#check-answers').click();
   const plum = page.locator('#reply-text [data-answer="2"]');
   await plum.focus();
-  await expect(page.locator('#explanation-copy')).toContainText('Keep “plum” singular');
+  await expect(page.locator('#explanation-art')).toHaveAttribute('src', './assets/writing/explanation-3-correct.webp');
   await page.keyboard.press('Escape');
   await expect(page.locator('#answer-explanation')).toBeHidden();
   if (testInfo.project.name === 'desktop') {
@@ -101,6 +100,8 @@ test('six correct answers send once, allow reading all explanations, and continu
   await expect(page.locator('#compose-screen')).toBeHidden();
   await expect(page.locator('#sent-screen')).toContainText('Email sent successfully!');
   await expect(page.locator('.confetti-piece')).toHaveCount(32);
+  await expect(page.locator('#view-sent img')).toHaveAttribute('src', './assets/writing/view-sent-email.webp');
+  await expect(page.locator('#next-challenge img')).toHaveAttribute('src', './assets/writing/next-challenge.webp');
   await screenshot(page, testInfo, 'writing-sent');
   await page.locator('#view-sent').click();
   await expect(page.locator('#sent-preview')).toBeVisible();
@@ -108,7 +109,8 @@ test('six correct answers send once, allow reading all explanations, and continu
   await expect(page.locator('#sent-email-text [data-correct="true"]')).toHaveCount(6);
   for (let index = 0; index < 6; index++) {
     await page.locator(`#sent-email-text [data-answer="${index}"]`).click();
-    await expect(page.locator('#explanation-meaning')).toContainText(correct[index]);
+    await expect(page.locator('#explanation-art')).toHaveAttribute('src', `./assets/writing/explanation-${index + 1}-correct.webp`);
+    await expect(page.locator('#explanation-art')).toHaveAttribute('alt', new RegExp(correct[index]));
     await expect(page.locator('#answer-explanation')).toBeInViewport();
     await page.keyboard.press('Escape');
   }
@@ -129,4 +131,33 @@ test('a fresh Writing visit starts a new exercise', async ({ page }) => {
   await page.locator('#reply-alex').click();
   for (let index = 0; index < 6; index++) await expect(page.locator(`[data-blank="${index}"]`)).toHaveValue('');
   await expect(page.locator('#check-answers')).toBeDisabled();
+});
+
+test('every blank opens its supplied incorrect and correct explanation images', async ({ page }, testInfo) => {
+  await enter(page);
+  await choose(page, ['brocade', 'plum', 'fireplace', 'hills', 'Pine Forest', 'stilt house']);
+  await page.locator('#check-answers').click();
+  await expect(page.locator('#answer-feedback')).toContainText('0/6');
+  for (let index = 0; index < 6; index++) {
+    await page.locator(`#reply-text [data-answer="${index}"]`).click();
+    const image = page.locator('#explanation-art');
+    await expect(image).toHaveAttribute('src', `./assets/writing/explanation-${index + 1}-incorrect.webp`);
+    await image.evaluate(element => element.decode());
+    expect(await image.evaluate(element => element.naturalWidth)).toBeGreaterThan(0);
+    await expect(page.locator('#answer-explanation')).toBeInViewport();
+    await page.locator('#close-explanation').click();
+  }
+  await page.locator('#try-again').click();
+  await choose(page);
+  await page.locator('#check-answers').click();
+  for (let index = 0; index < 6; index++) {
+    await page.locator(`#reply-text [data-answer="${index}"]`).click();
+    const image = page.locator('#explanation-art');
+    await expect(image).toHaveAttribute('src', `./assets/writing/explanation-${index + 1}-correct.webp`);
+    await image.evaluate(element => element.decode());
+    expect(await image.evaluate(element => element.naturalWidth)).toBeGreaterThan(0);
+    await expect(page.locator('#answer-explanation')).toBeInViewport();
+    if (index === 5) await page.locator('#answer-explanation').screenshot({ path: testInfo.outputPath('writing-correct-explanation.png') });
+    await page.keyboard.press('Escape');
+  }
 });
