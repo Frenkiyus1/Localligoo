@@ -1,8 +1,17 @@
 const KEY = "localingo.progress.v1";
 export const unitIds = ["my-new-school", "my-house", "my-friends", "my-neighbourhood"];
-export const unitLessons = {
-  "my-house": ["vocabulary", "pronunciation", "grammar-magic", "grammar-tidy", "reading-hunt", "reading-home", "listening", "writing", "speaking"],
+export const unitActivities = {
+  "my-house": [
+    { id: "vocabulary", lessons: ["vocabulary"] },
+    { id: "pronunciation", lessons: ["pronunciation"] },
+    { id: "grammar", lessons: ["grammar-magic", "grammar-tidy"] },
+    { id: "reading", lessons: ["reading-hunt", "reading-home"] },
+    { id: "listening", lessons: ["listening"] },
+    { id: "writing", lessons: ["writing"] },
+    { id: "speaking", lessons: ["speaking"] },
+  ],
 };
+export const unitLessons = Object.fromEntries(Object.entries(unitActivities).map(([unit, activities]) => [unit, activities.flatMap(activity => activity.lessons)]));
 let memory = { speaking: [], speakingVersion: 2, explore: {}, units: [], lessons: { "my-house": [] }, vocabulary: [] };
 function markLesson(state, unit, lesson) {
   const lessons = state.lessons[unit] ||= [];
@@ -35,7 +44,7 @@ export function saveProgress(update) {
   updateUnits(state);
   memory = state;
   try { localStorage.setItem(KEY, JSON.stringify(state)); }
-  catch { document.querySelectorAll("[data-storage-note]").forEach(el => { el.textContent = "Tiến độ chỉ được giữ trong phiên này vì trình duyệt đang chặn lưu trữ."; }); }
+  catch { document.querySelectorAll("[data-storage-note]").forEach(el => { el.textContent = "Tiến độ chỉ được giữ trong phiên này vì trình duyệt đang chặn lưu trữ."; el.hidden = false; }); }
   window.dispatchEvent(new Event("localingo-progress"));
   return state;
 }
@@ -56,6 +65,29 @@ export function renderProgress() {
   const progress = readProgress();
   document.querySelectorAll("[data-unit-progress]").forEach(el => { el.value = progress.units.length; el.max = unitIds.length; });
   document.querySelectorAll("[data-unit-count]").forEach(el => { el.textContent = progress.units.length + "/" + unitIds.length + " units completed"; });
+  document.querySelectorAll("[data-unit-percent]").forEach(el => { el.textContent = Math.round(progress.units.length / unitIds.length * 100) + "%"; });
+  document.querySelectorAll("[data-unit-step]").forEach(el => {
+    const done = progress.units.includes(el.dataset.unitStep);
+    el.classList.toggle("is-complete", done);
+    el.querySelector(".journey-step__marker").textContent = done ? "✓" : el.dataset.stepNumber;
+    el.querySelector("[data-step-status]").textContent = done ? "Completed" : "Not completed";
+  });
+  document.querySelectorAll("[data-activity-unit]").forEach(card => {
+    const unit = card.dataset.activityUnit, activities = unitActivities[unit] || [];
+    const completed = new Set(activities.filter(activity => activity.lessons.every(lesson => progress.lessons[unit]?.includes(lesson))).map(activity => activity.id));
+    card.querySelector("[data-activity-count]").textContent = completed.size + "/" + activities.length + " activities completed";
+    card.querySelector("[data-activity-percent]").textContent = (activities.length ? Math.round(completed.size / activities.length * 100) : 0) + "%";
+    const bar = card.querySelector("[data-activity-progress]"); bar.value = completed.size; bar.max = activities.length;
+    card.classList.toggle("is-complete", completed.size === activities.length);
+    card.querySelector("[data-activity-note]").textContent = completed.size === activities.length ? "Unit completed. Well done!" : "One activity at a time";
+    card.querySelectorAll("[data-activity-step]").forEach(el => {
+      const id = el.dataset.activityStep, index = activities.findIndex(activity => activity.id === id), done = completed.has(id);
+      const started = activities[index]?.lessons.some(lesson => progress.lessons[unit]?.includes(lesson)) || id === "vocabulary" && progress.vocabulary.length > 0 || id === "speaking" && progress.speaking.length > 0;
+      el.classList.toggle("is-complete", done); el.classList.toggle("is-started", !done && Boolean(started));
+      el.querySelector(".journey-step__marker").textContent = done ? "✓" : String(index + 1);
+      el.setAttribute("aria-label", "Open " + el.dataset.stepLabel + " activity. " + (done ? "Completed." : started ? "In progress." : "Not started."));
+    });
+  });
 }
 window.addEventListener("storage", renderProgress);
 window.addEventListener("localingo-progress", renderProgress);

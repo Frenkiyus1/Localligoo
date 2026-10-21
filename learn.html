@@ -32,10 +32,9 @@
 <h1>Your English adventure starts here!</h1>
 <p>Learn new words, discover new places, and find your voice along the way.</p>
 </div>
-<div class="art-progress">
-<span data-unit-count>0/4 units completed</span>
-<progress data-unit-progress max="4" value="0" aria-label="Units completed">
-</progress>
+<div class="art-progress journey-progress journey-progress--compact" style="--progress-segments:4">
+  <div class="journey-progress__summary"><span data-unit-count>0/4 units completed</span><strong data-unit-percent>0%</strong></div>
+  <div class="journey-progress__track"><progress data-unit-progress max="4" value="0" aria-label="Units completed"></progress></div>
 </div>
 <button class="unit-link unit-1" type="button" data-panel="my-new-school" aria-label="Start My New School">
 <span class="unit-copy">
@@ -68,14 +67,20 @@
 <h1 class="sr-only">Your English adventure starts here!</h1>
 </section>
 <div class="course-content">
-<section class="course-progress" aria-label="Learning progress across four units">
-<p>
-<strong>Your learning progress</strong>
-</p>
-<span data-unit-count>0/4 units completed</span>
-<progress data-unit-progress max="4" value="0" aria-label="Units completed">
-</progress>
-<p class="storage-note" data-storage-note>Tiến độ được lưu trên trình duyệt này.</p>
+<section class="course-progress journey-progress" aria-labelledby="course-progress-title" style="--progress-segments:4">
+  <div class="journey-progress__header">
+    <div class="journey-progress__identity"><span class="journey-progress__icon"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8c-4-3-9-3-12-2v20c4-1 8 0 12 3 4-3 8-4 12-3V6c-3-1-8-1-12 2Z"/><path d="M16 8v21M8 11c2 0 3 0 5 1m-5 4c2 0 3 0 5 1m7-5c2-1 3-1 5-1m-5 6c2-1 3-1 5-1"/></svg></span><div class="journey-progress__heading"><p class="journey-progress__eyebrow">YOUR ENGLISH JOURNEY</p><h2 id="course-progress-title">Your learning progress</h2></div></div>
+    <span class="journey-progress__percent" data-unit-percent>0%</span>
+  </div>
+  <div class="journey-progress__summary"><span data-unit-count aria-live="polite">0/4 units completed</span><span class="journey-progress__hint">Four units to explore</span></div>
+  <div class="journey-progress__track"><progress data-unit-progress max="4" value="0" aria-label="Units completed"></progress></div>
+  <ol class="journey-progress__steps" aria-label="Unit milestones">
+<li class="journey-step" data-unit-step="my-new-school" data-step-label="My New School" data-step-number="1"><span class="journey-step__marker" aria-hidden="true">1</span><span>My New School</span><span class="sr-only" data-step-status>Not completed</span></li>
+<li class="journey-step" data-unit-step="my-house" data-step-label="My House" data-step-number="2"><span class="journey-step__marker" aria-hidden="true">2</span><span>My House</span><span class="sr-only" data-step-status>Not completed</span></li>
+<li class="journey-step" data-unit-step="my-friends" data-step-label="My Friends" data-step-number="3"><span class="journey-step__marker" aria-hidden="true">3</span><span>My Friends</span><span class="sr-only" data-step-status>Not completed</span></li>
+<li class="journey-step" data-unit-step="my-neighbourhood" data-step-label="My Neighbourhood" data-step-number="4"><span class="journey-step__marker" aria-hidden="true">4</span><span>My Neighbourhood</span><span class="sr-only" data-step-status>Not completed</span></li>
+  </ol>
+  <p class="storage-note" data-storage-note role="status" hidden></p>
 </section>
 </div>
 </main>

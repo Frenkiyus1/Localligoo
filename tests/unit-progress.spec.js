@@ -36,6 +36,8 @@ test("finishing the final activity awards one unit, syncs across tabs and surviv
  await page.goto("/learn.html");
  await page.evaluate(({ key, speaking, lessons }) => localStorage.setItem(key, JSON.stringify({ speakingVersion: 2, speaking, explore: { 1: 2 }, lessons: { "my-house": lessons.filter(item => item !== "listening") }, units: [] })), { key, speaking, lessons });
  const overview = await context.newPage(); await overview.goto("/learn.html");
+ const house = await context.newPage(); await house.goto("/my-house.html");
+ await expect(house.locator("[data-activity-count]")).toHaveText("6/7 activities completed");
  await expect(overview.locator(".art-progress [data-unit-count]")).toHaveText("0/4 units completed");
  await page.goto("/listening.html"); await page.locator("#start-mission").click();
  await page.locator("#submit-matches").click();
@@ -49,6 +51,15 @@ test("finishing the final activity awards one unit, syncs across tabs and surviv
  expect((await state(page)).units).toEqual(["my-house"]);
  await expect(overview.locator(".art-progress [data-unit-count]")).toHaveText("1/4 units completed");
  await expect(overview.locator(".art-progress progress")).toHaveJSProperty("value", 1);
+ await expect(overview.locator("[data-unit-percent]")).toHaveText(["25%", "25%"]);
+ await expect(overview.locator("[data-unit-step=my-house]")).toHaveClass(/is-complete/);
+ await expect(house.locator("[data-activity-count]")).toHaveText("7/7 activities completed");
+ await expect(house.locator("[data-activity-percent]")).toHaveText("100%");
+ await expect(house.locator("[data-activity-progress]")).toHaveJSProperty("value", 7);
+ await expect(house.locator("[data-activity-step].is-complete")).toHaveCount(7);
+ await expect(house.locator("[data-activity-note]")).toHaveText("Unit completed. Well done!");
+ await house.locator(".course-content").screenshot({ path: testInfo.outputPath("house-progress-completed.png") });
+ await house.close();
  await page.locator("#play-again").click();
  expect((await state(page)).units).toEqual(["my-house"]);
  await overview.reload();
@@ -93,4 +104,37 @@ test("My House and Speaking have no speaking progress bars or counters",async({p
   await page.goto(path);
   await expect(page.locator("[data-speaking-count],[data-speaking-progress],.speaking-progress")).toHaveCount(0);
  }
+});
+
+
+test("My House groups multi-part activities and updates its progress without reloading", async ({ page }, testInfo) => {
+ await page.goto("/my-house.html");
+ await expect(page.getByRole("link", { name: "Start Speaking with BanBan", exact: false })).toHaveCount(0);
+ await expect(page.locator("[data-activity-count]")).toHaveText("0/7 activities completed");
+ await expect(page.locator("[data-activity-step]")).toHaveCount(7);
+ await expect(page.locator("[data-activity-percent]")).toHaveText("0%");
+ await page.evaluate(({ key }) => localStorage.setItem(key, JSON.stringify({
+  speakingVersion: 2, speaking: ["house-1"], units: [],
+  lessons: { "my-house": ["vocabulary", "pronunciation", "grammar-magic", "reading-hunt"] }
+ })), { key });
+ await page.reload();
+ await expect(page.locator("[data-activity-count]")).toHaveText("2/7 activities completed");
+ await expect(page.locator("[data-activity-percent]")).toHaveText("29%");
+ await expect(page.locator("[data-activity-progress]")).toHaveJSProperty("value", 2);
+ await expect(page.locator("[data-activity-step=grammar]")).toHaveClass(/is-started/);
+ await expect(page.locator("[data-activity-step=reading]")).toHaveClass(/is-started/);
+ await expect(page.locator("[data-activity-step=speaking]")).toHaveAccessibleName("Open Speaking activity. In progress.");
+ await page.evaluate(async () => (await import("/progress.js")).completeLesson("my-house", "grammar-tidy"));
+ await expect(page.locator("[data-activity-count]")).toHaveText("3/7 activities completed");
+ await expect(page.locator("[data-activity-percent]")).toHaveText("43%");
+ await expect(page.locator("[data-activity-step=grammar]")).toHaveClass(/is-complete/);
+ await expect(page.locator("[data-activity-step=grammar]")).not.toHaveClass(/is-started/);
+ expect((await state(page)).units).toEqual([]);
+ await page.reload();
+ await expect(page.locator("[data-activity-count]")).toHaveText("3/7 activities completed");
+ await page.evaluate(() => document.fonts.ready);
+ expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+ await page.locator(".course-content").screenshot({ path: testInfo.outputPath("house-progress-partial.png") });
+ await page.getByRole("link", { name: "Open Reading activity. In progress.", exact: true }).click();
+ await expect(page).toHaveURL(/reading.html$/);
 });
