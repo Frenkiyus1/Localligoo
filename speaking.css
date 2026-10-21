@@ -6,13 +6,6 @@
 .speaking-logo { display:block; width:clamp(90px,10vw,240px); flex-shrink:0; }
 .speaking-nav { display:flex; justify-content:center; gap:clamp(18px,3.4vw,72px); margin:auto; padding-right:12%; }
 .speaking-nav a,.speaking-nav button { border:0; border-radius:8px; background:transparent; color:inherit; text-decoration:none; padding:6px; min-height:44px; font:800 clamp(13px,1.56vw,30px)/1 'Montserrat',sans-serif; cursor:pointer; }
-.speaking-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 7%; background:#f7e8b3; }
-.speaking-toolbar p { font-size:13px; font-weight:800; }
-.speaking-back { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 8px 20px 8px 10px; border: 2px solid #fff8df; border-radius: 999px; background: #f9df8e; box-shadow: 0 3px 0 #9c824c55; color: #684415; font-size: clamp(13px, 1.15vw, 18px); font-weight: 800; line-height: 1.4; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
-.speaking-back-icon { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #fff6d9; }
-.speaking-back-icon svg { display: block; width: 18px; height: 18px; }
-.speaking-back:hover { background: #f4d47b; box-shadow: 0 4px 0 #9c824c55; transform: translateY(-1px); }
-.speaking-back:active { box-shadow: 0 1px 0 #9c824c55; transform: translateY(2px); }
 .speaking-activity { text-align:center; padding:28px 5% 20px; background:#fae9bb url('./assets/speaking/paper.webp') repeat; }
 .activity-label { display:table; margin:0 0 26px 2%; padding:14px 26px; border-radius:60px; background:#f8d77f; font-size:clamp(18px,2.4vw,36px); font-weight:900; }
 .question-number { margin:12px 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:2px; font-weight:800; }
@@ -46,7 +39,6 @@
 .speaking-body .completion { max-width:960px; margin:24px auto; }
 @media(max-width:640px) {
  .speaking-nav { display:none; } .speaking-header { min-height:70px; padding:12px 18px; }
- .speaking-toolbar { padding:16px; } .speaking-toolbar p { max-width:145px; text-align:right; font-size:11px; }
  .speaking-activity { padding:24px 16px 16px; } .activity-label { font-size:18px; padding:12px 18px; margin:0 auto 20px; }
  .speaking-picture { width:100%; margin:14px auto 20px; }
  .speaking-controls { gap:12px; justify-content:space-between; } .speaking-control { flex:1; min-width:0; font-size:11px; } .speaking-control img { width:60px; }
@@ -55,4 +47,3 @@
  .banban-hint { flex-wrap:wrap; gap:10px; } .banban-hint img { width:60px; height:80px; }
  .greeting-listen { right:4%; bottom:0; font-size:11px; padding:6px 10px; min-height:32px; }
 }
-@media(prefers-reduced-motion:reduce) { .speaking-back { transition:none; } }

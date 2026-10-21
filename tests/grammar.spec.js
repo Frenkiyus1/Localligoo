@@ -51,9 +51,7 @@ test("My House opens Grammar with the supplied cover and round artwork", async (
   await page.getByRole("link", { name: "Grammar — The Magic’s Game and Thai Stilt House Tidy-Up", exact: true }).click();
   await expect(page).toHaveURL(/grammar\.html$/);
   await expect(page).toHaveTitle("Grammar · My House — LOCALINGO");
-  await expect(page.locator(".grammar-toolbar nav, .grammar-toolbar button")).toHaveCount(0);
-  await expect(page.locator(".grammar-back")).toHaveAccessibleName("My House");
-  await expect(page.locator(".grammar-back")).toHaveAttribute("href", "./my-house.html");
+  await expect(page.locator(".grammar-toolbar, .grammar-back")).toHaveCount(0);
   await page.locator("#magic-intro .scene-source").evaluate(img => img.decode());
   await screenshot(page, testInfo, "grammar-intro");
   await page.getByRole("button", { name: "Let’s Start", exact: true }).click();
@@ -63,7 +61,7 @@ test("My House opens Grammar with the supplied cover and round artwork", async (
   await screenshot(page, testInfo, "grammar-round");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(errors).toEqual([]);
-  await page.locator(".grammar-back").click();
+  await page.goBack();
   await expect(page).toHaveURL(/my-house\.html$/);
 });
 

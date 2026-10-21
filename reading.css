@@ -8,12 +8,6 @@
 .reading-nav a, .reading-nav button { display: flex; align-items: center; min-height: 44px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: #684415; text-decoration: none; font: 800 clamp(13px, 1.56vw, 30px)/1 "Montserrat", Arial, sans-serif; cursor: pointer; }
 .reading-nav :is(a, button):hover { background: #ffffff25; }
 #reading-content { max-width: 2405px; min-height: 70vh; margin-inline: auto; padding-bottom: 50px; }
-.reading-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 14px; padding: 16px 7%; background: #e4e9b766; }
-.reading-back { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 8px 20px 8px 10px; border: 2px solid #fff8df; border-radius: 999px; background: #f9df8e; box-shadow: 0 3px 0 #9c824c55; color: #684415; font-size: clamp(13px, 1.15vw, 18px); font-weight: 800; line-height: 1.4; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
-.reading-back-icon { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #fff6d9; }
-.reading-back-icon svg { display: block; width: 18px; height: 18px; }
-.reading-back:hover { background: #f4d47b; box-shadow: 0 4px 0 #9c824c55; transform: translateY(-1px); }
-.reading-back:active { box-shadow: 0 1px 0 #9c824c55; transform: translateY(2px); }
 .reading-screen { scroll-margin-top: 20px; }
 .screen-enter { animation: reading-enter .22s ease-out; }
 @keyframes reading-enter { from { opacity: .35; transform: translateY(5px); } to { opacity: 1; transform: none; } }
@@ -110,7 +104,6 @@
   .reading-logo { width: 85px; }
   .reading-nav { padding: 0; gap: 14px; }
   .reading-nav a, .reading-nav button { font-size: 12px; }
-  .reading-toolbar { padding: 16px; }
   .reading-cover { padding: 28px 20px 40px; text-align: center; }
   .cover-art { display: none; }
   .cover-copy, .document-copy { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
@@ -150,7 +143,6 @@
 @media (max-width: 540px) {
   .reading-header { min-height: 70px; padding: 12px 18px; }
   .reading-nav { display: none; }
-  .reading-toolbar { gap: 12px; }
   .reading-choice { gap: 9px; padding: 12px; font-size: 13px; }
   .choice-letter { width: 24px; height: 24px; }
   .question-panel { padding: 20px 16px; }
@@ -169,7 +161,6 @@
   .practice-item { line-height: 2; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .reading-back { transition: none; }
   .screen-enter { animation: none; }
   .reading-button { transform: none !important; }
 }

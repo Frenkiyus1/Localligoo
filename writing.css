@@ -7,8 +7,6 @@
 .writing-nav a, .writing-nav button { display: flex; align-items: center; min-height: 44px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: #684415; text-decoration: none; font: 800 clamp(13px, 1.56vw, 30px)/1 "Montserrat", Arial, sans-serif; cursor: pointer; }
 .writing-nav :is(a, button):hover { background: #ffffff25; }
 #writing-content { max-width: 2405px; min-height: 70vh; margin: auto; padding-bottom: 40px; }
-.writing-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 5%; background: #e4e9b766; }
-.writing-toolbar a, .writing-toolbar button { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 18px; border: 2px solid #fff8df; border-radius: 30px; background: #f9df8e; color: inherit; font: 800 13px/1.5 "Montserrat", Arial, sans-serif; text-decoration: none; cursor: pointer; }
 .writing-screen { scroll-margin-top: 16px; }
 .writing-canvas { position: relative; container-type: inline-size; }
 .canvas-art, .homestay-art { display: block; width: 100%; height: auto; }
@@ -21,6 +19,7 @@
 .writing-task { width: 70%; margin: 30px auto 60px; font-size: clamp(16px, 1.65vw, 29px); font-weight: 600; line-height: 1.6; }
 .writing-task h3 { margin: 0 0 20px; font-size: clamp(30px, 4vw, 64px); font-weight: 900; text-align: center; text-transform: uppercase; paint-order: stroke fill; -webkit-text-stroke: 6px #fffaf1; }
 .writing-task p { margin: 5px 0; }
+.read-alex { min-height:44px; margin-top:16px; padding:10px 18px; border-width:2px; font-size:13px; }
 .mail-window { border: clamp(4px, .5vw, 9px) solid #64793b; border-radius: clamp(24px, 3vw, 56px); background: #ffefc3 url("./assets/writing/paper.webp") repeat; }
 .reply-window { width: 83%; margin: 0 auto 40px; }
 .mail-bar { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 10px 20px; border-radius: clamp(18px, 2.4vw, 48px) clamp(18px, 2.4vw, 48px) 0 0; background: #fffdf1; }
@@ -94,8 +93,6 @@
   .writing-header { justify-content: center; min-height: 72px; }
   .writing-nav { display: none; }
   .writing-logo { width: 90px; }
-  .writing-toolbar { padding: 10px 16px; }
-  .writing-toolbar a, .writing-toolbar button { font-size: 11px; padding-inline: 12px; }
   .writing-canvas { padding-inline: 16px; }
   .mail-copy { padding: 20px 16px; font-size: 14px; }
   .mail-bar { padding-inline: 16px; }

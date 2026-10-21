@@ -68,7 +68,6 @@ function showMission(autoplay=true){
  practiced=false;answered=false;hintIndex=0;
  $("banban-hint").hidden=true;
  $("activity-title").textContent="Activity "+mission().activity+": "+activities[mission().activity-1];
- $("activity-position").textContent="Activity "+mission().activity+" of 3";
  $("mission-count").textContent="Question "+mission().question+" of "+(mission().activity===3?1:2);
  $("mission-prompt").textContent=mission().prompt;message($("mission-hint"),mission().hint);
  $("mission-image").src="./assets/speaking/"+mission().image+".webp";$("mission-image").alt=mission().alt;

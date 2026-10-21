@@ -31,8 +31,8 @@ test('all four Explore topic links open the supplied stories and return to the t
     }
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: testInfo.outputPath(`${topic.id}.png`), fullPage: true, animations: 'disabled', style: '.skip-link { visibility: hidden; }' });
-    await page.locator('.story-toolbar .story-back').click();
-    await expect(page).toHaveURL(/explore\.html#topics$/);
+    await page.getByRole('link', { name: /^explore$/i }).first().click();
+    await expect(page).toHaveURL(/explore\.html$/);
     await expect(page.locator('.explore-topics a')).toHaveCount(4);
   }
   expect(errors).toEqual([]);
@@ -54,7 +54,8 @@ test.describe('static story pages', () => {
       await page.goto(`/explore-${topic.id}`);
       await expect(page.locator('h1')).toHaveText(topic.title);
       await expect(page.locator('.topic-story')).toHaveCount(3);
-      await expect(page.locator('.story-toolbar .story-back')).toHaveAttribute('href', './explore.html#topics');
+      await expect(page.locator('.story-toolbar, .story-bottom-nav')).toHaveCount(0);
+      await expect(page.getByRole('link', { name: /^explore$/i }).first()).toHaveAttribute('href', './explore.html');
     }
   });
 });
