@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b4c04c">
+<title>Pronunciation · The Bamboo Matcher — LOCALINGO</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./chrome.css">
+<link rel="stylesheet" href="./pronunciation.css">
+<script src="./app.js" type="module"></script>
+<script src="./pronunciation.js" type="module"></script>
+</head>
+<body class="pronunciation-body">
+<a class="skip-link" href="#pronunciation-content">Skip to The Bamboo Matcher</a>
+<header class="pronunciation-header">
+  <a class="pronunciation-logo" href="./index.html" aria-label="LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" alt="" width="2405" height="3619"></span></a>
+  <nav class="pronunciation-nav" aria-label="Main navigation"><a href="./index.html">HOME</a><a href="./learn.html">LEARN</a><a href="./explore.html">EXPLORE</a><button data-panel="badges" type="button">BADGES</button></nav>
+</header>
+
+
+<main id="pronunciation-content" tabindex="-1">
+ <div class="pronunciation-toolbar"><a href="./my-house.html">← My House</a><span>PRONUNCIATION</span></div>
+ <section class="matcher-panel" id="matcher-intro" aria-labelledby="intro-title">
+  <div class="intro-heading"><span class="hut-icon"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M11 28h42v23H11z" fill="#d2b876"/><path d="M7 28 20 9h26l13 19z" fill="#929860"/><path d="m12 24 9-12m0 13 7-13m2 13 5-13m4 13 3-13m5 13 1-13" stroke="#737a49" stroke-width="2"/><path d="M16 50v12m13-12v12m19-12v12" stroke="#b79752" stroke-width="4"/><path d="M24 34h12v17H24z" fill="#866c3f"/><path d="M41 34h8v8h-8z" fill="#8e9256"/><path d="m35 51 11 11m-9-7h9m-5 4h9" stroke="#b79752" stroke-width="2"/></svg></span><div><h1 id="intro-title">The Bamboo Matcher</h1><p>Listen carefully. Match the sounds!</p></div></div>
+  <div class="how-to-play"><h2>How to play</h2><ol><li>Tap a card to hear the word.</li><li>Choose another word with the same ending sound.</li><li>Match all 4 pairs to complete the game!</li></ol></div>
+  <aside class="sound-reminder"><h2>Remember!</h2><p>Some words end with <span class="ipa">/s/</span>, while others end with <span class="ipa">/z/</span>. Listen to the final sound, not just the spelling.</p></aside>
+  <p class="ready-message">Ready to explore the sounds?</p>
+  <button class="matcher-button start-game" id="start-game" type="button">Start Game <span aria-hidden="true">→</span></button>
+ </section>
+ <section class="matcher-panel" id="matcher-game" aria-labelledby="game-title" hidden>
+  <div class="game-heading"><div><h1 id="game-title" tabindex="-1">The Bamboo Matcher</h1><p>Listen and match!</p></div><p class="pair-count" id="pair-count" role="status">Pairs matched: 0/4</p></div>
+  <div class="sound-cards" id="sound-cards" role="group" aria-label="Match words with the same ending sound"></div>
+  <p class="match-feedback" id="match-feedback" role="status" aria-live="polite" hidden></p>
+ </section>
+ <section class="matcher-panel matcher-completion" id="matcher-completion" aria-labelledby="completion-title" hidden>
+  <img class="completion-scene" src="./assets/speaking/wood.webp" width="1186" height="636" alt="A traditional stilt house surrounded by green trees and mountains." loading="lazy">
+  <span class="trophy-icon"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M15 7h18v11c0 9-4 14-9 14s-9-5-9-14V7Z" stroke="currentColor" stroke-width="3"/><path d="M15 11H8v6c0 6 4 9 9 9m16-15h7v6c0 6-4 9-9 9M24 32v8m-8 1h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+  <h1 id="completion-title" tabindex="-1">Great job!</h1>
+  <p class="completion-message">You matched all the words!</p>
+  <p class="completion-note">You found all 4 pairs. Keep listening and learning!</p>
+  <button class="matcher-button" id="play-again" type="button">Play Again <span aria-hidden="true">↻</span></button>
+ </section>
+ <p class="audio-status" id="audio-status" role="status" hidden></p>
+ <noscript><p class="matcher-noscript">Enable JavaScript to hear the words and play The Bamboo Matcher.</p></noscript>
+</main>
+<nav class="mobile-nav" aria-label="Mobile navigation"><a href="./index.html">Home</a><a href="./learn.html">Learn</a><a href="./explore.html">Explore</a><button type="button" data-panel="badges">Badges</button></nav>
+<footer class="site-footer"><a class="footer-logo" href="./index.html" aria-label="Back to LOCALINGO home"><span class="footer-logo-window" aria-hidden="true"><img src="./assets/background.png" alt="" width="2405" height="3619" loading="lazy"></span></a><div class="footer-details"><p class="footer-tagline">LOCALINGO FROM LOCAL TO GLOBAL</p><p class="footer-contact-title">CONTACT US:</p><address class="footer-contact"><a class="footer-email" href="mailto:localingo.workspace@gmail.com"><svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>localingo.workspace@gmail.com</span></a><span class="footer-address"><svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>2 Pham Van Dong, Cau Giay, Ha Noi</span></span></address></div></footer>
+<dialog class="journey-dialog" aria-labelledby="panel-title" aria-describedby="panel-description"><form method="dialog"><button class="close-dialog" aria-label="Close" autofocus>×</button></form><p class="dialog-eyebrow">YOUR ENGLISH JOURNEY</p><h2 id="panel-title"></h2><p id="panel-description"></p><p class="panel-note"></p><form method="dialog"><button class="dialog-return">Back to your journey</button></form></dialog>
+
+
+</body>
+</html>

@@ -115,3 +115,11 @@ The Listening link in My House opens `listening.html`. Start Mission plays the s
 Submit grades only a complete set of four pairs. Per-pair feedback appears below the button; incomplete submissions show the requested reminder without revealing the transcript. After the first complete submission, students can expand the transcript, listen again and change their matches. Four correct pairs reveal the mission completion message and Play Again resets matches, feedback, transcript access and audio playback. The mission is usable with keyboard, mouse or touch.
 
 Each build uses `scripts/prepare-listening.mjs` to copy the supplied recording and introductory photo into `assets/listening/`. Run `npm test -- tests/listening.spec.js` to check navigation, actual media playback, grading, retries, transcript access and replay on desktop and mobile.
+
+## Pronunciation: The Bamboo Matcher
+
+The Pronunciation link in My House opens `pronunciation.html`, with the supplied How to play and Remember instructions. Eight shuffled cards play the corresponding recordings from `PRONUNCIATION/` and flip from the word to its IPA transcription and Vietnamese meaning. Match any two words with the same final sound: roofs, steps, baskets and mats use /s/; doors, windows, beads and clothes use /z/. The rule accepts all valid same-sound combinations rather than restricting students to four predetermined word pairs.
+
+Correct cards stay face up and can be tapped to listen again. An incorrect pair shows the requested feedback, blocks further selections briefly and flips back. Matching all four pairs opens the completion screen; Play Again resets matches, selections, timers and audio, then shuffles the cards. The completion banner reuses the existing Thai stilt-house artwork. The activity works with touch, mouse or keyboard.
+
+Each build uses `scripts/prepare-pronunciation.mjs` to copy all eight supplied recordings into `assets/pronunciation/`. Run `npm test -- tests/pronunciation.spec.js` for real audio decoding, card playback, sound matching, retries, replay and responsive screenshots.
