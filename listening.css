@@ -1,0 +1,100 @@
+/* A simple guidebook mission, with temporary picture slots. */
+.listening-body { margin:0; color:#684415; background:#faf0d7; font-family:"Montserrat",Arial,sans-serif; }
+.listening-body [hidden] { display:none !important; }
+.listening-header { display:flex; align-items:center; gap:24px; min-height:90px; padding:12px 5%; background:#b4c04c url("./assets/speaking/header.webp") repeat; }
+.listening-logo { display:block; flex-shrink:0; width:120px; }
+.listening-nav { display:flex; justify-content:center; gap:40px; margin:auto; padding-right:12%; }
+.listening-nav a,.listening-nav button { display:flex; align-items:center; min-height:44px; padding:6px; border:0; border-radius:8px; background:transparent; color:inherit; font:800 18px/1 "Montserrat",Arial,sans-serif; text-decoration:none; cursor:pointer; }
+.listening-nav :is(a,button):hover { background:#ffffff25; }
+#listening-content { min-height:70vh; padding-bottom:48px; }
+.listening-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 5%; background:#f4e5b8; font-size:12px; font-weight:800; letter-spacing:1px; }
+.listening-toolbar a { padding:10px 18px; border:2px solid #fffae9; border-radius:30px; background:#f9df8e; text-decoration:none; font-size:14px; letter-spacing:0; }
+.listening-intro { display:grid; grid-template-columns:1.3fr 1fr; align-items:center; gap:72px; max-width:1060px; margin:56px auto 12px; padding:0 28px; }
+.listening-kicker { margin:0 0 16px; color:#677133; font-size:12px; font-weight:800; letter-spacing:1.5px; line-height:1.6; }
+.intro-copy h1 { margin:0 0 24px; font-size:clamp(34px,4.3vw,60px); font-weight:900; line-height:1.1; }
+.storyline { margin:0 0 32px; font-size:18px; line-height:1.9; }
+.intro-photo { margin:0; }
+.intro-photo img { display:block; width:100%; max-height:480px; object-fit:cover; border-radius:120px 120px 16px 16px; }
+.listening-button { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:14px 30px; border:2px solid #687536; border-radius:999px; background:#dce4a3; color:#435126; font:800 16px/1.4 "Montserrat",Arial,sans-serif; cursor:pointer; }
+.listening-button:hover:not(:disabled) { background:#cbd98a; }
+.listening-button:disabled { opacity:.55; cursor:default; }
+.listening-body :is(button,a,summary,audio):focus-visible { outline:3px solid #76622c; outline-offset:4px; }
+.listening-mission { max-width:1060px; margin:36px auto 0; padding:0 28px; }
+.listening-mission>h1 { margin:0 0 12px; font-size:clamp(28px,3.3vw,42px); font-weight:900; line-height:1.25; }
+.mission-intro { margin:0; max-width:780px; font-size:16px; line-height:1.8; }
+.listening-audio { display:flex; align-items:center; flex-wrap:wrap; gap:14px 24px; margin:24px 0 30px; padding:18px 22px; border:1px solid #d6c99d; border-radius:16px; background:#fffaf0; }
+.listening-audio label { flex:1; min-width:200px; font-size:14px; font-weight:700; line-height:1.6; }
+.listening-audio audio { display:block; width:min(100%,420px); height:42px; }
+#audio-status { flex-basis:100%; margin:0; font-size:14px; }
+.matching-toolbar { display:flex; justify-content:space-between; align-items:center; gap:18px; min-height:44px; margin-bottom:16px; }
+.matching-toolbar p { margin:0; font-size:14px; line-height:1.6; }
+#match-count { flex-shrink:0; color:#677133; font-weight:800; }
+.matching-board { position:relative; display:grid; grid-template-columns:1.15fr 1fr; gap:80px; }
+.matching-column { position:relative; min-width:0; z-index:1; }
+.matching-column h2 { margin:0 0 14px; font-size:13px; text-transform:uppercase; letter-spacing:1.2px; }
+.matching-cards { display:grid; grid-auto-rows:150px; gap:16px; }
+.clue-card,.picture-card { position:relative; display:flex; align-items:center; width:100%; min-width:0; gap:12px; padding:18px; border:2px solid #d6c99d; border-radius:14px; background:#fffbf0; color:inherit; text-align:left; font:600 15px/1.6 "Montserrat",Arial,sans-serif; cursor:pointer; }
+.clue-card:hover:not(:disabled),.picture-card:hover:not(:disabled) { border-color:#85904d; }
+.clue-card.is-selected { border-color:#6c7a36; outline:3px solid #d7dfa9; background:#f2f5d8; }
+.clue-card.is-matched,.picture-card.is-matched { border-color:#aa9159; }
+.clue-card.is-correct,.picture-card.is-correct { border-color:#66833c; }
+.clue-card.is-incorrect,.picture-card.is-incorrect { border-color:#b96848; }
+.clue-card:disabled,.picture-card:disabled { color:inherit; cursor:default; opacity:1; }
+.clue-number,.picture-letter { display:grid; place-items:center; flex:0 0 30px; height:30px; border-radius:50%; background:#f5e5b4; font-size:13px; font-weight:800; }
+.clue-text { flex:1; }
+.match-letter { min-width:20px; margin-left:auto; color:#677133; font-weight:800; text-align:center; }
+.picture-card { padding:14px 18px; }
+.picture-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; flex:1; align-self:stretch; min-width:0; padding:10px; border:1px dashed #c9ba8e; border-radius:8px; background:#faf6e9; text-align:center; }
+.picture-placeholder strong { font-size:14px; line-height:1.4; }
+.picture-note { font-size:11px; font-weight:500; line-height:1.5; }
+.picture-match { position:absolute; right:17px; bottom:3px; font-size:10px; font-weight:700; color:#6b713e; }
+.match-lines { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+.match-lines path { fill:none; stroke:#a78a52; stroke-width:2; }
+.match-lines .line-correct { stroke:#66833c; }
+.match-lines .line-incorrect { stroke:#b96848; stroke-dasharray:5 4; }
+.submit-row { display:flex; justify-content:center; margin:28px 0; }
+.listening-feedback { padding:22px 26px; border:1px solid #d6c99d; border-radius:16px; background:#fffaf0; }
+.listening-feedback h2 { margin:0; font-size:18px; line-height:1.6; }
+#pair-feedback { list-style:none; margin:14px 0 0; padding:0; }
+#pair-feedback:empty { display:none; }
+#pair-feedback li { margin:8px 0; font-size:14px; line-height:1.8; }
+.pair-correct { color:#47652e; }
+.pair-incorrect { color:#984b32; }
+.listening-completion { margin-top:24px; padding:30px 24px; border:1px solid #aab779; border-radius:18px; background:#edf1d1; text-align:center; }
+.listening-completion h2 { max-width:650px; margin:0 auto; font-size:25px; font-weight:800; line-height:1.5; }
+.listening-completion>p:not(.listening-kicker) { margin:24px 0 12px; font-size:14px; }
+.listening-transcript { margin-top:24px; padding:20px 24px; border:1px solid #d6c99d; border-radius:14px; background:#fffaf0; }
+.listening-transcript summary { font-size:15px; font-weight:800; cursor:pointer; }
+#transcript-copy { margin-top:20px; }
+#transcript-copy p { margin:12px 0; font-size:14px; line-height:1.9; }
+.listening-noscript { padding:24px; text-align:center; }
+@media(max-width:700px) {
+ .listening-header { min-height:74px; padding:12px 20px; }
+ .listening-logo { width:100px; }
+ .listening-nav { display:none; }
+ .listening-toolbar { padding:12px 16px; }
+ .listening-intro { grid-template-columns:1fr; gap:30px; margin:32px auto 0; padding:0 22px; }
+ .intro-copy h1 { max-width:300px; }
+ .storyline { font-size:16px; line-height:1.85; }
+ .intro-photo img { max-width:365px; max-height:330px; margin:auto; object-position:center 62%; border-radius:90px 90px 14px 14px; }
+ .listening-mission { margin-top:26px; padding:0 16px; }
+ .listening-audio { gap:12px; padding:16px; margin-bottom:22px; }
+ .listening-audio audio { width:100%; }
+ .matching-toolbar { align-items:flex-start; gap:12px; }
+ .matching-toolbar p { font-size:12px; }
+ .matching-board { grid-template-columns:1.1fr 1fr; gap:28px; }
+ .matching-column h2 { font-size:11px; letter-spacing:.7px; }
+ .matching-cards { grid-auto-rows:180px; gap:14px; }
+ .clue-card,.picture-card { flex-direction:column; align-items:flex-start; justify-content:center; padding:12px 10px; gap:8px; font-size:12px; line-height:1.55; }
+ .clue-number,.picture-letter { flex:0 0 24px; width:24px; height:24px; font-size:11px; }
+ .clue-text { flex:0 1 auto; }
+ .match-letter { position:absolute; right:10px; top:14px; font-size:12px; }
+ .picture-placeholder { padding:8px 5px; width:100%; }
+ .picture-placeholder strong { font-size:11px; }
+ .picture-note { font-size:10px; }
+ .picture-match { right:11px; bottom:1px; font-size:9px; }
+ .listening-feedback { padding:18px; }
+ .listening-feedback h2 { font-size:16px; }
+ .listening-completion h2 { font-size:21px; }
+ .listening-transcript { padding:18px; }
+}

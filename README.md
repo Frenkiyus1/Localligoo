@@ -107,3 +107,11 @@ Speaking uses the five supplied questions in three activities: Listen and repeat
 Cloudflare Workers AI transcribes recordings. Complete and Speak accepts only full sentences matching the allowed location phrases; Activity 1 compares recognised words with the model. The current integration does not produce phoneme-level pronunciation scores. Activity 3 uses AI to correct the learner's own response. Without AI, all five questions remain available for listening and recording practice, without awarding assessed completion. Browser speech synthesis reads the greeting and dynamic corrections because no corresponding fixed recordings were supplied.
 
 The revised five-question speaking course uses speaking progress version 2; old speaking completions are reset while Explore progress is preserved.
+
+## Listening: Alex’s Guidebook
+
+The Listening link in My House opens `listening.html`. Start Mission plays the supplied `LISTENING/1013.mp4` as audio and opens a four-pair matching activity. Select a clue, then a picture slot; matching lines and letter labels show the current choices. The four temporary picture slots identify wooden stairs, a brocade seat pad cushion, a wooden table and a bamboo bench, ready for replacement with final images.
+
+Submit grades only a complete set of four pairs. Per-pair feedback appears below the button; incomplete submissions show the requested reminder without revealing the transcript. After the first complete submission, students can expand the transcript, listen again and change their matches. Four correct pairs reveal the mission completion message and Play Again resets matches, feedback, transcript access and audio playback. The mission is usable with keyboard, mouse or touch.
+
+Each build uses `scripts/prepare-listening.mjs` to copy the supplied recording and introductory photo into `assets/listening/`. Run `npm test -- tests/listening.spec.js` to check navigation, actual media playback, grading, retries, transcript access and replay on desktop and mobile.
