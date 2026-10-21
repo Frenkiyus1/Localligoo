@@ -1,4 +1,4 @@
-import { missions, activities, greeting } from "./missions.js";
+import { missions, activities } from "./missions.js";
 import { readProgress, saveProgress, renderProgress } from "./progress.js";
 import { toWav, base64Audio } from "./audio.js";
 const $ = id => document.getElementById(id);
@@ -10,6 +10,8 @@ let busy=false, preparing=false, configured=false, generation=0, acquiring=false
 let narration=null, finishNarration=null, hintTimer=null, hintIndex=0, answered=false;
 const record=$("record"), player=$("recording"), status=$("record-status"), aiStatus=status;
 const mission=()=>missions[current];
+const wordClips={under:"word-under.mp3",underneath:"word-underneath.mp3","at the bottom of":"word-at-the-bottom-of.mp3",below:"word-below.mp3"};
+const listenWord=word=>wordClips[word.toLowerCase()]?playClip(wordClips[word.toLowerCase()]):say(word);
 function message(el,text,error=false){el.textContent=text;el.classList.toggle("error",error);el.hidden=!text;}
 function element(tag,text,className=""){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el;}
 function stopNarration(){
@@ -75,7 +77,7 @@ function showMission(autoplay=true){
  $("mission-example").textContent=mission().sentence||"";
  $("word-bank").hidden=mission().activity!==2;
  $("word-bank").replaceChildren(...(mission().options||[]).map(word=>{
-  const button=element("button",word);button.type="button";button.addEventListener("click",()=>say(word));return button;
+  const button=element("button",word);button.type="button";button.addEventListener("click",()=>listenWord(word));return button;
  }));
  $("next-mission").querySelector("span").textContent=current===4?"Finish":missions[current+1].activity!==mission().activity?"Next activity":"Next question";
  message(status,"");
@@ -83,11 +85,10 @@ function showMission(autoplay=true){
  $("completion").hidden=readProgress().speaking.length!==5;
  if(autoplay)listenQuestion();scheduleHint();
 }
-$("listen-greeting").addEventListener("click",()=>say(greeting));
 $("start-speaking").addEventListener("click",async()=>{
  $("speaking-intro").hidden=true;$("speaking-exercise").hidden=false;showMission(false);
  $("mission-prompt").focus();history.replaceState(null,"","#missions");
- const token=generation;const finished=await say(greeting);
+ const token=generation;const finished=await playClip("hello-im-banban.mp3");
  if(finished&&token===generation&&!acquiring&&recorder?.state!=="recording")listenQuestion();
 });
 $("listen-prompt").addEventListener("click",()=>mission().activity===1?playClip("a1-answer-"+mission().question+".mp3"):listenQuestion());
@@ -140,14 +141,20 @@ function renderFeedback(assessment){
  }
  if(assessment.practiceWord){
   const note=element("p","This word was different or missing in the recognised text. Listen and try it again.");
-  const button=element("button","Listen: "+assessment.practiceWord,"feedback-word");button.type="button";button.addEventListener("click",()=>say(assessment.practiceWord));target.append(note,button);
+  const button=element("button","Listen: "+assessment.practiceWord,"feedback-word");button.type="button";button.addEventListener("click",()=>listenWord(assessment.practiceWord));target.append(note,button);
  }
  if(mission().activity===3&&assessment.correctedAnswer){
   const button=element("button","Listen to your improved answer","feedback-word");button.type="button";button.addEventListener("click",()=>say(assessment.correctedAnswer));target.append(button);
  }
 }
 async function speakFeedback(assessment){
- if(mission().activity===1){if(assessment.passed)await playClip("a1-success-"+mission().question+".mp3");else await say(assessment.encouragement);}
+ if(mission().activity===1){
+  if(assessment.passed)await playClip(mission().question===1?"well-done.mp3":"a1-success-2.mp3");
+  else if(assessment.practiceWord){
+   const token=generation;const finished=await playClip("nice-try.mp3");
+   if(finished&&token===generation)await listenWord(assessment.practiceWord);
+  }else await say(assessment.encouragement);
+ }
  else if(mission().activity===2)await playClip(assessment.passed?"a2-success.mp3":"a2-retry.mp3");
  else{
   const token=generation;const finished=await say(assessment.encouragement);

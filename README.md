@@ -47,6 +47,8 @@ Các bài học, audio và chức năng ghi âm hoạt động với máy chủ 
 2. **Complete and Speak** — 2 câu điền khuyết kèm từ gợi ý; học sinh nói cả câu hoàn chỉnh.
 3. **Look, Think and Speak** — mô tả căn phòng bằng 2–3 câu. Sau 90 giây chưa có câu trả lời, Banban đưa gợi ý. Khi có phản hồi, trang hiển thị và đọc câu cải thiện dựa trên lời học sinh.
 
+Sau khi nhấn Start ở Speaking, bản thu `hello im banban.mp3` tự phát; câu hỏi đầu tiên phát sau khi lời chào kết thúc. Bốn từ gợi ý `under`, `underneath`, `at the bottom of`, `below` dùng audio được cung cấp. Phản hồi đúng ở câu đầu Activity 1 dùng `well done.mp3`; phản hồi cần luyện từ dùng `nice try.mp3`, sau đó đọc từ cần luyện. Các phản hồi và câu hỏi khác giữ đúng nội dung của từng hoạt động; câu cải thiện ở Activity 3 vẫn được đọc theo câu trả lời của học sinh.
+
 Dừng ghi âm sẽ tự gửi câu trả lời khi AI đã kết nối. Nút Next mở ngay sau lần ghi âm đầu tiên, kể cả khi đang chấm hoặc câu trả lời chưa đúng. Chuyển câu sẽ hủy phản hồi đang chờ; mở lại bài sẽ quay về câu chưa hoàn thành đầu tiên. Huy hiệu **Storyteller** được mở khi cả 5 câu đạt đánh giá.
 
 ### Explore
@@ -102,7 +104,7 @@ Ba nhóm tài nguyên sau được tự đồng bộ khi chạy `npm run build`:
 | --- | --- | --- |
 | `PRONUNCIATION/*.mp3` — 8 audio | `assets/pronunciation/` | `scripts/prepare-pronunciation.mjs` |
 | `LISTENING/1013.mp4` và `LISTENING/Ảnh 1.png` | `assets/listening/` | `scripts/prepare-listening.mjs` |
-| Ba thư mục `ACT 1`, `ACT 2`, `ACT 3` trong `E. SPEAKING/Audio/` — 14 audio | `assets/speaking/audio/` | `scripts/prepare-speaking-audio.mjs` |
+| Ba thư mục `ACT 1`, `ACT 2`, `ACT 3` trong `E. SPEAKING/Audio/` và 7 bản thu Banban trong `E. SPEAKING/` — 21 audio | `assets/speaking/audio/` | `scripts/prepare-speaking-audio.mjs` |
 
 Giữ đúng tên file nguồn mà các script tham chiếu. Với hình ảnh thiết kế Writing và Explore, chạy lại các script sau khi thay nguồn tương ứng:
 
