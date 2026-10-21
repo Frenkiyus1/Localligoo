@@ -93,6 +93,7 @@ test("clues require correct answers, reveal separately and unlock the final myst
   await form.getByRole("radio").first().check();
   await form.getByRole("button", { name: "Submit", exact: true }).click();
   await expect(page.locator("#hunt-success")).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("localingo.progress.v1")).lessons["my-house"])).toContain("reading-hunt");
   await expect(page.locator("#hunt-success")).toContainText("Thai ethnic group");
   if (!testInfo.project.use.isMobile) {
     await page.locator("#butterfly-button").hover();
@@ -154,6 +155,7 @@ test("hometown feedback leads to practice with explanations for correct and inco
   await page.locator("#practice-2").selectOption("sofa");
   await page.getByRole("button", { name: "Check my answers", exact: true }).click();
   await expect(page.locator("#reading-practice .practice-explanation:visible")).toHaveCount(3);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("localingo.progress.v1")).lessons["my-house"])).toContain("reading-home");
   await expect(page.locator(".practice-correct")).toHaveCount(2);
   await expect(page.locator(".practice-incorrect")).toHaveCount(1);
   await expect(page.locator(".practice-explanation").nth(1)).toContainText('The air cannot be "busy"');

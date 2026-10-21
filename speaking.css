@@ -13,9 +13,6 @@
 .speaking-back-icon svg { display: block; width: 18px; height: 18px; }
 .speaking-back:hover { background: #f4d47b; box-shadow: 0 4px 0 #9c824c55; transform: translateY(-1px); }
 .speaking-back:active { box-shadow: 0 1px 0 #9c824c55; transform: translateY(2px); }
-.speaking-progress { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:12px; padding:12px 6%; font-size:12px; }
-.speaking-progress progress { width:min(220px,30vw); margin:0; }
-.speaking-progress [data-badge-status] { display:none; }
 .speaking-activity { text-align:center; padding:28px 5% 20px; background:#fae9bb url('./assets/speaking/paper.webp') repeat; }
 .activity-label { display:table; margin:0 0 26px 2%; padding:14px 26px; border-radius:60px; background:#f8d77f; font-size:clamp(18px,2.4vw,36px); font-weight:900; }
 .question-number { margin:12px 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:2px; font-weight:800; }
@@ -50,7 +47,6 @@
 @media(max-width:640px) {
  .speaking-nav { display:none; } .speaking-header { min-height:70px; padding:12px 18px; }
  .speaking-toolbar { padding:16px; } .speaking-toolbar p { max-width:145px; text-align:right; font-size:11px; }
- .speaking-progress { gap:8px; font-size:11px; } .speaking-progress progress { width:80px; }
  .speaking-activity { padding:24px 16px 16px; } .activity-label { font-size:18px; padding:12px 18px; margin:0 auto 20px; }
  .speaking-picture { width:100%; margin:14px auto 20px; }
  .speaking-controls { gap:12px; justify-content:space-between; } .speaking-control { flex:1; min-width:0; font-size:11px; } .speaking-control img { width:60px; }

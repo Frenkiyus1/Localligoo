@@ -1,3 +1,4 @@
+import { completeLesson } from "./progress.js";
 const items = [
   { answer: "stilt house", prompt: "type of house", meaning: "stilt house = nhà sàn", good: "You did a great job!!", retry: "Oops! Don’t worry, let’s try again!", explain: 'It stands after the phrase “traditional Thai” → We need a NOUN for a type of house.' },
   { answer: "brocade", prompt: "blanket material or pattern", meaning: "brocade blankets = chăn thổ cẩm", good: "Perfect! Alex is very happy with your email!", retry: "Nice try! Keep going!", explain: 'Stands before “blankets”. We need a word for material/pattern.' },
@@ -215,6 +216,7 @@ function playSendSound() {
 $('#send-email').addEventListener('click', () => {
   if (!checked || delivered || !values.every(isCorrect)) return;
   delivered = true;
+  completeLesson("my-house", "writing");
   $('#sent-email-text').innerHTML = email('sent');
   $('#confetti').replaceChildren(...Array.from({ length: 32 }, (_, i) => {
     const piece = document.createElement('i');

@@ -1,3 +1,4 @@
+import { completeVocabularyWord } from "./progress.js";
 const buttons = [...document.querySelectorAll('.vocab-word')];
 const status = document.querySelector('#vocab-audio-status');
 let currentAudio;
@@ -24,6 +25,7 @@ buttons.forEach(button => {
     audio.onended = () => {
       if (currentAudio !== audio) return;
       currentAudio = null;
+      completeVocabularyWord(word, buttons.map(item => item.dataset.word));
       clearSpeaking();
       status.textContent = `Try saying: ${word}`;
     };

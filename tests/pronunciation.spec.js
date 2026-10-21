@@ -92,6 +92,7 @@ test("matching by sound accepts alternative valid pairs, completes four pairs an
   await expect(page.locator("#match-feedback")).toHaveText("Correct! Both words end with the same sound!");
  }
  await expect(page.locator("#matcher-completion")).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("localingo.progress.v1")).lessons["my-house"])).toContain("pronunciation");
  await expect(page.locator("#matcher-game")).toBeHidden();
  await expect(page.locator("#completion-title")).toHaveText("Great job!");
  await expect(page.locator(".completion-message")).toHaveText("You matched all the words!");

@@ -1,3 +1,4 @@
+import { completeLesson } from "./progress.js";
 
 import { email, huntQuestions, clues, mystery, journal, homeQuestions, hometown, practiceQuestions } from "./reading-content.js";
 
@@ -28,6 +29,7 @@ function updateBasket() {
   $("clue-basket").setAttribute("aria-label", `Open clue basket, ${collected.size} of 4 clues collected${ready ? ", all clues ready!" : ""}`);
 }
 function showScreen(id, target) {
+  if (id === "hunt-success") completeLesson("my-house", "reading-hunt");
   document.querySelectorAll(".reading-screen").forEach(screen => { screen.hidden = screen.id !== id; });
   activity = id.startsWith("hunt-") ? "hunt" : "home";
   if (activity === "hunt") huntScreen = id;
@@ -327,6 +329,7 @@ function renderPractice() {
       explanation.hidden = false;
       explanation.append(node("strong", correct ? "✓ Correct" : "✕ Incorrect", correct ? "practice-correct" : "practice-incorrect"), node("p", practiceQuestions[i].explanation));
     });
+    completeLesson("my-house", "reading-home");
     status.textContent = "Practice complete! Read the explanation under each sentence.";
     submit.hidden = true;
     back.hidden = false;

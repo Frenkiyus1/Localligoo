@@ -1,3 +1,4 @@
+import { completeLesson } from "./progress.js";
 const $ = id => document.getElementById(id);
 const clues = [
  { text: "It is near the entrance to enter the house.", answer: "stairs" },
@@ -115,6 +116,7 @@ $("matching-form").addEventListener("submit", event => {
  }
  results = clues.map((clue, index) => matches[index] === clue.answer);
  completed = results.every(Boolean); selected = null;
+ if (completed) completeLesson("my-house", "listening");
  $("feedback-title").textContent = results.filter(Boolean).length + " / 4 missing notes found";
  $("pair-feedback").replaceChildren(...results.map((correct, index) => {
   const item = node("li", "", correct ? "pair-correct" : "pair-incorrect");

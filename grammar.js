@@ -1,3 +1,4 @@
+import { completeLesson } from "./progress.js";
 
 import { possessiveRounds, tidyRounds } from "./grammar-content.js";
 
@@ -258,6 +259,7 @@ $("tidy-next").addEventListener("click", () => {
   showGame("tidy");
 });
 function renderResult(game) {
+  completeLesson("my-house", "grammar-" + game);
   const correct = score(game);
   const total = games[game].answers.length;
   $("result-game-label").textContent = game === "magic" ? "POSSESSIVE CASE · THE MAGIC’S GAME!" : "PREPOSITIONS · THAI STILT HOUSE TIDY-UP";

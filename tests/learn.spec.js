@@ -2,6 +2,7 @@ import {test,expect} from "@playwright/test";
 import {handleApi} from "../worker.js";
 import {missions} from "../missions.js";
 test.use({permissions:["microphone"],launchOptions:{...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{}),args:["--use-fake-device-for-media-stream","--use-fake-ui-for-media-stream"]}});
+async function savedSpeakingCount(page){return page.evaluate(async()=>{const {readProgress}=await import("./progress.js");return readProgress().speaking.length;});}
 const improved="This is Nhinh's house. There is a basket next to the window. A low table is in front of her.";
 async function start(page,configured=true){
  await page.addInitScript(()=>{
@@ -69,7 +70,7 @@ test('all five recorded answers follow the three activities, save progress and r
   await submit(page);
   await expect(page.locator('#feedback')).toBeVisible();
   if(i===0)await screenshot(page,testInfo,'speaking-response');
-  await expect(page.locator('[data-speaking-count]')).toHaveText((i+1)+'/5 speaking missions completed');
+  expect(await savedSpeakingCount(page)).toBe(i+1);
   await expect(page.locator('#next-mission')).toBeEnabled();
   if(i<4)await page.locator('#next-mission').click();
  }
@@ -77,13 +78,13 @@ test('all five recorded answers follow the three activities, save progress and r
  await expect.poll(()=>page.evaluate(()=>window.spoken.includes("Great effort! You described the room well! I understand what you mean."))).toBe(true);
  await expect.poll(()=>page.evaluate(()=>window.spoken.includes("This is Nhinh's house. There is a basket next to the window. A low table is in front of her."))).toBe(true);
  await page.locator('#next-mission').click();await expect(page.locator('#completion')).toBeVisible();
- await page.reload();await expect(page.locator('[data-speaking-count]')).toHaveText('5/5 speaking missions completed');
+ await page.reload();expect(await savedSpeakingCount(page)).toBe(5);
  await page.locator('#retry').click();await expect(page.locator('#recording')).toBeHidden();
 });
 test('an incorrect answer allows Next and another attempt without earning completion',async({page})=>{
  await start(page);await backend(page,['fireplace',missions[0].example]);
  await submit(page);await expect(page.locator('#feedback-content')).toContainText('Nice try!');
- await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');await expect(page.locator('#next-mission')).toBeEnabled();
+ expect(await savedSpeakingCount(page)).toBe(0);await expect(page.locator('#next-mission')).toBeEnabled();
  await expect(page.locator('.feedback-word')).toBeVisible();await page.locator('#retry').click();
  await expect(page.locator('#next-mission')).toBeEnabled();await submit(page);
  await expect(page.locator('#next-mission')).toBeEnabled();
@@ -96,7 +97,7 @@ test('unavailable feedback permits listening and recording practice without awar
   await expect(page.locator('#feedback')).toBeHidden();await expect(page.locator('#next-mission')).toBeEnabled();await page.locator('#next-mission').click();
  }
  await expect(page.locator('#completion h2')).toHaveText('You practised all three activities!');
- await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');
+ expect(await savedSpeakingCount(page)).toBe(0);
 });
 test('Activity 3 gives a hint after 90 seconds without revealing a model answer',async({page})=>{
  await page.clock.install();
@@ -123,12 +124,12 @@ test('Try again cancels a pending assessment and clears the response before reco
  await expect(page.locator('#recording')).toBeHidden();await expect(page.locator('#record')).toBeEnabled();
  release();await page.unroute('**/api/speaking/assess');await backend(page,[missions[0].example]);
  await submit(page);await expect(page.locator('#feedback')).toBeVisible();
- await expect(page.locator('[data-speaking-count]')).toHaveText('1/5 speaking missions completed');
+ expect(await savedSpeakingCount(page)).toBe(1);
  await page.locator('#retry').click();await expect(page.locator('#feedback')).toBeHidden();await expect(page.locator('#feedback-content')).toBeEmpty();
 });
 test('the revised course resets old speaking completions and preserves Explore progress',async({page})=>{
  await page.addInitScript(()=>localStorage.setItem('localingo.progress.v1',JSON.stringify({speaking:['house-1','house-2'],explore:{1:0}})));
- await start(page);await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');
+ await start(page);expect(await savedSpeakingCount(page)).toBe(0);
  expect(await page.evaluate(async()=>{const {readProgress}=await import('./progress.js');return readProgress().explore;})).toEqual({'1':0});
 });
 
@@ -175,7 +176,7 @@ test('Next cancels pending feedback and ignores a late result on the following q
  release();
  await expect(page.locator('#feedback')).toBeHidden();
  await expect(page.locator('#feedback-content')).toBeEmpty();
- await expect(page.locator('[data-speaking-count]')).toHaveText('0/5 speaking missions completed');
+ expect(await savedSpeakingCount(page)).toBe(0);
 });
 
 test('Complete and Speak repeats picture hints after an incorrect full sentence and permits retry',async({page})=>{
@@ -187,10 +188,10 @@ test('Complete and Speak repeats picture hints after an incorrect full sentence 
  await expect(page.locator('#feedback-content')).toHaveText('Look at the picture again. You can use the words below to help you.');
  await expect(page.locator('#word-bank button')).toHaveText(missions[2].options);
  await expect(page.locator('#next-mission')).toBeEnabled();
- await expect(page.locator('[data-speaking-count]')).toHaveText('2/5 speaking missions completed');
+ expect(await savedSpeakingCount(page)).toBe(2);
  await page.locator('#retry').click();await submit(page);
  await expect(page.locator('#feedback-content')).toHaveText('Well done!');
- await expect(page.locator('[data-speaking-count]')).toHaveText('3/5 speaking missions completed');
+ expect(await savedSpeakingCount(page)).toBe(3);
 });
 
 
@@ -198,6 +199,17 @@ test('reopening Speaking returns to the first incomplete question after skipped 
  await page.addInitScript(()=>localStorage.setItem('localingo.progress.v1',JSON.stringify({speakingVersion:2,speaking:['house-2','house-4'],explore:{}})));
  await start(page);
  await expect(page.locator('#mission-prompt')).toHaveText(missions[0].prompt);
- await expect(page.locator('[data-speaking-count]')).toHaveText('2/5 speaking missions completed');
+ expect(await savedSpeakingCount(page)).toBe(2);
  await expect(page.locator('#next-mission')).toBeDisabled();
+});
+
+
+test('the last assessed Speaking answer completes My House only after the other activities',async({page})=>{
+ await page.goto('/learn.html');
+ await page.evaluate(()=>localStorage.setItem('localingo.progress.v1',JSON.stringify({speakingVersion:2,speaking:['house-1','house-2','house-3','house-4'],explore:{},units:[],lessons:{'my-house':['vocabulary','pronunciation','grammar-magic','grammar-tidy','reading-hunt','reading-home','listening','writing']}})));
+ await start(page);await backend(page,["This is Nhinh's house. There is a basket by the window. A table is in front of her."]);
+ await submit(page);
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('localingo.progress.v1')).units)).toEqual(['my-house']);
+ await page.goto('/learn.html');
+ await expect(page.locator('.art-progress [data-unit-count]')).toHaveText('1/4 units completed');
 });

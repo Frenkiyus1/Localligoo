@@ -146,7 +146,9 @@ Trình duyệt chuyển bản ghi sang WAV mono PCM 16-bit, 16 kHz, dài 1–60 
 
 ### Tiến độ và giới hạn hiện tại
 
-- Tiến độ Speaking và câu trả lời Explore được lưu trong `localStorage` của từng trình duyệt. Huy hiệu dựa trên các câu Speaking đã đạt đánh giá.
+Thanh Learn hiển thị số unit đã hoàn thành trên tổng 4 unit; kết quả bài nói được lưu để tính hoàn thành unit. My House được tính khi đã nghe hết 15 từ vựng, ghép xong Pronunciation, kết thúc cả hai game Grammar, hoàn thành cả hai hoạt động Reading, ghép đúng Listening, gửi thư Writing và đạt đủ 5 câu Speaking. Tiến độ được cộng dồn giữa các lần học; chơi lại không xóa phần đã hoàn thành. Các unit Coming soon chưa được tính chỉ vì người học mở thẻ.
+
+- Tiến độ unit, các phần đã học, Speaking và câu trả lời Explore được lưu trong `localStorage` của từng trình duyệt. Huy hiệu dựa trên các câu Speaking đã đạt đánh giá.
 - API không ghi bản thu vào kho lưu trữ của ứng dụng; audio và transcript không được lưu trong `localStorage`. Bản ghi tạm được giải phóng khi đổi câu hoặc rời trang.
 - Đối chiếu từ nhận dạng giúp chọn từ cần luyện lại. Kết quả có thể chịu ảnh hưởng của nhận dạng giọng nói; hệ thống chưa chấm phát âm từng âm vị hoặc cho điểm trôi chảy.
 - Lời chào và các phản hồi động dùng tổng hợp giọng nói của trình duyệt. Audio câu hỏi, đáp án và gợi ý có sẵn được phát từ tài nguyên dự án.

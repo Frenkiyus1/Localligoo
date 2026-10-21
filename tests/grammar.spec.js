@@ -80,6 +80,7 @@ test("each choice shows its Grammar Tip and the mixed score counts only correct 
     await page.locator("#tip-next").click();
   }
   await expect(page.locator("#result-score")).toHaveText("2 / 4");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("localingo.progress.v1")).lessons["my-house"])).toContain("grammar-magic");
   await expect(page.locator("#result-stars .earned-star")).toHaveCount(2);
   await expect(page.locator("#result-stars .empty-star")).toHaveCount(2);
   await screenshot(page, testInfo, "grammar-result");
@@ -149,6 +150,7 @@ test("seven supplied photos and mixed preposition answers produce the real score
   await enterTidy(page);
   await playTidy(page, ["on", "next to", "under", "in front of", "in", "under", "behind"]);
   await expect(page.locator("#result-score")).toHaveText("6 / 7");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("localingo.progress.v1")).lessons["my-house"])).toContain("grammar-tidy");
   await expect(page.locator("#result-stars .earned-star")).toHaveCount(6);
   await expect(page.locator("#result-stars .empty-star")).toHaveCount(1);
   await expect(page.locator("#result-message")).toContainText("Ban's house is tidy again!");

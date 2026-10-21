@@ -1,3 +1,4 @@
+import { completeLesson } from "./progress.js";
 import { pronunciationWords } from "./pronunciation-content.js";
 const $ = id => document.getElementById(id);
 const speaker = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>';
@@ -59,6 +60,7 @@ function choose(item) {
   selected.forEach(word => matched.add(word)); selected = [];
   feedback("Correct! Both words end with the same sound!", true); render();
   if (matched.size === pronunciationWords.length) {
+   completeLesson("my-house", "pronunciation");
    const token = round;
    completionTimer = setTimeout(() => {
     if (token !== round) return;

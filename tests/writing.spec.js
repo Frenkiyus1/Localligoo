@@ -116,6 +116,7 @@ test('six correct answers send once, allow reading all explanations, and continu
   await screenshot(page, testInfo, 'writing-correct');
   await page.getByRole('button', { name: 'Ready to send', exact: true }).click();
   await expect(page.locator('#sent-screen')).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("localingo.progress.v1")).lessons["my-house"])).toContain("writing");
   await expect(page.locator('#compose-screen')).toBeHidden();
   await expect(page.locator('#sent-screen')).toContainText('Email sent successfully!');
   await expect(page.locator('.confetti-piece')).toHaveCount(32);
