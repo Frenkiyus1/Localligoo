@@ -1,125 +1,210 @@
 # LOCALINGO
 
-Website học tiếng Anh qua văn hóa địa phương. Luồng học hiện có: **Home → Learn → Unit 2 · My House → Speaking**.
+**From Local to Global — Học tiếng Anh qua văn hóa Mộc Châu.**
 
-## Chạy local
+LOCALINGO kết hợp bài học tiếng Anh với hình ảnh nhà sàn, đời sống và văn hóa của người Thái tại Mộc Châu. Người học khám phá từ vựng, luyện âm, ôn ngữ pháp và thực hành bốn kỹ năng thông qua các nhiệm vụ tương tác.
 
-Cần Node.js 22 trở lên.
+Giao diện sử dụng HTML, CSS và JavaScript modules. API Speaking chạy trên Cloudflare Workers, kết nối Workers AI để nhận dạng lời nói và góp ý câu trả lời.
+
+## Chạy dự án
+
+Yêu cầu **Node.js 22 trở lên** và npm. Chạy tại thư mục gốc:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Mở http://localhost:4173. Các trang dùng JavaScript modules nên cần HTTP server thay vì mở trực tiếp file HTML.
+Mở [localhost:4173](http://localhost:4173). Các trang dùng JavaScript modules nên cần mở qua HTTP server. Để ghi âm, trình duyệt cần được cấp quyền micro và trang phải chạy trên localhost hoặc HTTPS.
 
-`npm run dev` phục vụ giao diện và trả trạng thái AI chưa kết nối. Các chức năng xem bài, nghe mẫu bằng trình duyệt, ghi âm, phát lại và Explore vẫn hoạt động.
+Luồng học chính: **Home → Learn → Unit 2 · My House → chọn hoạt động**. Mục **Explore** cung cấp các bài khám phá văn hóa và câu hỏi trắc nghiệm.
 
-## Nội dung và giao diện
+Các bài học, audio và chức năng ghi âm hoạt động với máy chủ local. Phản hồi AI của Speaking cần môi trường Cloudflare có binding AI; khi chưa kết nối, người học vẫn có thể nghe, ghi âm, phát lại và chuyển câu.
 
-- Loại bỏ mục Practice khỏi menu và hành trình trang chủ.
-- Learn, My House và bìa Speaking dùng ảnh từ thư mục thiết kế `TRANG LEARN`. Bản cần triển khai nằm trong `assets/learn/`; thư mục thiết kế gốc được bỏ qua trong Git để tránh lưu trùng nhiều ảnh lớn.
-- Grammar mở từ My House, dùng layout gốc trong `GRAMMAR` và đúng 7 ảnh trong `Ảnh gram` (tài nguyên triển khai: `assets/grammar/`). The Magic’s Game có 4 round sở hữu cách và Grammar Tip sau mỗi đáp án. Thai Stilt House Tidy-Up có 7 câu giới từ, hỗ trợ chọn từ, kéo thả chuột hoặc cảm ứng. Cả hai game tính điểm theo đáp án đúng và có Play Again.
-- Reading mở từ My House, dùng layout và ảnh gốc trong `B. READING` (tài nguyên triển khai: `assets/reading/`). Secret Code Hunt gồm email của Lan, 4 câu hỏi thu thập clue, giỏ clue và câu hỏi cuối; bướm mở fact bằng hover, bàn phím hoặc chạm. Discover My Home gồm nhật ký, 3 câu trả lời cùng lúc, đoán Mộc Châu và luyện tập kèm giải thích cho mọi đáp án.
-- Writing mở từ My House, dùng thiết kế trong `WRITING` (tài nguyên triển khai: `assets/writing/`). Explorer’s Journal gồm thư Alex, bài gõ đáp án vào 6 chỗ trống (chấm đúng chính tả và chữ hoa/thường; cho phép viết hoa chữ đầu, riêng `Pine Forest` phải đúng tên riêng), phản hồi đúng/sai và 12 thẻ giải thích dùng nguyên ảnh từ `WRITING/2/PHẦN GIẢI THÍCH PHƯƠNG ÁN`, mở bằng hover, bàn phím hoặc chạm. Các nút Reply, Check Answer, View sent email và Next challenge dùng ảnh gốc tương ứng trong `WRITING/1`, `WRITING/2` và `WRITING/3`. Try again giữ đáp án đúng và cho sửa câu sai; chỉ khi đạt 6/6 mới mở Ready to send. Gửi thư là hoạt động mô phỏng trong bài học, có hiệu ứng và âm báo ngắn; View sent email mở lại thư cùng giải thích, Next challenge chuyển đến Speaking. File âm thanh gửi thư chưa có trong folder, nên âm báo được tổng hợp trong trình duyệt.
-- Speaking has three activities and five supplied questions, with source artwork, recorded questions and answers, microphone recording, retry, next-question controls and feedback.
-- Explore giữ đúng **24 câu** và các lựa chọn trong file nội dung. File nguồn đánh số 1–25 nhưng thiếu câu 12; không thêm hoặc nhân đôi câu hỏi. Mỗi lần mở trang chọn ngẫu nhiên 5 câu không trùng nhau. Người dùng chỉ chọn đáp án; sau phản hồi đúng/sai, trang tự chuyển câu và cuối lượt hiện điểm trên 5. Không có nút chọn chủ đề, xáo trộn, chuyển câu hay đặt lại bài. Lượt mới không bị khóa bởi các câu trả lời đã lưu.
-- Bốn thẻ chủ đề Explore mở các trang Nature & Wildlife, Local Food, People & Traditions, Festivals & Seasons. Mỗi trang có 3 bài từ ảnh trong `EXPLORE`, dùng ảnh gốc trên desktop và cùng nội dung chữ có thể xuống dòng trên điện thoại. Tài nguyên triển khai nằm trong `assets/explore/stories/`; chạy `node scripts/prepare-explore.mjs` để chuẩn bị lại ảnh và trang sau khi cập nhật nguồn.
-- Khóa đáp án trong `questions.js` được suy ra từ các lựa chọn vì tài liệu nguồn không có bảng đáp án riêng. Có thể chỉnh thuộc tính `answer` (chỉ số từ 0).
-- Tiến độ Speaking và câu trả lời Explore lưu ở `localStorage` trên từng trình duyệt, không đồng bộ tài khoản. Huy hiệu Storyteller mở khi hoàn thành 5 nhiệm vụ nói.
-- Footer dùng Montserrat, dòng giới thiệu lớn, đậm và căn giữa; liên kết liên hệ có nhãn Email: `localingo.workspace@gmail.com`.
-- Những unit/kỹ năng chưa có nội dung được ghi Coming soon. My House có Vocab, Grammar, Reading, Writing và Speaking tương tác.
+## Nội dung hiện có
 
-## AI Speaking trên Cloudflare
+### Unit 2 · My House
 
-Backend `worker.js` dùng **Cloudflare Workers AI binding `AI`**, không cần khóa OpenAI:
+| Hoạt động | Nội dung | Trang |
+| --- | --- | --- |
+| Vocabulary | Khám phá đồ vật trong nhà sàn, nghe phát âm và xem nghĩa tiếng Việt. | [My House](my-house.html#vocabulary) |
+| Pronunciation | **The Bamboo Matcher**: ghép 8 thẻ thành 4 cặp cùng âm cuối, nghe audio và xem phiên âm IPA. | [Pronunciation](pronunciation.html) |
+| Grammar | **The Magic’s Game**: 4 vòng sở hữu cách; **Thai Stilt House Tidy-Up**: 7 câu giới từ chỉ vị trí. | [Grammar](grammar.html) |
+| Reading | **Secret Code Hunt – Who Am I?**: đọc email, thu thập gợi ý và giải câu đố; **Discover My Home**: đọc nhật ký và tìm địa điểm. | [Reading](reading.html) |
+| Listening | **Alex’s Guidebook – The Missing Notes**: nghe hội thoại và nối 4 câu mô tả với đồ vật. | [Listening](listening.html) |
+| Writing | **Explorer’s Journal – Write It Down!**: đọc email của Alex, gõ đáp án vào 6 chỗ trống và hoàn thành thư trả lời. | [Writing](writing.html) |
+| Speaking | **Storyteller’s Camp**: 3 hoạt động, 5 câu hỏi; ghi âm và nhận phản hồi từ Banban. | [Speaking](speaking.html) |
 
-1. `@cf/openai/whisper-large-v3-turbo` là mô hình nhận dạng giọng nói được Cloudflare host. Không gọi dịch vụ API OpenAI.
-2. `@cf/meta/llama-3.3-70b-instruct-fp8-fast` sửa ngữ pháp, góp ý từ vựng và câu trả lời bằng tiếng Việt.
-3. Chế độ **Read the example aloud** đối chiếu từ nhận dạng với câu mẫu; thống kê tốc độ nói từ độ dài bản ghi và khoảng nghỉ khi có timestamps.
+**Pronunciation:** roofs, steps, baskets và mats thuộc nhóm âm cuối /s/; doors, windows, beads và clothes thuộc nhóm /z/. Hai từ bất kỳ cùng nhóm được tính là một cặp đúng. Chọn thẻ để nghe và lật sang phiên âm, nghĩa tiếng Việt. Thẻ đúng giữ mặt sau; thẻ sai úp lại để thử tiếp. Hoàn thành 4 cặp sẽ mở màn chúc mừng và Play Again để xáo thẻ chơi mới. Giao diện dùng nền giấy vàng, chữ nâu và nút bo tròn theo phong cách chung của My House.
 
-**Giới hạn phát âm:** nhận dạng lời nói không phải bộ chấm âm vị. Không sinh điểm phát âm hoặc điểm trôi chảy giả từ transcript; các mục này hiển thị hướng dẫn luyện tập, đối chiếu từ và nhịp nói ước tính. Sai khác từ có thể do lỗi ASR. Muốn chấm chi tiết từng âm vị cần bổ sung dịch vụ chuyên dụng.
+**Listening:** phát file `LISTENING/1013.mp4` dưới dạng audio. Chọn câu mô tả rồi chọn ô ảnh; đường nối và ký hiệu thể hiện lựa chọn. Submit chỉ chấm khi đã nối đủ 4 cặp, phản hồi hiện bên dưới nút. Transcript mở sau lần kiểm tra đủ 4 cặp đầu tiên. Các ô ảnh trong game hiện là khung tạm có nhãn đồ vật, chờ thay bằng ảnh chính thức.
 
-Người học phải đồng ý trước khi gửi bản ghi/câu trả lời tới Cloudflare Workers AI. Server không lưu bản ghi hay ghi nội dung vào log. Trình duyệt chỉ lưu tiến độ, không lưu audio/transcript trong localStorage. Mỗi lần đổi nhiệm vụ hoặc rời trang sẽ giải phóng bản ghi tạm.
+**Writing:** chấm chính tả và cách viết hoa; cho phép viết hoa chữ đầu, riêng `Pine Forest` phải đúng cách viết tên riêng. Có giải thích cho từng đáp án. Try again giữ câu đúng và cho sửa câu sai; đạt 6/6 sẽ mở bước gửi email mô phỏng và xem lại thư đã gửi.
 
-Endpoint:
+**Speaking** gồm:
 
-- `GET /api/speaking/status`: kiểm tra có binding AI.
-- `POST /api/speaking/assess`: nhận JSON `missionId`, `mode` (`audio` hoặc `text`), `consent`, `readAloud` tùy chọn, `audio` (WAV base64) hoặc `text`.
+1. **Listen and repeat** — 2 câu hỏi, có audio câu hỏi và đáp án; không hiện đáp án mẫu bằng chữ.
+2. **Complete and Speak** — 2 câu điền khuyết kèm từ gợi ý; học sinh nói cả câu hoàn chỉnh.
+3. **Look, Think and Speak** — mô tả căn phòng bằng 2–3 câu. Sau 90 giây chưa có câu trả lời, Banban đưa gợi ý. Khi có phản hồi, trang hiển thị và đọc câu cải thiện dựa trên lời học sinh.
 
-Audio được chuyển trong trình duyệt thành WAV mono PCM 16-bit 16 kHz, dài 1–60 giây. Server giới hạn kích thước request, kiểm tra WAV và âm lượng, chống cross-origin, giới hạn 10 yêu cầu/phút/IP qua binding `SPEAKING_LIMITER`, kiểm tra kết quả AI trước khi trả về. Hạn mức có tính gần đúng theo cơ chế Cloudflare; không thay thế hạn mức chi phí của tài khoản.
+Dừng ghi âm sẽ tự gửi câu trả lời khi AI đã kết nối. Nút Next mở ngay sau lần ghi âm đầu tiên, kể cả khi đang chấm hoặc câu trả lời chưa đúng. Chuyển câu sẽ hủy phản hồi đang chờ; mở lại bài sẽ quay về câu chưa hoàn thành đầu tiên. Huy hiệu **Storyteller** được mở khi cả 5 câu đạt đánh giá.
 
-Cần tài khoản Cloudflare có quyền Workers AI và hạn mức phù hợp. `wrangler.jsonc` đã khai báo `AI`, `ASSETS`, `SPEAKING_LIMITER` và route `/api/*`.
+### Explore
+
+[Explore](explore.html) có **24 câu hỏi**, mỗi lượt chọn ngẫu nhiên **5 câu không trùng nhau**. Sau mỗi đáp án, trang hiển thị phản hồi rồi tự chuyển câu; cuối lượt hiện điểm trên 5. Mỗi lần vào lại bắt đầu một lượt mới.
+
+Bốn chủ đề, mỗi chủ đề có 3 bài khám phá:
+
+- [Nature & Wildlife](explore-nature-wildlife.html)
+- [Local Food](explore-local-food.html)
+- [People & Traditions](explore-people-tradition.html)
+- [Festivals & Seasons](explore-festivals-seasons.html)
+
+Các unit chưa có nội dung được đánh dấu **Coming soon** trên trang Learn.
+
+## Cấu trúc mã nguồn
+
+| Thành phần | Vị trí |
+| --- | --- |
+| Trang chủ và điều hướng | `index.html`, `learn.html`, `my-house.html` |
+| Hoạt động học | Các file `pronunciation.*`, `grammar.*`, `reading.*`, `listening.*`, `writing.*`, `speaking.*` ở thư mục gốc |
+| Giao diện chung | `styles.css`, `chrome.css`, `element-geometry.css`, `app.js` |
+| Tiến độ và huy hiệu | `progress.js` |
+| API và đánh giá Speaking | `worker.js`, `speaking-assessment.js`, `speech-analysis.js`, `audio.js` |
+| Hình ảnh, font và media triển khai | `assets/`, `VOCABULARY/` |
+| Máy chủ local, build và xử lý tài nguyên | `scripts/` |
+| Kiểm thử | `tests/`, `playwright.config.js` |
+| Cấu hình Cloudflare | `wrangler.jsonc` |
+| Kết quả build | `dist/` — được tạo tự động và bỏ qua trong Git |
+
+## Cập nhật bài học
+
+### Nội dung
+
+| Nội dung cần sửa | File |
+| --- | --- |
+| Từ, IPA, nghĩa và nhóm âm cuối của Bamboo Matcher | `pronunciation-content.js` |
+| Câu mô tả, đồ vật và transcript Listening | `listening.js` |
+| Nội dung Grammar | `grammar-content.js` |
+| Email, nhật ký và câu hỏi Reading | `reading-content.js` |
+| Email, đáp án và quy tắc chấm Writing | `writing.js` |
+| Câu hỏi, đáp án chấp nhận và gợi ý Speaking | `missions.js` |
+| Ngân hàng câu hỏi Explore | `questions.js` |
+| Nội dung chữ của các trang chủ đề Explore | `scripts/explore-content.mjs` |
+
+Trong `questions.js`, `answer` là chỉ số lựa chọn đúng, bắt đầu từ 0. Tài liệu Explore gốc đánh số 1–25 nhưng thiếu câu 12 nên ngân hàng có 24 câu; giữ nguyên các ID khi cập nhật. Khóa đáp án hiện được suy ra từ các lựa chọn trong tài liệu nguồn.
+
+### Tài nguyên
+
+Ba nhóm tài nguyên sau được tự đồng bộ khi chạy `npm run build`:
+
+| Nguồn | Đầu ra | Script |
+| --- | --- | --- |
+| `PRONUNCIATION/*.mp3` — 8 audio | `assets/pronunciation/` | `scripts/prepare-pronunciation.mjs` |
+| `LISTENING/1013.mp4` và `LISTENING/Ảnh 1.png` | `assets/listening/` | `scripts/prepare-listening.mjs` |
+| Ba thư mục `ACT 1`, `ACT 2`, `ACT 3` trong `E. SPEAKING/Audio/` — 14 audio | `assets/speaking/audio/` | `scripts/prepare-speaking-audio.mjs` |
+
+Giữ đúng tên file nguồn mà các script tham chiếu. Với hình ảnh thiết kế Writing và Explore, chạy lại các script sau khi thay nguồn tương ứng:
+
+```sh
+node scripts/prepare-writing.mjs
+node scripts/prepare-explore.mjs
+```
+
+Hai script này dùng Sharp và cần đủ nguồn trong `WRITING/` hoặc `EXPLORE/`. Thư mục `EXPLORE/` và `TRANG LEARN/` được bỏ qua trong Git; bản tài nguyên đã chuẩn bị để triển khai nằm trong `assets/`.
+
+Khi thêm một trang hoặc file JavaScript/CSS mới, cập nhật danh sách sao chép trong `scripts/build.mjs`. Thư mục `assets/` được sao chép đệ quy vào `dist/`.
+
+## Speaking với Cloudflare Workers AI
+
+API gọi hai mô hình qua binding `AI`:
+
+| Mô hình | Vai trò |
+| --- | --- |
+| `@cf/openai/whisper-large-v3-turbo` | Chuyển bản ghi thành văn bản. |
+| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Đánh giá nội dung, góp ý ngữ pháp và từ vựng, cải thiện câu trả lời. |
+
+Dự án sử dụng Cloudflare Workers AI và không cần khóa API OpenAI. Để chạy môi trường Cloudflare, đăng nhập tài khoản có quyền sử dụng Workers AI:
 
 ```sh
 npx wrangler login
 npm run preview
 ```
 
-Workers AI chạy từ xa ngay khi dùng Wrangler preview; lệnh suy luận dùng hạn mức tài khoản. Chỉ trạng thái có binding chưa chứng minh tài khoản đã có quyền/hạn mức suy luận; lỗi thực tế sẽ hiển thị trên giao diện để người học thử lại.
+Phản hồi phụ thuộc quyền truy cập và hạn mức AI của tài khoản. Endpoint trạng thái chỉ kiểm tra sự hiện diện của binding; cần gửi bản ghi để xác minh suy luận thực tế.
 
-## Kiểm tra
+### API
+
+| Endpoint | Chức năng |
+| --- | --- |
+| `GET /api/speaking/status` | Trả về trạng thái cấu hình AI. |
+| `POST /api/speaking/assess` | Nhận câu trả lời và trả về đánh giá. |
+
+Request đánh giá dùng JSON với `missionId` từ `house-1` đến `house-5`, `mode` là `audio` hoặc `text`, và `consent: true`. Chế độ audio nhận `audio` là WAV base64; chế độ text nhận `text` dài 5–2000 ký tự. Giao diện Speaking tự gửi bản ghi ở chế độ audio sau khi dừng ghi âm.
+
+Trình duyệt chuyển bản ghi sang WAV mono PCM 16-bit, 16 kHz, dài 1–60 giây. API giới hạn request ở 3.000.000 byte, kiểm tra cấu trúc WAV và âm lượng, từ chối yêu cầu khác nguồn và kiểm tra kết quả AI. Binding `SPEAKING_LIMITER` được cấu hình 10 yêu cầu/phút theo IP.
+
+### Tiến độ và giới hạn hiện tại
+
+- Tiến độ Speaking và câu trả lời Explore được lưu trong `localStorage` của từng trình duyệt. Huy hiệu dựa trên các câu Speaking đã đạt đánh giá.
+- API không ghi bản thu vào kho lưu trữ của ứng dụng; audio và transcript không được lưu trong `localStorage`. Bản ghi tạm được giải phóng khi đổi câu hoặc rời trang.
+- Đối chiếu từ nhận dạng giúp chọn từ cần luyện lại. Kết quả có thể chịu ảnh hưởng của nhận dạng giọng nói; hệ thống chưa chấm phát âm từng âm vị hoặc cho điểm trôi chảy.
+- Lời chào và các phản hồi động dùng tổng hợp giọng nói của trình duyệt. Audio câu hỏi, đáp án và gợi ý có sẵn được phát từ tài nguyên dự án.
+
+## Kiểm thử
+
+Cài Chromium cho Playwright, sau đó chạy kiểm thử API và giao diện:
 
 ```sh
+npx playwright install chromium
 npm run test:api
 npm test
-npm run build
-npm run deploy:check
 ```
 
-Nếu dùng Chrome đã cài sẵn, trên PowerShell:
+Chạy riêng một hoạt động:
+
+```sh
+npm test -- tests/pronunciation.spec.js
+npm test -- tests/listening.spec.js
+```
+
+Nếu dùng Chrome đã cài trên máy, có thể chọn trình duyệt đó trong PowerShell:
 
 ```powershell
 $env:PLAYWRIGHT_CHANNEL = 'chrome'
 npm test
 ```
 
-Hoặc cài Chromium bằng `npx playwright install chromium`.
-
-Kiểm tra API dùng binding AI giả lập để xác minh xử lý request, lỗi, consent, giới hạn, silence và kết quả. Kiểm tra trình duyệt chạy desktop 1280 × 900 và mobile 390 × 844, xác minh luồng học, Explore, xử lý audio, lưu tiến độ và huy hiệu; lời gọi suy luận được giả lập. Ảnh QA trong `test-results/`.
+Playwright kiểm tra **desktop 1280 × 900** và **mobile 390 × 844**, gồm điều hướng, chấm bài, audio, micro, chơi lại, lưu tiến độ và ảnh chụp giao diện. Kiểm thử API và luồng phản hồi AI dùng binding giả lập; chúng không xác minh quyền hoặc hạn mức suy luận trên Cloudflare thật. Ảnh và kết quả nằm trong `test-results/`.
 
 ## Build và triển khai
 
-`npm run build` đóng gói frontend vào `dist/`. Wrangler bundle backend riêng; chỉ thư mục `dist/` được upload làm static assets.
-
-Cloudflare Workers Builds:
-
-- Root directory: gốc repository.
-- Build command: `npm run build`.
-- Deploy command: `npx wrangler deploy`.
-- Giữ tên Worker `localligoo` và cho phép binding Workers AI.
-
 ```sh
+npm run build
 npm run deploy:check
 npm run deploy
 ```
 
-Dry-run không xuất bản website và không xác minh suy luận AI thật. Git push chỉ đưa mã nguồn lên GitHub; website chỉ cập nhật nếu repository đã nối Workers Builds hoặc có người chạy deploy.
+| Lệnh | Chức năng |
+| --- | --- |
+| `npm run build` | Đồng bộ tài nguyên và đóng gói frontend vào `dist/`. |
+| `npm run deploy:check` | Chạy Wrangler dry-run để kiểm tra gói triển khai. |
+| `npm run deploy` | Triển khai Worker và static assets lên Cloudflare. |
 
-Tài liệu: [Workers AI binding](https://developers.cloudflare.com/workers-ai/configuration/bindings/), [Whisper](https://developers.cloudflare.com/workers-ai/models/whisper-large-v3-turbo/), [Llama](https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/), [Rate limit](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
+Wrangler đóng gói backend từ `worker.js`; thư mục `dist/` cung cấp static assets qua binding `ASSETS`. Các đường dẫn `/api/*` được chuyển qua Worker. Tên Worker hiện tại là **localligoo**; cấu hình gồm các binding `ASSETS`, `AI` và `SPEAKING_LIMITER`.
 
-Font Montserrat dùng giấy phép SIL Open Font License trong `assets/montserrat-OFL.txt`.
+Nếu dùng **Cloudflare Workers Builds** nối với GitHub:
 
-## Speaking activities (updated)
+| Thiết lập | Giá trị |
+| --- | --- |
+| Root directory | Thư mục gốc repository |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Worker name | `localligoo` |
 
-Speaking uses the five supplied questions in three activities: Listen and repeat (2), Complete and Speak (2), and Look, Think and Speak (1). Deployed images and recordings are in `assets/speaking/`, prepared from `E. SPEAKING/`. Every build copies all 14 recordings from the three folders in `E. SPEAKING/Audio/` to `assets/speaking/audio/` using `scripts/prepare-speaking-audio.mjs`. The four actions are Record, Listen, Try again, and Next. Stopping the microphone automatically submits the recording when feedback is available. Banban's response only appears after a result arrives; there is no preset feedback panel, upload control, consent checkbox, or separate submit button. Question audio plays on entry; Activity 1 offers the supplied answer recording through Listen, with no written model answer. Activity 2 alone shows the sentence with blanks and the word bank. Next becomes available as soon as the first recording stops, including while feedback is pending or after an incorrect answer; retrying keeps Next available. Moving to another question cancels pending feedback and audio. Activity 3 offers a spoken hint after 90 seconds without an answer and reads back an improvement based on the learner's response.
+Git push cập nhật mã nguồn trên GitHub. Website được cập nhật qua Workers Builds khi đã kết nối, hoặc bằng deploy thủ công. Dry-run kiểm tra gói triển khai và không xác minh suy luận AI thực tế.
 
-Cloudflare Workers AI transcribes recordings. Complete and Speak accepts only full sentences matching the allowed location phrases; Activity 1 compares recognised words with the model. The current integration does not produce phoneme-level pronunciation scores. Activity 3 uses AI to correct the learner's own response. Without AI, all five questions remain available for listening and recording practice, without awarding assessed completion. Browser speech synthesis reads the greeting and dynamic corrections because no corresponding fixed recordings were supplied.
+## Liên hệ và font
 
-The revised five-question speaking course uses speaking progress version 2; old speaking completions are reset while Explore progress is preserved.
-
-## Listening: Alex’s Guidebook
-
-The Listening link in My House opens `listening.html`. Start Mission plays the supplied `LISTENING/1013.mp4` as audio and opens a four-pair matching activity. Select a clue, then a picture slot; matching lines and letter labels show the current choices. The four temporary picture slots identify wooden stairs, a brocade seat pad cushion, a wooden table and a bamboo bench, ready for replacement with final images.
-
-Submit grades only a complete set of four pairs. Per-pair feedback appears below the button; incomplete submissions show the requested reminder without revealing the transcript. After the first complete submission, students can expand the transcript, listen again and change their matches. Four correct pairs reveal the mission completion message and Play Again resets matches, feedback, transcript access and audio playback. The mission is usable with keyboard, mouse or touch.
-
-Each build uses `scripts/prepare-listening.mjs` to copy the supplied recording and introductory photo into `assets/listening/`. Run `npm test -- tests/listening.spec.js` to check navigation, actual media playback, grading, retries, transcript access and replay on desktop and mobile.
-
-## Pronunciation: The Bamboo Matcher
-
-The Pronunciation link in My House opens `pronunciation.html`, with the supplied How to play and Remember instructions. Eight shuffled cards play the corresponding recordings from `PRONUNCIATION/` and flip from the word to its IPA transcription and Vietnamese meaning. Match any two words with the same final sound: roofs, steps, baskets and mats use /s/; doors, windows, beads and clothes use /z/. The rule accepts all valid same-sound combinations rather than restricting students to four predetermined word pairs.
-
-Correct cards stay face up and can be tapped to listen again. An incorrect pair shows the requested feedback, blocks further selections briefly and flips back. Matching all four pairs opens the completion screen; Play Again resets matches, selections, timers and audio, then shuffles the cards. The completion banner reuses the existing Thai stilt-house artwork. The activity works with touch, mouse or keyboard.
-
-Each build uses `scripts/prepare-pronunciation.mjs` to copy all eight supplied recordings into `assets/pronunciation/`. Run `npm test -- tests/pronunciation.spec.js` for real audio decoding, card playback, sound matching, retries, replay and responsive screenshots.
+- Email: [localingo.workspace@gmail.com](mailto:localingo.workspace@gmail.com)
+- Font Montserrat sử dụng SIL Open Font License; xem [giấy phép font](assets/montserrat-OFL.txt).

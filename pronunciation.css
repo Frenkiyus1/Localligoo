@@ -1,96 +1,111 @@
-/* Warm paper and bamboo-green panels follow the supplied game references. */
-.pronunciation-body { margin:0; color:#405c48; background:#fbf8ef; font-family:"Montserrat",Arial,sans-serif; }
+/* Match the shared My House paper, gold accents and rounded lesson controls. */
+.pronunciation-body { margin:0; color:#684415; background:#fae9bb url("./assets/speaking/paper.webp") repeat; font-family:"Montserrat",Arial,sans-serif; }
 .pronunciation-body [hidden] { display:none !important; }
-.pronunciation-header { display:flex; align-items:center; gap:24px; min-height:90px; padding:12px 5%; background:#b4c04c url("./assets/speaking/header.webp") repeat; }
-.pronunciation-logo { display:block; flex-shrink:0; width:120px; }
-.pronunciation-nav { display:flex; justify-content:center; gap:40px; margin:auto; padding-right:12%; color:#684415; }
-.pronunciation-nav a,.pronunciation-nav button { display:flex; align-items:center; min-height:44px; padding:6px; border:0; border-radius:8px; background:transparent; color:inherit; font:800 18px/1 "Montserrat",Arial,sans-serif; text-decoration:none; cursor:pointer; }
+.pronunciation-header { display:flex; align-items:center; gap:20px; min-height:clamp(70px,7.56vw,182px); padding:12px 4%; background:#b4c04c url("./assets/speaking/header.webp") repeat; }
+.pronunciation-logo { display:block; flex-shrink:0; width:clamp(90px,10vw,240px); }
+.pronunciation-nav { display:flex; justify-content:center; gap:clamp(18px,3.4vw,72px); margin:auto; padding-right:12%; }
+.pronunciation-nav a,.pronunciation-nav button { display:flex; align-items:center; min-height:44px; padding:6px; border:0; border-radius:8px; background:transparent; color:inherit; font:800 clamp(13px,1.56vw,30px)/1 "Montserrat",Arial,sans-serif; text-decoration:none; cursor:pointer; }
 .pronunciation-nav :is(a,button):hover { background:#ffffff25; }
-#pronunciation-content { min-height:70vh; padding-bottom:48px; }
-.pronunciation-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 5%; color:#684415; background:#f4e5b8; font-size:12px; font-weight:800; letter-spacing:1px; }
-.pronunciation-toolbar a { padding:10px 18px; border:2px solid #fffae9; border-radius:30px; background:#f9df8e; text-decoration:none; font-size:14px; letter-spacing:0; }
-.matcher-panel { width:min(780px,calc(100% - 40px)); margin:36px auto 0; padding:28px; border:1px solid #e4dfd0; border-radius:18px; background:#f3f0e5; }
-.intro-heading { display:flex; align-items:center; gap:16px; padding-bottom:24px; border-bottom:1px solid #dcd7c6; }
-.intro-heading h1,.game-heading h1 { margin:0; font-size:23px; line-height:1.35; font-weight:800; }
-.intro-heading p,.game-heading p { margin:8px 0 0; color:#677b68; font-size:14px; line-height:1.6; }
-.hut-icon { display:block; flex:0 0 70px; width:70px; height:70px; padding:5px; border-radius:14px; background:#fdfbf4; }
+#pronunciation-content { max-width:2405px; min-height:70vh; margin:auto; padding-bottom:48px; }
+.pronunciation-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 7%; background:#f7e8b3; font-size:12px; font-weight:800; letter-spacing:1px; }
+.pronunciation-back { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:8px 20px 8px 10px; border:2px solid #fff8df; border-radius:999px; background:#f9df8e; box-shadow:0 3px 0 #9c824c55; color:inherit; text-decoration:none; font-size:clamp(13px,1.15vw,18px); line-height:1.4; letter-spacing:0; transition:background .15s,transform .15s; }
+.pronunciation-back-icon { display:grid; place-items:center; flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#fff6d9; }
+.pronunciation-back-icon svg { width:18px; height:18px; }
+.pronunciation-back:hover { background:#f4d47b; transform:translateY(-1px); }
+.matcher-panel { width:min(1100px,calc(100% - 56px)); margin:36px auto 0; padding:clamp(24px,3.5vw,44px); border:3px solid #fff9e5; border-radius:32px; background:#fff4d4; box-shadow:0 5px 0 #b5a46733; }
+#matcher-intro { max-width:1000px; }
+.intro-heading { display:flex; align-items:center; gap:24px; padding-bottom:26px; border-bottom:2px solid #e8d7aa; }
+.intro-heading h1,.game-heading h1 { margin:0; font-size:clamp(26px,3vw,42px); line-height:1.3; font-weight:900; }
+.intro-heading h1 { display:inline-block; padding:12px 24px; border-radius:60px; background:#f8d77f; }
+.intro-heading p,.game-heading p { margin:12px 0 0; font-size:16px; line-height:1.7; }
+.hut-icon { display:grid; place-items:center; flex:0 0 90px; width:90px; height:90px; padding:10px; border:3px solid #fff9e5; border-radius:50%; background:#f9df8e; }
 .hut-icon svg { display:block; width:100%; height:100%; }
-.how-to-play { margin-top:24px; }
-.how-to-play h2,.sound-reminder h2 { margin:0 0 12px; font-size:16px; font-weight:800; line-height:1.5; }
-.how-to-play ol { display:grid; gap:14px; margin:0; padding-left:25px; color:#303e32; font-size:15px; line-height:1.7; }
-.how-to-play li { padding-left:5px; }
-.how-to-play li::marker { font-weight:700; }
-.sound-reminder { margin-top:24px; padding:18px; border-radius:12px; background:#e5ead9; }
-.sound-reminder h2 { margin-bottom:6px; }
-.sound-reminder p { margin:0; font-size:14px; line-height:1.8; }
+.how-to-play { margin-top:28px; }
+.how-to-play h2,.sound-reminder h2 { margin:0 0 16px; font-size:19px; font-weight:800; line-height:1.5; }
+.how-to-play ol { display:grid; gap:12px; margin:0; padding:0; list-style:none; counter-reset:step; font-size:16px; font-weight:600; line-height:1.7; }
+.how-to-play li { position:relative; display:flex; align-items:center; min-height:58px; padding:14px 18px 14px 66px; border-radius:18px; background:#fff9e8; counter-increment:step; }
+.how-to-play li::before { content:counter(step); position:absolute; left:16px; display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:#f8d77f; font-size:14px; font-weight:900; }
+.sound-reminder { margin-top:24px; padding:20px 24px; border:2px solid #fff9e5; border-radius:22px; background:#e3e9b8; }
+.sound-reminder h2 { margin-bottom:6px; font-size:17px; }
+.sound-reminder p { margin:0; font-size:14px; line-height:1.9; }
 .ipa,.card-ipa { font-family:Arial,"Segoe UI",sans-serif; }
-.ready-message { margin:22px 0 14px; font-size:13px; text-align:center; }
-.matcher-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:48px; padding:13px 28px; border:1px solid #405d47; border-radius:9px; background:#405d47; color:#fffcf1; font:700 15px/1.5 "Montserrat",Arial,sans-serif; text-decoration:none; cursor:pointer; }
-.matcher-button:hover { background:#344d39; }
-.start-game { width:100%; }
-.pronunciation-body :is(button,a):focus-visible { outline:3px solid #9b7c38; outline-offset:4px; }
-.game-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:22px; }
-.game-heading h1 { font-size:22px; }
-.game-heading .pair-count { flex-shrink:0; margin:0; padding:10px 12px; border-radius:9px; background:#e5ead9; color:#405c48; font-size:13px; font-weight:800; white-space:nowrap; }
-.sound-cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-.sound-card { position:relative; display:block; width:100%; height:130px; border:0; border-radius:12px; padding:0; background:transparent; color:inherit; font:inherit; text-align:center; cursor:pointer; perspective:900px; }
+.ready-message { margin:24px 0 16px; font-size:14px; font-weight:600; text-align:center; }
+.matcher-button { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:52px; padding:14px 32px; border:3px solid #fffdf0; border-radius:60px; background:#e3f5f3; box-shadow:0 3px 0 #876b3b66; color:#684415; font:800 17px/1.4 "Montserrat",Arial,sans-serif; text-decoration:none; text-align:center; cursor:pointer; transition:background .15s,transform .15s; }
+.matcher-button:hover { background:#d5eeeb; transform:translateY(-2px); }
+.matcher-button:active { transform:translateY(1px); }
+.start-game { display:flex; width:fit-content; min-width:250px; max-width:100%; margin:auto; }
+.pronunciation-body :is(button,a):focus-visible { outline:3px solid #765021; outline-offset:4px; }
+.game-heading { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:28px; }
+.game-heading h1 { font-size:clamp(26px,2.6vw,38px); }
+.game-heading .pair-count { flex-shrink:0; margin:0; padding:12px 18px; border:2px solid #fff9e5; border-radius:30px; background:#f8d77f; font-size:13px; font-weight:800; white-space:nowrap; }
+.sound-cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+.sound-card { position:relative; display:block; width:100%; height:180px; border:0; border-radius:22px; padding:0; background:transparent; color:inherit; font:inherit; text-align:center; cursor:pointer; perspective:900px; }
 .card-inner { position:relative; display:block; width:100%; height:100%; transform-style:preserve-3d; transition:transform .25s ease; }
-.card-face { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:14px; border:1px solid #ddd8c7; border-radius:12px; background:#fffdf6; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
-.card-back { transform:rotateY(180deg); background:#eef1e2; }
+.card-face { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px 14px 18px; border:2px solid #e4c889; border-radius:22px; background:#fff9e8; box-shadow:0 3px 0 #bda86a33; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.card-back { transform:rotateY(180deg); background:#edf0d1; }
 .sound-card.is-flipped .card-inner { transform:rotateY(180deg); }
-.sound-card:hover .card-face { border-color:#9aa880; }
-.sound-card.is-selected .card-back { border:2px solid #648059; }
-.sound-card.is-matched .card-back { border:2px solid #9aad80; background:#e7edd8; }
-.sound-card.is-wrong .card-back { border:2px solid #b77850; background:#fbefe2; }
+.sound-card:hover .card-face { border-color:#b18d45; }
+.sound-card.is-selected .card-back { border-color:#829348; box-shadow:0 0 0 3px #d5dfa7; }
+.sound-card.is-matched .card-back { border-color:#8b9d52; background:#e2e9b5; }
+.sound-card.is-wrong .card-back { border-color:#bb7650; background:#f8e2c9; }
 .sound-card:disabled { color:inherit; cursor:default; opacity:1; }
-.card-speaker { display:block; width:20px; height:20px; color:#7e966c; }
+.card-speaker { display:grid; place-items:center; width:40px; height:40px; padding:10px; border-radius:50%; background:#f9df8e; color:#896429; }
 .card-speaker svg { display:block; width:100%; height:100%; }
-.is-speaking .card-speaker { color:#405d47; }
-.is-speaking .card-face { box-shadow:inset 0 0 0 1px #8b9d72; }
-.card-word { font-size:16px; font-weight:800; line-height:1.35; }
-.card-action { color:#71816c; font-size:11px; line-height:1.4; }
-.card-ipa { font-size:19px; line-height:1.3; }
-.card-meaning { font-size:13px; line-height:1.5; }
-.card-result { position:absolute; right:9px; top:7px; color:#506d3d; font-size:9px; font-weight:800; }
-.match-feedback { margin:18px 0 0; padding:14px 16px; border-radius:10px; font-size:14px; font-weight:600; line-height:1.7; }
-.match-feedback.is-correct { background:#e3ead6; color:#405d37; }
-.match-feedback.is-incorrect { background:#f4e6d6; color:#8e5634; }
-.matcher-completion { text-align:center; }
-.completion-scene { display:block; width:100%; height:195px; object-fit:cover; object-position:center 37%; border-radius:12px; }
-.trophy-icon { display:block; width:38px; height:38px; margin:20px auto 12px; color:#b28b37; }
+.is-speaking .card-speaker { color:#684415; background:#f4d179; }
+.is-speaking .card-face { border-color:#a9843c; }
+.card-word { font-size:20px; font-weight:900; line-height:1.35; }
+.card-action { color:#826b40; font-size:12px; line-height:1.4; }
+.card-ipa { font-size:23px; line-height:1.3; }
+.card-meaning { font-size:14px; line-height:1.6; }
+.card-result { position:absolute; right:9px; top:8px; padding:2px 6px; border-radius:20px; background:#d0dea1; color:#49622d; font-size:9px; font-weight:800; }
+.match-feedback { margin:24px 0 0; padding:16px 20px; border:2px solid #fff9e5; border-radius:20px; font-size:15px; font-weight:700; line-height:1.7; }
+.match-feedback.is-correct { background:#e2e9b5; color:#48612a; }
+.match-feedback.is-incorrect { background:#f6dfc3; color:#914e2c; }
+.matcher-completion { max-width:1000px; text-align:center; }
+.completion-scene { display:block; width:100%; height:220px; border:3px solid #fff9e5; border-radius:24px; object-fit:cover; object-position:center 37%; }
+.trophy-icon { display:grid; place-items:center; width:66px; height:66px; margin:24px auto 14px; padding:12px; border:3px solid #fff9e5; border-radius:50%; background:#f8d77f; color:#9e772c; }
 .trophy-icon svg { display:block; width:100%; height:100%; }
-.matcher-completion h1 { margin:0; font-size:24px; font-weight:800; line-height:1.5; }
-.completion-message { margin:16px 0; font-size:16px; font-weight:700; line-height:1.7; }
-.completion-note { margin:0 0 20px; color:#6d7d68; font-size:14px; line-height:1.7; }
-.audio-status { width:min(780px,calc(100% - 40px)); margin:18px auto 0; padding:14px 18px; border-radius:10px; background:#f4e6d6; color:#8e5634; font-size:14px; line-height:1.7; }
+.matcher-completion h1 { margin:0; font-size:clamp(32px,3.4vw,44px); font-weight:900; line-height:1.3; }
+.completion-message { margin:18px 0 12px; font-size:18px; font-weight:800; line-height:1.7; }
+.completion-note { margin:0 0 26px; font-size:15px; line-height:1.8; }
+.audio-status { width:min(1100px,calc(100% - 56px)); margin:20px auto 0; padding:16px 20px; border:2px solid #fff9e5; border-radius:20px; background:#f6dfc3; color:#914e2c; font-size:14px; line-height:1.7; }
 .matcher-noscript { padding:24px; text-align:center; }
+@media(max-width:900px) { .sound-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:700px) {
- .pronunciation-header { min-height:74px; padding:12px 20px; }
+ .pronunciation-header { min-height:70px; padding:12px 18px; }
  .pronunciation-logo { width:100px; }
  .pronunciation-nav { display:none; }
- .pronunciation-toolbar { padding:12px 16px; font-size:10px; }
- .matcher-panel { width:calc(100% - 28px); margin-top:24px; padding:20px 16px; border-radius:14px; }
- .intro-heading { gap:12px; padding-bottom:20px; }
- .hut-icon { flex-basis:54px; width:54px; height:54px; }
- .intro-heading h1 { font-size:19px; }
- .intro-heading p { font-size:12px; }
- .how-to-play ol { gap:12px; font-size:14px; }
- .sound-reminder { padding:14px; }
+ .pronunciation-toolbar { padding:16px; font-size:10px; }
+ .matcher-panel { width:calc(100% - 28px); margin-top:24px; padding:24px 16px; border-radius:26px; }
+ .intro-heading { align-items:flex-start; gap:12px; padding-bottom:22px; }
+ .hut-icon { flex-basis:50px; width:50px; height:50px; padding:5px; }
+ .intro-heading h1 { padding:10px 14px; font-size:23px; border-radius:26px; }
+ .intro-heading p { font-size:13px; }
+ .how-to-play { margin-top:22px; }
+ .how-to-play h2 { font-size:18px; }
+ .how-to-play ol { font-size:14px; }
+ .how-to-play li { padding:14px 12px 14px 53px; }
+ .how-to-play li::before { left:12px; width:28px; height:28px; font-size:12px; }
+ .sound-reminder { padding:16px; }
  .sound-reminder p { font-size:13px; }
- .game-heading { gap:10px; }
- .game-heading h1 { font-size:18px; }
- .game-heading p { font-size:12px; }
- .game-heading .pair-count { padding:8px; font-size:10px; }
- .sound-cards { gap:10px; }
- .sound-card { height:142px; }
- .card-face { padding:16px 8px 12px; gap:8px; }
- .card-word { font-size:15px; }
- .card-ipa { font-size:18px; }
- .card-meaning { font-size:12px; }
- .card-result { right:6px; top:5px; font-size:8px; }
- .match-feedback { font-size:12px; padding:12px; }
- .completion-scene { height:150px; }
- .completion-message { font-size:14px; }
- .completion-note { font-size:13px; }
+ .start-game { min-width:210px; }
+ .game-heading { align-items:flex-start; flex-direction:column; gap:16px; margin-bottom:22px; }
+ .game-heading h1 { font-size:28px; }
+ .game-heading p { margin-top:8px; font-size:14px; }
+ .game-heading .pair-count { padding:9px 14px; font-size:12px; }
+ .sound-cards { gap:12px; }
+ .sound-card { height:158px; }
+ .card-face { padding:24px 8px 14px; gap:10px; border-radius:18px; }
+ .card-speaker { width:36px; height:36px; padding:9px; }
+ .card-word { font-size:18px; }
+ .card-ipa { font-size:21px; }
+ .card-meaning { font-size:13px; }
+ .card-action { font-size:11px; }
+ .card-result { right:6px; top:6px; font-size:8px; }
+ .match-feedback { padding:14px; font-size:13px; }
+ .completion-scene { height:160px; border-radius:18px; }
+ .completion-message { font-size:16px; }
+ .completion-note { font-size:14px; }
+ .audio-status { width:calc(100% - 28px); }
 }
-@media(prefers-reduced-motion:reduce) { .card-inner { transition:none; } }
+@media(prefers-reduced-motion:reduce) { .card-inner,.matcher-button,.pronunciation-back { transition:none; } }
