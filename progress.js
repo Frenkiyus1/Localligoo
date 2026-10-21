@@ -61,34 +61,71 @@ export function completeVocabularyWord(word, requiredWords) {
     if (requiredWords.every(item => state.vocabulary.includes(item))) markLesson(state, "my-house", "vocabulary");
   });
 }
+function unitProgress(unit, state) {
+  const lessons = state.lessons[unit] || [];
+  const activities = (unitActivities[unit] || []).map(activity => {
+    const complete = activity.lessons.every(lesson => lessons.includes(lesson));
+    let fraction = activity.lessons.filter(lesson => lessons.includes(lesson)).length / activity.lessons.length;
+    if (!complete && unit === "my-house") {
+      if (activity.id === "vocabulary") fraction = Math.min(state.vocabulary.length / 15, 1);
+      if (activity.id === "speaking") fraction = state.speaking.length / 5;
+    }
+    return { id: activity.id, complete, fraction: complete ? 1 : fraction };
+  });
+  const studied = activities.reduce((sum, activity) => sum + activity.fraction, 0);
+  return {
+    activities, studied,
+    completed: activities.filter(activity => activity.complete).length,
+    fraction: state.units.includes(unit) ? 1 : activities.length ? studied / activities.length : 0,
+  };
+}
+function percentage(fraction) {
+  const rounded = Math.round(fraction * 100);
+  return fraction > 0 && rounded === 0 ? "<1%" : rounded + "%";
+}
 export function renderProgress() {
-  const progress = readProgress();
-  document.querySelectorAll("[data-unit-progress]").forEach(el => { el.value = progress.units.length; el.max = unitIds.length; });
-  document.querySelectorAll("[data-unit-count]").forEach(el => { el.textContent = progress.units.length + "/" + unitIds.length + " units completed"; });
-  document.querySelectorAll("[data-unit-percent]").forEach(el => { el.textContent = Math.round(progress.units.length / unitIds.length * 100) + "%"; });
+  const state = readProgress();
+  const units = Object.fromEntries(unitIds.map(unit => [unit, unitProgress(unit, state)]));
+  const studiedUnits = Object.values(units).reduce((sum, unit) => sum + unit.fraction, 0);
+  const coursePercent = percentage(studiedUnits / unitIds.length);
+  document.querySelectorAll("[data-unit-progress]").forEach(el => {
+    el.max = unitIds.length; el.value = studiedUnits;
+    el.setAttribute("aria-valuetext", coursePercent + " studied. " + state.units.length + " of " + unitIds.length + " units completed.");
+  });
+  document.querySelectorAll("[data-unit-count]").forEach(el => { el.textContent = state.units.length + "/" + unitIds.length + " units completed"; });
+  document.querySelectorAll("[data-unit-percent]").forEach(el => { el.textContent = coursePercent; });
   document.querySelectorAll("[data-unit-step]").forEach(el => {
-    const done = progress.units.includes(el.dataset.unitStep);
+    const done = state.units.includes(el.dataset.unitStep), fraction = units[el.dataset.unitStep]?.fraction || 0;
     el.classList.toggle("is-complete", done);
+    el.classList.toggle("is-started", !done && fraction > 0);
     el.querySelector(".journey-step__marker").textContent = done ? "✓" : el.dataset.stepNumber;
-    el.querySelector("[data-step-status]").textContent = done ? "Completed" : "Not completed";
+    el.querySelector("[data-step-status]").textContent = done ? "Completed" : fraction > 0 ? "In progress: " + percentage(fraction) : "Not completed";
   });
   document.querySelectorAll("[data-activity-unit]").forEach(card => {
-    const unit = card.dataset.activityUnit, activities = unitActivities[unit] || [];
-    const completed = new Set(activities.filter(activity => activity.lessons.every(lesson => progress.lessons[unit]?.includes(lesson))).map(activity => activity.id));
-    card.querySelector("[data-activity-count]").textContent = completed.size + "/" + activities.length + " activities completed";
-    card.querySelector("[data-activity-percent]").textContent = (activities.length ? Math.round(completed.size / activities.length * 100) : 0) + "%";
-    const bar = card.querySelector("[data-activity-progress]"); bar.value = completed.size; bar.max = activities.length;
-    card.classList.toggle("is-complete", completed.size === activities.length);
-    card.querySelector("[data-activity-note]").textContent = completed.size === activities.length ? "Unit completed. Well done!" : "One activity at a time";
+    const unit = units[card.dataset.activityUnit];
+    if (!unit?.activities.length) return;
+    const { activities, studied, completed } = unit;
+    const percent = percentage(studied / activities.length);
+    const started = activities.filter(activity => !activity.complete && activity.fraction > 0).length;
+    card.querySelector("[data-activity-count]").textContent = completed + "/" + activities.length + " activities completed";
+    card.querySelector("[data-activity-percent]").textContent = percent;
+    const bar = card.querySelector("[data-activity-progress]"); bar.max = activities.length; bar.value = studied;
+    bar.setAttribute("aria-valuetext", percent + " studied. " + completed + " of " + activities.length + " activities completed.");
+    card.classList.toggle("is-complete", completed === activities.length);
+    card.querySelector("[data-activity-note]").textContent = completed === activities.length ? "Unit completed. Well done!" : started ? started + (started === 1 ? " activity in progress" : " activities in progress") : "One activity at a time";
     card.querySelectorAll("[data-activity-step]").forEach(el => {
-      const id = el.dataset.activityStep, index = activities.findIndex(activity => activity.id === id), done = completed.has(id);
-      const started = activities[index]?.lessons.some(lesson => progress.lessons[unit]?.includes(lesson)) || id === "vocabulary" && progress.vocabulary.length > 0 || id === "speaking" && progress.speaking.length > 0;
-      el.classList.toggle("is-complete", done); el.classList.toggle("is-started", !done && Boolean(started));
-      el.querySelector(".journey-step__marker").textContent = done ? "✓" : String(index + 1);
-      el.setAttribute("aria-label", "Open " + el.dataset.stepLabel + " activity. " + (done ? "Completed." : started ? "In progress." : "Not started."));
+      const index = activities.findIndex(activity => activity.id === el.dataset.activityStep);
+      const activity = activities[index];
+      if (!activity) return;
+      el.classList.toggle("is-complete", activity.complete);
+      el.classList.toggle("is-started", !activity.complete && activity.fraction > 0);
+      el.querySelector(".journey-step__marker").textContent = activity.complete ? "✓" : String(index + 1);
+      el.setAttribute("aria-label", "Open " + el.dataset.stepLabel + " activity. " + (activity.complete ? "Completed." : activity.fraction > 0 ? "In progress." : "Not started."));
     });
   });
 }
 window.addEventListener("storage", renderProgress);
 window.addEventListener("localingo-progress", renderProgress);
+// History navigation may restore a page from the browser cache without rerunning modules.
+window.addEventListener("pageshow", renderProgress);
 renderProgress();
