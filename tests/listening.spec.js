@@ -23,7 +23,7 @@ test("Listening opens from My House with the exact storyline and supplied pictur
  await enter(page);
  await expect(page).toHaveTitle("Listening · Alex’s Guidebook — LOCALINGO");
  await expect(page.locator(".storyline")).toHaveText("Welcome to Moc Chau! Alex is visiting a traditional Thai stilt house, but some important notes are missing from his guidebook. Can you help him listen to the owner and find the missing information?");
- await expect(page.locator(".intro-photo img")).toHaveAttribute("src", "./assets/listening/stilt-house.png");
+ await expect(page.locator(".listening-cover")).toHaveAttribute("src", "./assets/listening/cover.webp");
  await expect(page.locator("#listening-mission")).toBeHidden();
  await expect(page.locator("#transcript-copy")).toBeEmpty();
  await screenshot(page, testInfo, "listening-intro");
@@ -38,8 +38,17 @@ test("the supplied MP4 plays as audio without showing video or a first-listen tr
  expect(duration).toBeGreaterThan(0); expect(duration).toBeLessThan(120);
  testInfo.annotations.push({ type: "audio-duration", description: duration.toFixed(2) + " seconds" });
  await expect(page.locator("#transcript-panel")).toBeHidden();
- await expect(page.locator("#picture-cards img")).toHaveCount(0);
- await expect(page.locator(".picture-placeholder")).toHaveCount(4);
+ await expect(page.locator("#picture-cards img")).toHaveCount(4);
+ await expect(page.locator(".picture-placeholder, .picture-note")).toHaveCount(0);
+ const pictures = [["stairs", "wooden-stairs.webp", "Wooden stairs"], ["cushion", "brocade-cushion.webp", "Brocade seat pad cushion"], ["table", "wooden-table.webp", "Wooden table"], ["bench", "bamboo-bench.webp", "Bamboo bench"]];
+ for (const [id, file, alt] of pictures) {
+  const image = page.locator('[data-picture="' + id + '"] img');
+  await expect(image).toHaveAttribute("src", "./assets/listening/" + file);
+  await expect(image).toHaveAttribute("alt", alt);
+  await image.evaluate(image => image.decode());
+  expect(await image.evaluate(image => image.naturalWidth)).toBe(800);
+ }
+ await expect(page.locator("#picture-cards")).not.toContainText("Ảnh:");
  await expect(page.locator("#listening-feedback")).toBeHidden();
  await screenshot(page, testInfo, "listening-matching");
 });

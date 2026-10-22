@@ -66,6 +66,7 @@ test('all five recorded answers follow the three activities, save progress and r
   await expect(page.locator('#mission-prompt')).toHaveText(missions[i].prompt);
   if(i===2){await expect(page.locator('#word-bank button')).toHaveText(['under','underneath','at the bottom of','below']);await screenshot(page,testInfo,'activity-2');}
   if(i===4){await expect(page.locator('#answer-panel')).toBeHidden();await expect(page.locator('#mission-example')).toBeEmpty();await screenshot(page,testInfo,'activity-3');}
+  if(i>=2)await expect(page.locator('#answer-transcript')).toBeHidden();
   await expect(page.locator('#feedback')).toBeHidden();
   await submit(page);
   await expect(page.locator('#feedback')).toBeVisible();

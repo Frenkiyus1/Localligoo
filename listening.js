@@ -6,12 +6,12 @@ const clues = [
  { text: "It is a big wooden furniture next to the window.", answer: "table" },
  { text: "It is in front of the house to relax and look at the mountains.", answer: "bench" },
 ];
-// Temporary picture slots, deliberately arranged in a different order from the clues.
+// Arrange the supplied pictures in a different order from the clues.
 const pictures = [
- { id: "bench", name: "Bamboo bench", note: "Ảnh: Ghế băng bằng tre" },
- { id: "stairs", name: "Wooden stairs", note: "Ảnh: Cầu thang gỗ" },
- { id: "table", name: "Wooden table", note: "Ảnh: Cái bàn gỗ" },
- { id: "cushion", name: "Brocade seat pad cushion", note: "Ảnh: Tấm đệm ngồi dân tộc Thái" },
+ { id: "bench", name: "Bamboo bench", image: "bamboo-bench.webp" },
+ { id: "stairs", name: "Wooden stairs", image: "wooden-stairs.webp" },
+ { id: "table", name: "Wooden table", image: "wooden-table.webp" },
+ { id: "cushion", name: "Brocade seat pad cushion", image: "brocade-cushion.webp" },
 ];
 const transcript = [
  ["Alex", "Hello! Wow, your stilt house is so beautiful!"],
@@ -48,9 +48,11 @@ const clueButtons = clues.map((clue, index) => {
 const pictureButtons = pictures.map((picture, index) => {
  const button = node("button", "", "picture-card"); button.type = "button";
  button.dataset.picture = picture.id;
- const slot = node("span", "", "picture-placeholder");
- slot.append(node("strong", picture.name), node("span", picture.note, "picture-note"));
- slot.lastChild.lang = "vi";
+ const slot = node("span", "", "picture-frame");
+ const image = node("img", "", "picture-image");
+ image.src = "./assets/listening/" + picture.image; image.alt = picture.name;
+ image.width = 800; image.height = 600; image.decoding = "async";
+ slot.append(image);
  button.append(node("span", letter(index), "picture-letter"), slot, node("span", "", "picture-match"));
  button.setAttribute("aria-label", "Picture " + letter(index) + ": " + picture.name);
  button.addEventListener("click", () => {

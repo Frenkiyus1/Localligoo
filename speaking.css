@@ -12,6 +12,18 @@
 .speaking-activity h1 { max-width:1100px; margin:8px auto; font-size:clamp(24px,3.2vw,52px); line-height:1.35; font-weight:900; }
 .speaking-picture { width:min(72%,1000px); margin:18px auto 24px; }
 .speaking-picture img { display:block; width:100%; height:auto; border-radius:4px; }
+.speaking-transcript { width:min(72%,1000px); margin:18px auto 24px; border:1px solid #d8c795; border-radius:18px; background:#fff9e9; text-align:left; overflow:hidden; }
+.speaking-transcript summary { display:flex; align-items:center; gap:10px; padding:17px 22px; font-size:14px; font-weight:800; list-style:none; cursor:pointer; }
+.speaking-transcript summary::-webkit-details-marker { display:none; }
+.speaking-transcript summary::before { content:""; width:7px; height:7px; flex-shrink:0; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(-45deg); transition:transform .2s; }
+.speaking-transcript[open] summary::before { transform:rotate(45deg); }
+.speaking-transcript summary:hover { background:#fcf0ce; }
+.speaking-transcript summary:focus-visible { outline:3px solid #527958; outline-offset:-4px; border-radius:16px; }
+.transcript-body { min-height:calc(3.6em + 18px); padding:0 22px 18px; font-size:clamp(18px,1.8vw,22px); }
+.transcript-hint { margin:0; font-size:14px; line-height:1.8; color:#8c7045; }
+.transcript-words { margin:0; font-size:inherit; font-weight:600; line-height:1.8; overflow-wrap:break-word; }
+.transcript-word.is-current { border-radius:5px; background:#f8d77f; box-shadow:0 0 0 3px #f8d77f; color:#5d401b; }
+@media(prefers-reduced-motion:reduce) { .speaking-transcript summary::before { transition:none; } }
 .speaking-answer { max-width:1100px; margin:18px auto; }
 .answer-label { margin:0 0 8px; font-weight:900; font-size:18px; }
 #mission-example { margin:0; font-size:clamp(18px,2.1vw,32px); font-weight:800; line-height:1.6; }
@@ -40,6 +52,8 @@
  .speaking-nav { display:none; } .speaking-header { min-height:70px; padding:12px 18px; }
  .speaking-activity { padding:24px 16px 16px; } .activity-label { font-size:18px; padding:12px 18px; margin:0 auto 20px; }
  .speaking-picture { width:100%; margin:14px auto 20px; }
+ .speaking-transcript { width:100%; } .speaking-transcript summary { padding:16px 18px; } .transcript-body { padding:0 18px 18px; }
+ .transcript-body { min-height:calc(7.2em + 18px); }
  .speaking-controls { gap:12px; justify-content:space-between; } .speaking-control { flex:1; min-width:0; font-size:11px; } .speaking-control img { width:60px; }
  .word-bank { gap:10px; } .word-bank button { padding:10px 15px; }
  .speaking-body .completion { margin:16px; }

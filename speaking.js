@@ -19,11 +19,52 @@ function stopNarration(){
  if(narration){narration.pause();narration=null;}
  window.speechSynthesis?.cancel(); finish?.(false);
 }
-function playClip(file){
+function resetAnswerTranscript(){
+ $("answer-transcript").hidden=mission().activity!==1;$("answer-transcript").open=false;
+ $("transcript-words").replaceChildren();$("transcript-words").hidden=true;$("transcript-hint").hidden=false;
+}
+function followAnswerTranscript(audio){
+ const words=mission().example.split(/\s+/),starts=mission().answerWordStarts;
+ const target=$("transcript-words"),hint=$("transcript-hint");
+ let frame=null,shown=-1,highlighted=false;
+ $("answer-transcript").open=true;target.replaceChildren();target.hidden=true;hint.hidden=false;
+ function render(count,highlight=true){
+  if(count===shown&&highlight===highlighted)return;
+  shown=count;highlighted=highlight;
+  const content=document.createDocumentFragment();
+  words.slice(0,count).forEach((word,index)=>{
+   if(index)content.append(" ");
+   content.append(element("span",word,"transcript-word"+(highlight&&index===count-1?" is-current":"")));
+  });
+  target.replaceChildren(content);target.hidden=count===0;hint.hidden=count>0;
+ }
+ function sync(){render(starts.findLastIndex(start=>audio.currentTime>=start)+1);}
+ function cancelFrame(){cancelAnimationFrame(frame);frame=null;}
+ function tick(){sync();if(!audio.paused&&!audio.ended)frame=requestAnimationFrame(tick);}
+ function playing(){cancelFrame();tick();}
+ audio.addEventListener("playing",playing);
+ audio.addEventListener("timeupdate",sync);
+ audio.addEventListener("seeked",sync);
+ audio.addEventListener("pause",cancelFrame);
+ audio.addEventListener("waiting",cancelFrame);
+ return finished=>{
+  cancelFrame();
+  audio.removeEventListener("playing",playing);audio.removeEventListener("timeupdate",sync);audio.removeEventListener("seeked",sync);
+  audio.removeEventListener("pause",cancelFrame);audio.removeEventListener("waiting",cancelFrame);
+  if(finished)render(words.length,false);
+  else target.querySelector(".is-current")?.classList.remove("is-current");
+ };
+}
+function playClip(file,followTranscript=false){
  stopNarration();
+ if(status.textContent==="Could not play this audio. Try Listen again.")message(status,"");
  return new Promise(resolve=>{
   const audio=new Audio("./assets/speaking/audio/"+file); narration=audio;
-  const finish=ok=>{if(narration===audio){narration=null;finishNarration=null;}resolve(ok);};
+  const finishTranscript=followTranscript?followAnswerTranscript(audio):null;let settled=false;
+  const finish=ok=>{
+   if(settled)return;settled=true;finishTranscript?.(ok);audio.onended=null;audio.onerror=null;
+   if(narration===audio){narration=null;finishNarration=null;}resolve(ok);
+  };
   finishNarration=finish;audio.onended=()=>finish(true);
   audio.onerror=()=>{if(narration===audio)message(status,"Could not play this audio. Try Listen again.",true);finish(false);};
   audio.play().catch(()=>finish(false));
@@ -73,6 +114,7 @@ function showMission(autoplay=true){
  $("mission-count").textContent="Question "+mission().question+" of "+(mission().activity===3?1:2);
  $("mission-prompt").textContent=mission().prompt;message($("mission-hint"),mission().hint);
  $("mission-image").src="./assets/speaking/"+mission().image+".webp";$("mission-image").alt=mission().alt;
+ resetAnswerTranscript();
  $("answer-panel").hidden=mission().activity!==2;
  $("mission-example").textContent=mission().sentence||"";
  $("word-bank").hidden=mission().activity!==2;
@@ -91,7 +133,7 @@ $("start-speaking").addEventListener("click",async()=>{
  const token=generation;const finished=await playClip("hello-im-banban.mp3");
  if(finished&&token===generation&&!acquiring&&recorder?.state!=="recording")listenQuestion();
 });
-$("listen-prompt").addEventListener("click",()=>mission().activity===1?playClip("a1-answer-"+mission().question+".mp3"):listenQuestion());
+$("listen-prompt").addEventListener("click",()=>mission().activity===1?playClip("a1-answer-"+mission().question+".mp3",true):listenQuestion());
 $("listen-hint").addEventListener("click",()=>playClip("a3-hint-"+(((hintIndex||1)-1)%3+1)+".mp3"));
 function stopTracks(){stream?.getTracks().forEach(track=>track.stop());stream=null;clearInterval(timer);timer=null;}
 function stopRecording(){if(recorder?.state==="recording")recorder.stop();stopTracks();}

@@ -37,13 +37,13 @@ Các bài học, audio và chức năng ghi âm hoạt động với máy chủ 
 
 **Pronunciation:** roofs, steps, baskets và mats thuộc nhóm âm cuối /s/; doors, windows, beads và clothes thuộc nhóm /z/. Hai từ bất kỳ cùng nhóm được tính là một cặp đúng. Chọn thẻ để nghe và lật sang phiên âm, nghĩa tiếng Việt. Thẻ đúng giữ mặt sau; thẻ sai úp lại để thử tiếp. Hoàn thành 4 cặp sẽ mở màn chúc mừng và Play Again để xáo thẻ chơi mới. Giao diện dùng nền giấy vàng, chữ nâu và nút bo tròn theo phong cách chung của My House.
 
-**Listening:** phát file `LISTENING/1013.mp4` dưới dạng audio. Chọn câu mô tả rồi chọn ô ảnh; đường nối và ký hiệu thể hiện lựa chọn. Submit chỉ chấm khi đã nối đủ 4 cặp, phản hồi hiện bên dưới nút. Transcript mở sau lần kiểm tra đủ 4 cặp đầu tiên. Các ô ảnh trong game hiện là khung tạm có nhãn đồ vật, chờ thay bằng ảnh chính thức.
+**Listening:** phát file `LISTENING/1013.mp4` dưới dạng audio. Chọn câu mô tả rồi chọn ô ảnh; đường nối và ký hiệu thể hiện lựa chọn. Submit chỉ chấm khi đã nối đủ 4 cặp, phản hồi hiện bên dưới nút. Transcript mở sau lần kiểm tra đủ 4 cặp đầu tiên. Các ô matching sử dụng ảnh cầu thang gỗ, đệm ngồi thổ cẩm, bàn gỗ và ghế tre được cung cấp; ảnh bìa Listening dùng cho màn hình Start Mission. Trên điện thoại, lời dẫn hiển thị bằng văn bản để dễ đọc.
 
 **Writing:** chấm chính tả và cách viết hoa; cho phép viết hoa chữ đầu, riêng `Pine Forest` phải đúng cách viết tên riêng. Có giải thích cho từng đáp án. Try again giữ câu đúng và cho sửa câu sai; đạt 6/6 sẽ mở bước gửi email mô phỏng và xem lại thư đã gửi.
 
 **Speaking** gồm:
 
-1. **Listen and repeat** — 2 câu hỏi, có audio câu hỏi và đáp án; không hiện đáp án mẫu bằng chữ.
+1. **Listen and repeat** — 2 câu hỏi, có audio câu hỏi và đáp án. Khung **Read the transcript** mặc định đóng; khi nhấn Listen, khung tự mở và từng từ hiện theo vị trí phát audio, từ đang đọc được tô nhẹ. Nghe lại chạy chữ từ đầu; chuyển câu đóng khung và xóa nội dung cũ.
 2. **Complete and Speak** — 2 câu điền khuyết kèm từ gợi ý; học sinh nói cả câu hoàn chỉnh.
 3. **Look, Think and Speak** — mô tả căn phòng bằng 2–3 câu. Sau 90 giây chưa có câu trả lời, Banban đưa gợi ý. Khi có phản hồi, trang hiển thị và đọc câu cải thiện dựa trên lời học sinh.
 
@@ -103,7 +103,7 @@ Ba nhóm tài nguyên sau được tự đồng bộ khi chạy `npm run build`:
 | Nguồn | Đầu ra | Script |
 | --- | --- | --- |
 | `PRONUNCIATION/*.mp3` — 8 audio | `assets/pronunciation/` | `scripts/prepare-pronunciation.mjs` |
-| `LISTENING/1013.mp4` và `LISTENING/Ảnh 1.png` | `assets/listening/` | `scripts/prepare-listening.mjs` |
+| `LISTENING/1013.mp4`, `Ảnh 1.png`, `1.png` và 4 ảnh đồ vật trong `LISTENING/` | `assets/listening/` | `scripts/prepare-listening.mjs` |
 | Ba thư mục `ACT 1`, `ACT 2`, `ACT 3` trong `E. SPEAKING/Audio/` và 7 bản thu Banban trong `E. SPEAKING/` — 21 audio | `assets/speaking/audio/` | `scripts/prepare-speaking-audio.mjs` |
 
 Giữ đúng tên file nguồn mà các script tham chiếu. Với hình ảnh thiết kế Writing và Explore, chạy lại các script sau khi thay nguồn tương ứng:
