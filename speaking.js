@@ -10,7 +10,7 @@ let busy=false, preparing=false, configured=false, generation=0, acquiring=false
 let narration=null, finishNarration=null, hintTimer=null, hintIndex=0, answered=false;
 const record=$("record"), player=$("recording"), status=$("record-status"), aiStatus=status;
 const mission=()=>missions[current];
-const wordClips={under:"word-under.mp3",underneath:"word-underneath.mp3","at the bottom of":"word-at-the-bottom-of.mp3",below:"word-below.mp3"};
+const wordClips={under:"word-under.mp3",underneath:"word-underneath.mp3","at the bottom of":"word-at-the-bottom-of.mp3",below:"word-below.mp3",fireplace:"word-fireplace.mp3",table:"word-table.mp3",in:"word-in.mp3","in the middle of":"word-in-the-middle-of.mp3"};
 const listenWord=word=>wordClips[word.toLowerCase()]?playClip(wordClips[word.toLowerCase()]):say(word);
 function message(el,text,error=false){el.textContent=text;el.classList.toggle("error",error);el.hidden=!text;}
 function element(tag,text,className=""){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el;}
@@ -199,7 +199,7 @@ async function speakFeedback(assessment){
  }
  else if(mission().activity===2)await playClip(assessment.passed?"a2-success.mp3":"a2-retry.mp3");
  else{
-  const token=generation;const finished=await say(assessment.encouragement);
+  const token=generation;const finished=await (assessment.passed?playClip("a3-success.mp3"):say(assessment.encouragement));
   if(finished&&token===generation&&assessment.correctedAnswer)await say(assessment.correctedAnswer);
  }
 }

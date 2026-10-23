@@ -8,9 +8,10 @@ const clips = [
  "a1-success-1.mp3", "a1-success-2.mp3", "a2-question-1.mp3", "a2-question-2.mp3",
  "a2-success.mp3", "a2-retry.mp3", "a3-question-1.mp3",
  "a3-hint-1.mp3", "a3-hint-2.mp3", "a3-hint-3.mp3",
+ "word-fireplace.mp3", "word-table.mp3", "word-in.mp3", "word-in-the-middle-of.mp3", "a3-success.mp3",
 ];
 
-test("all twenty-one supplied Speaking recordings can be decoded by the browser", async ({ page }) => {
+test("all supplied Speaking recordings can be decoded by the browser", async ({ page }) => {
  await page.goto("/speaking.html");
  const recordings = await page.evaluate(async files => {
   const context = new AudioContext();
@@ -232,6 +233,19 @@ test("all four preposition hints use their supplied recordings and stop the prev
 });
 
 
+test("all four words in Activity 2 question 2 use the new recordings", async ({ page }) => {
+ await observeAudio(page);
+ await page.addInitScript(() => localStorage.setItem("localingo.progress.v1", JSON.stringify({ speakingVersion: 2, speaking: ["house-1", "house-2", "house-3"] })));
+ await page.goto("/speaking.html#missions");
+ await expect(page.locator("#mission-prompt")).toHaveText("Where is the fireplace?");
+ for (const [word, file] of [["fireplace", "word-fireplace.mp3"], ["table", "word-table.mp3"], ["in", "word-in.mp3"], ["in the middle of", "word-in-the-middle-of.mp3"]]) {
+  await page.locator("#word-bank").getByRole("button", { name: word, exact: true }).click();
+  await expectClip(page, file);
+  expect(await page.evaluate(() => window.speakingAudio.slice(0, -1).every(audio => audio.paused))).toBe(true);
+ }
+ expect(await page.evaluate(() => window.spoken)).toEqual([]);
+});
+
 test.describe("recorded Banban feedback", () => {
  async function recordAnswer(page) {
   await page.locator("#record").click();
@@ -241,8 +255,9 @@ test.describe("recorded Banban feedback", () => {
   await expect(page.locator("#feedback")).toHaveAttribute("aria-busy", "false");
   await expect(page.locator("#feedback")).toBeVisible();
  }
- async function open(page, assessment) {
+ async function open(page, assessment, completed = []) {
   await observeAudio(page);
+  if (completed.length) await page.addInitScript(speaking => localStorage.setItem("localingo.progress.v1", JSON.stringify({ speakingVersion: 2, speaking })), completed);
   await page.route("**/api/speaking/status", route => route.fulfill({ json: { configured: true } }));
   await page.route("**/api/speaking/assess", route => route.fulfill({ json: { assessment } }));
   await page.goto("/speaking.html#missions");
@@ -259,14 +274,81 @@ test.describe("recorded Banban feedback", () => {
   await expectClip(page, "nice-try.mp3");
   expect(await page.evaluate(() => window.spoken)).toEqual([]);
   await finishClip(page, "nice-try.mp3");
-  await expect.poll(() => page.evaluate(() => window.spoken)).toEqual(["fireplace"]);
+  await expectClip(page, "word-fireplace.mp3");
+  expect(await page.evaluate(() => window.spoken)).toEqual([]);
   await page.locator("#retry").click();
   await recordAnswer(page);
   await expectClip(page, "nice-try.mp3");
   await page.locator("#next-mission").click();
   await expectClip(page, "a1-question-2.mp3");
   await finishClip(page, "nice-try.mp3");
-  expect(await page.evaluate(() => window.spoken)).toEqual(["fireplace"]);
+  expect(await page.evaluate(() => window.spoken)).toEqual([]);
+  expect(await page.evaluate(() => window.speakingAudio.filter(audio => audio.src.endsWith("/word-fireplace.mp3")).length)).toBe(1);
   await expect(page.locator("#mission-prompt")).toHaveText("What is in the living room?");
+ });
+ test("Activity 1 question 2 plays its transition feedback and Next starts Activity 2", async ({ page }) => {
+  await open(page, { hasSpeech: true, passed: true, encouragement: "Well done! Now you are ready for the next activity." }, ["house-1"]);
+  await recordAnswer(page);
+  await expectClip(page, "a1-success-2.mp3");
+  await expect(page.locator("#feedback-content")).toContainText("next activity");
+  await expect(page.locator("#next-mission")).toContainText("Next activity");
+  await page.locator("#next-mission").click();
+  await expectClip(page, "a2-question-1.mp3");
+  await expect(page.locator("#feedback")).toBeHidden();
+  expect(await page.evaluate(() => window.speakingAudio.slice(0, -1).every(audio => audio.paused))).toBe(true);
+  expect(await page.evaluate(() => window.spoken)).toEqual([]);
+ });
+ for (const passed of [true, false]) {
+  for (const question of [1, 2]) {
+   test("Activity 2 question " + question + " plays " + (passed ? "success" : "retry") + " feedback and clears it on Next", async ({ page }) => {
+    const completed = question === 1 ? ["house-1", "house-2"] : ["house-1", "house-2", "house-3"];
+    await open(page, { hasSpeech: true, passed, encouragement: passed ? "Well done!" : "Look at the picture again. You can use the words below to help you." }, completed);
+    await recordAnswer(page);
+    await expectClip(page, passed ? "a2-success.mp3" : "a2-retry.mp3");
+    await expect(page.locator("#word-bank")).toBeVisible();
+    await expect(page.locator("#next-mission")).toContainText(question === 1 ? "Next question" : "Next activity");
+    await page.locator("#next-mission").click();
+    await expectClip(page, question === 1 ? "a2-question-2.mp3" : "a3-question-1.mp3");
+    await expect(page.locator("#feedback")).toBeHidden();
+    expect(await page.evaluate(() => window.speakingAudio.slice(0, -1).every(audio => audio.paused))).toBe(true);
+    expect(await page.evaluate(() => window.spoken)).toEqual([]);
+   });
+  }
+ }
+ test("Activity 3 plays the supplied praise before reading the learner's improved answer", async ({ page }) => {
+  const correctedAnswer = "This is Nhinh's house. The basket is by the window.";
+  await open(page, { hasSpeech: true, passed: true, encouragement: "Great effort! You described the room well! I understand what you mean.", transcript: "This Nhinh house. Basket by window.", correctedAnswer }, ["house-1", "house-2", "house-3", "house-4"]);
+  await recordAnswer(page);
+  await expectClip(page, "a3-success.mp3");
+  await expect(page.locator("#feedback-content")).toContainText(correctedAnswer);
+  expect(await page.evaluate(() => window.spoken)).toEqual([]);
+  await finishClip(page, "a3-success.mp3");
+  await expect.poll(() => page.evaluate(() => window.spoken)).toEqual([correctedAnswer]);
+  await page.getByRole("button", { name: "Listen to your improved answer", exact: true }).click();
+  await expect.poll(() => page.evaluate(() => window.spoken)).toEqual([correctedAnswer, correctedAnswer]);
+ });
+ for (const action of ["#retry", "#next-mission", "#listen-prompt", "#record"]) {
+  test("Activity 3 " + action + " interrupts praise without starting a late improved answer", async ({ page }) => {
+   await open(page, { hasSpeech: true, passed: true, encouragement: "Great effort!", correctedAnswer: "This is Nhinh's house. The basket is by the window." }, ["house-1", "house-2", "house-3", "house-4"]);
+   await recordAnswer(page);
+   await expectClip(page, "a3-success.mp3");
+   await page.locator(action).click();
+   await finishClip(page, "a3-success.mp3");
+   expect(await page.evaluate(() => window.spoken)).toEqual([]);
+   expect(await page.evaluate(() => window.speakingAudio.find(audio => audio.src.endsWith("/a3-success.mp3")).paused)).toBe(true);
+   if (action === "#record") await page.locator("#retry").click();
+  });
+ }
+ test("Activity 3 retry and no-speech responses never play the success recording", async ({ page }) => {
+  const encouragement = "Nice try! Look at the picture again and describe the room in two or three sentences.";
+  await open(page, { hasSpeech: true, passed: false, encouragement, correctedAnswer: "There is a basket." }, ["house-1", "house-2", "house-3", "house-4"]);
+  await recordAnswer(page);
+  await expect.poll(() => page.evaluate(() => window.spoken)).toEqual([encouragement, "There is a basket."]);
+  expect(await page.evaluate(() => window.speakingAudio.some(audio => audio.src.endsWith("/a3-success.mp3")))).toBe(false);
+  await page.route("**/api/speaking/assess", route => route.fulfill({ json: { assessment: { hasSpeech: false, passed: false, encouragement: "Please record your answer again.", correctedAnswer: "" } } }));
+  await page.locator("#retry").click();
+  await recordAnswer(page);
+  await expect.poll(() => page.evaluate(() => window.spoken.at(-1))).toBe("Please record your answer again.");
+  expect(await page.evaluate(() => window.speakingAudio.some(audio => audio.src.endsWith("/a3-success.mp3")))).toBe(false);
  });
 });
