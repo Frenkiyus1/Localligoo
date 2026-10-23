@@ -38,8 +38,9 @@ test("all supplied Speaking recordings can be decoded by the browser", async ({ 
 async function observeAudio(page) {
  await page.addInitScript(() => {
   const NativeAudio = window.Audio; window.speakingAudio = []; window.spoken = [];
+  for (const key of ["SpeechRecognition", "webkitSpeechRecognition"]) Object.defineProperty(window, key, { configurable: true, value: undefined });
   window.Audio = class extends NativeAudio { constructor(src) { super(src); window.speakingAudio.push(this); } };
-  Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(utterance) { window.spoken.push(utterance.text); queueMicrotask(() => utterance.onend?.()); } } });
+  Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(utterance) { window.spoken.push(utterance.text); utterance.onstart?.(); queueMicrotask(() => utterance.onend?.()); } } });
  });
 }
 async function expectClip(page, file) {
@@ -53,6 +54,13 @@ async function finishClip(page, file) {
   const audio = window.speakingAudio.findLast(audio => audio.src.endsWith("/" + file));
   audio.pause(); audio.dispatchEvent(new Event("ended"));
  }, file);
+}
+
+async function startConversation(page){
+ await page.goto("/speaking.html");await page.locator("#start-speaking").click();
+ await expectClip(page,"hello-im-banban.mp3");await finishClip(page,"hello-im-banban.mp3");
+ await expectClip(page,"a1-question-1.mp3");
+ await expect(page.locator(".transcript-text").last()).toHaveText("Whose blanket is this?");
 }
 
 test("Start automatically plays the new Banban greeting before the first question, with no separate greeting button", async ({ page }) => {
@@ -103,119 +111,91 @@ async function transcriptScreenshot(page, testInfo, name) {
  await page.locator("#mission-image").evaluate(image => image.decode());
  await page.evaluate(() => document.fonts.ready);
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
- await page.locator(".speaking-activity").screenshot({ path: testInfo.outputPath(name + ".png"), animations: "disabled" });
+ await page.locator("#answer-transcript").screenshot({ path: testInfo.outputPath(name + ".png"), animations: "disabled" });
 }
 
-test("Activity 1 reveals only spoken words, keeps completed text, and restarts on Listen", async ({ page }, testInfo) => {
+test("Activity 1 keeps spoken turns, follows the answer and adds a new turn on replay", async ({ page }, testInfo) => {
  await observeAudio(page);
- await page.goto("/speaking.html#missions");
- const panel = page.locator("#answer-transcript"), words = page.locator("#transcript-words");
+ await startConversation(page);
+ const panel=page.locator("#answer-transcript"),texts=page.locator("#transcript-words .transcript-text");
  await expect(panel).toBeVisible();
+ await expect(texts.nth(1)).toHaveText("Whose blanket is this?");
+ await panel.locator("summary").focus();await page.keyboard.press("Enter");
  await expect(panel).not.toHaveAttribute("open");
- await expect(words).toBeEmpty();
- await panel.locator("summary").focus(); await page.keyboard.press("Enter");
- await expect(panel).toHaveAttribute("open");
- await expect(page.locator("#transcript-hint")).toBeVisible();
- await expect(words).toBeHidden();
- await page.keyboard.press("Space");
- await expect(panel).not.toHaveAttribute("open");
+ await page.keyboard.press("Space");await expect(panel).toHaveAttribute("open");
  await page.locator("#listen-prompt").click();
- await expectClip(page, "a1-answer-1.mp3");
- await expect(panel).toHaveAttribute("open");
- await expect(words).toBeVisible();
- await playAnswerTo(page, 0.8);
- await expect(words).toHaveText("It's my grandmother's");
- await expect(words.locator(".is-current")).toHaveText("grandmother's");
- await transcriptScreenshot(page, testInfo, "transcript-following");
- await playAnswerTo(page, 2.55);
- await expect(words).toHaveText("It's my grandmother's blanket. It's on the");
- await expect(words.locator(".is-current")).toHaveText("the");
- await finishClip(page, "a1-answer-1.mp3");
- await expect(words).toHaveText("It's my grandmother's blanket. It's on the floor next to the fireplace.");
- await expect(words.locator(".is-current")).toHaveCount(0);
- await transcriptScreenshot(page, testInfo, "transcript-complete");
+ await expectClip(page,"a1-answer-1.mp3");
+ await playAnswerTo(page,0.8);
+ await expect(texts.last()).toHaveText("It's my grandmother's");
+ await expect(texts.last().locator(".is-current")).toHaveText("grandmother's");
+ await expect(page.locator(".transcript-speaker")).toHaveText(["BanBan:","BanBan:","BanBan:"]);
+ await transcriptScreenshot(page,testInfo,"transcript-following");
+ await playAnswerTo(page,2.55);
+ await expect(texts.last()).toHaveText("It's my grandmother's blanket. It's on the");
+ await finishClip(page,"a1-answer-1.mp3");
+ await expect(texts.last()).toHaveText("It's my grandmother's blanket. It's on the floor next to the fireplace.");
+ await expect(page.locator(".is-current")).toHaveCount(0);
+ await transcriptScreenshot(page,testInfo,"transcript-complete");
  await page.locator("#listen-prompt").click();
- await expectClip(page, "a1-answer-1.mp3");
- await playAnswerTo(page, 0.1);
- await expect(words).toHaveText("It's");
- await page.evaluate(() => {
-  const previous = window.speakingAudio.at(-2);
-  previous.currentTime = 4; previous.dispatchEvent(new Event("timeupdate")); previous.dispatchEvent(new Event("ended"));
- });
- await expect(words).toHaveText("It's");
- await panel.locator("summary").click();
- await expect(panel).not.toHaveAttribute("open");
- await playAnswerTo(page, 2.8);
+ await expectClip(page,"a1-answer-1.mp3");await playAnswerTo(page,0.1);
+ await expect(texts.last()).toHaveText("It's");
+ await expect(texts).toHaveCount(4);
+ await page.evaluate(()=>{const old=window.speakingAudio.at(-2);old.currentTime=4;old.dispatchEvent(new Event("timeupdate"));old.dispatchEvent(new Event("ended"));});
+ await expect(texts.last()).toHaveText("It's");
+ await panel.locator("summary").click();await playAnswerTo(page,2.8);
  await expect(panel).not.toHaveAttribute("open");
  await panel.locator("summary").click();
- await expect(words).toHaveText("It's my grandmother's blanket. It's on the floor");
+ await expect(texts.last()).toHaveText("It's my grandmother's blanket. It's on the floor");
 });
 
 test("the second answer follows its own audio position and playback speed through the real ending", async ({ page }, testInfo) => {
  await observeAudio(page);
- await page.addInitScript(() => localStorage.setItem("localingo.progress.v1", JSON.stringify({ speakingVersion: 2, speaking: ["house-1"] })));
+ await page.addInitScript(()=>localStorage.setItem("localingo.progress.v1",JSON.stringify({speakingVersion:2,speaking:["house-1"]})));
  await page.goto("/speaking.html#missions");
- await page.locator("#listen-prompt").click();
- await expectClip(page, "a1-answer-2.mp3");
- await playAnswerTo(page, 1.7);
- await expect(page.locator("#transcript-words")).toHaveText("There is a fireplace in the");
- await playAnswerTo(page, 3.9);
- await expect(page.locator("#transcript-words")).toHaveText("There is a fireplace in the middle of the room. There is a low table");
- await transcriptScreenshot(page, testInfo, "transcript-second-answer");
- await page.locator("#listen-prompt").click();
- await expectClip(page, "a1-answer-2.mp3");
- await page.evaluate(() => { window.speakingAudio.at(-1).playbackRate = 2; });
- await expect.poll(() => page.evaluate(() => window.speakingAudio.at(-1).ended)).toBe(true);
- await expect(page.locator("#transcript-words")).toHaveText("There is a fireplace in the middle of the room. There is a low table next to the fireplace.");
+ await page.locator("#listen-prompt").click();await expectClip(page,"a1-answer-2.mp3");
+ const text=page.locator("#transcript-words .transcript-text").last();
+ await playAnswerTo(page,1.7);await expect(text).toHaveText("There is a fireplace in the");
+ await playAnswerTo(page,3.9);await expect(text).toHaveText("There is a fireplace in the middle of the room. There is a low table");
+ await transcriptScreenshot(page,testInfo,"transcript-second-answer");
+ await page.locator("#listen-prompt").click();await expectClip(page,"a1-answer-2.mp3");
+ await page.evaluate(()=>{window.speakingAudio.at(-1).playbackRate=2;});
+ await expect.poll(()=>page.evaluate(()=>window.speakingAudio.at(-1).ended)).toBe(true);
+ await expect(text).toHaveText("There is a fireplace in the middle of the room. There is a low table next to the fireplace.");
  await expect(page.locator("#transcript-words .is-current")).toHaveCount(0);
 });
 
-test("recording freezes the transcript and Next clears it before hiding it in Activity 2", async ({ page }) => {
+test("recording freezes the answer and conversation remains available across activities", async ({ page }) => {
  await observeAudio(page);
- await page.route("**/api/speaking/status", route => route.fulfill({ json: { configured: false } }));
- await page.goto("/speaking.html#missions");
- for (let question = 1; question <= 2; question++) {
-  await expect(page.locator("#answer-transcript")).not.toHaveAttribute("open");
-  await expect(page.locator("#transcript-words")).toBeEmpty();
-  await page.locator("#listen-prompt").click();
-  await expectClip(page, "a1-answer-" + question + ".mp3");
-  await playAnswerTo(page, 0.8);
-  const partial = await page.locator("#transcript-words").innerText();
-  await page.locator("#record").click();
-  await expect(page.locator("#record")).toHaveAttribute("aria-pressed", "true");
-  expect(await page.evaluate(() => window.speakingAudio.at(-1).paused)).toBe(true);
+ await page.route("**/api/speaking/status",route=>route.fulfill({json:{configured:false}}));
+ await startConversation(page);
+ for(let question=1;question<=2;question++){
+  await page.locator("#listen-prompt").click();await expectClip(page,"a1-answer-"+question+".mp3");await playAnswerTo(page,0.8);
+  const answer=page.locator("#transcript-words .transcript-turn:not(.is-user)").last().locator(".transcript-text");
+  const partial=await answer.innerText();
+  await page.locator("#record").click();await expect(page.locator("#record")).toHaveAttribute("aria-pressed","true");
+  expect(await page.evaluate(()=>window.speakingAudio.at(-1).paused)).toBe(true);
   await expect(page.locator("#transcript-words .is-current")).toHaveCount(0);
-  await page.evaluate(() => {
-   const audio = window.speakingAudio.at(-1);
-   audio.currentTime = 4; audio.dispatchEvent(new Event("timeupdate")); audio.dispatchEvent(new Event("ended"));
-  });
-  await expect(page.locator("#transcript-words")).toHaveText(partial);
-  await expect(page.locator("#record-status")).toContainText("2/60");
-  await page.locator("#record").click();
-  await expect(page.locator("#next-mission")).toBeEnabled();
-  await page.locator("#next-mission").click();
+  await page.evaluate(()=>{const old=window.speakingAudio.at(-1);old.currentTime=4;old.dispatchEvent(new Event("timeupdate"));old.dispatchEvent(new Event("ended"));});
+  await expect(answer).toHaveText(partial);
+  await expect(page.locator("#record-status")).toContainText("2/60");await page.locator("#record").click();
+  await expect(page.locator("#next-mission")).toBeEnabled();await page.locator("#next-mission").click();
  }
- await expect(page.locator("#answer-transcript")).toBeHidden();
- await expect(page.locator("#transcript-words")).toBeEmpty();
+ await expect(page.locator("#answer-transcript")).toBeVisible();
+ await expect(page.locator("#transcript-words")).toContainText("Whose blanket is this?");
  await expect(page.locator("#mission-example")).toHaveText("The piece of wood is ____ the stilt house.");
- await page.locator("#listen-prompt").click();
- await expectClip(page, "a2-question-1.mp3");
- await expect(page.locator("#answer-transcript")).toBeHidden();
+ await page.locator("#listen-prompt").click();await expectClip(page,"a2-question-1.mp3");
+ await expect(page.locator("#transcript-words .transcript-text").last()).toHaveText("Where is the piece of wood?");
 });
 
-test("an unavailable answer does not reveal unspoken text and Listen can recover", async ({ page }) => {
+test("failed audio adds no invented speech and Listen can recover", async ({ page }) => {
  await observeAudio(page);
- await page.route("**/a1-answer-1.mp3", route => route.abort());
- await page.goto("/speaking.html#missions");
- await page.locator("#listen-prompt").click();
- await expect(page.locator("#record-status")).toContainText("Could not play this audio");
- await expect(page.locator("#transcript-words")).toBeEmpty();
- await expect(page.locator("#transcript-hint")).toBeVisible();
- await page.unroute("**/a1-answer-1.mp3");
- await page.locator("#listen-prompt").click();
- await expectClip(page, "a1-answer-1.mp3");
- await playAnswerTo(page, 0.8);
- await expect(page.locator("#transcript-words")).toHaveText("It's my grandmother's");
+ await page.route("**/a1-answer-1.mp3",route=>route.abort());await startConversation(page);
+ const texts=page.locator("#transcript-words .transcript-text");
+ await expect(texts).toHaveCount(2);await expect(texts.last()).toHaveText("Whose blanket is this?");
+ await page.locator("#listen-prompt").click();await expect(page.locator("#record-status")).toContainText("Could not play this audio");
+ await expect(texts).toHaveCount(2);await expect(texts.last()).toHaveText("Whose blanket is this?");
+ await page.unroute("**/a1-answer-1.mp3");await page.locator("#listen-prompt").click();await expectClip(page,"a1-answer-1.mp3");
+ await playAnswerTo(page,0.8);await expect(texts.last()).toHaveText("It's my grandmother's");
  await expect(page.locator("#record-status")).toBeHidden();
 });
 
@@ -351,4 +331,59 @@ test.describe("recorded Banban feedback", () => {
   await expect.poll(() => page.evaluate(() => window.spoken.at(-1))).toBe("Please record your answer again.");
   expect(await page.evaluate(() => window.speakingAudio.some(audio => audio.src.endsWith("/a3-success.mp3")))).toBe(false);
  });
+});
+
+async function mockRecognition(page){
+ await page.addInitScript(()=>{
+  window.recognitions=[];
+  class Recognition{
+   start(){window.recognitions.push(this);}
+   abort(){this.aborted=true;}
+   emit(text,final=false){const result=[{transcript:text}];result.isFinal=final;this.onresult?.({results:[result]});}
+  }
+  Object.defineProperty(window,"SpeechRecognition",{configurable:true,value:Recognition});
+ });
+}
+
+test("live User words update one turn, server transcript replaces it, and BanBan responds in order",async({page},testInfo)=>{
+ await observeAudio(page);await mockRecognition(page);
+ await page.route("**/api/speaking/status",route=>route.fulfill({json:{configured:true}}));
+ const transcript="It's my grandmother's blanket. It's on the floor next to the fireplace.";
+ await page.route("**/api/speaking/assess",route=>route.fulfill({json:{assessment:{hasSpeech:true,passed:true,transcript,encouragement:"Well done! Now you are ready for the next question."}}}));
+ await startConversation(page);
+ await expect(page.locator(".transcript-text").nth(1)).toHaveText("Whose blanket is this?");
+ await page.locator("#record").click();await expect(page.locator("#record")).toHaveAttribute("aria-pressed","true");
+ const user=page.locator(".transcript-turn.is-user");
+ await page.evaluate(()=>window.recognitions[0].emit("It's my"));
+ await expect(user).toContainText("User:");await expect(user.locator(".transcript-text")).toHaveText("It's my");
+ await expect(user).toHaveClass(/is-interim/);
+ await page.evaluate(()=>window.recognitions[0].emit("It's my grandmother blanket",true));
+ await expect(user).toHaveCount(1);await expect(user.locator(".transcript-text")).toHaveText("It's my grandmother blanket");
+ await expect(page.locator("#record-status")).toContainText("2/60");await page.locator("#record").click();
+ await expect(user.locator(".transcript-text")).toHaveText(transcript);await expect(user).not.toHaveClass(/is-interim/);
+ await expectClip(page,"well-done.mp3");
+ await expect(page.locator(".transcript-speaker")).toHaveText(["BanBan:","BanBan:","User:","BanBan:"]);
+ await expect(page.locator(".transcript-text").last()).toHaveText("Well done! Now you are ready for the next question.");
+ expect(await page.evaluate(()=>window.recognitions[0].aborted)).toBe(true);
+ await transcriptScreenshot(page,testInfo,"conversation");
+ await page.locator("#retry").click();await expect(user.locator(".transcript-text")).toHaveText(transcript);
+ await page.locator("#next-mission").click();await expectClip(page,"a1-question-2.mp3");
+ await expect(page.locator(".transcript-text").nth(1)).toHaveText("Whose blanket is this?");
+ await expect(page.locator(".transcript-text").last()).toHaveText("What is in the living room?");
+});
+
+test("recognition failure preserves recording and ignores late results after retry",async({page})=>{
+ await observeAudio(page);await mockRecognition(page);
+ await page.route("**/api/speaking/status",route=>route.fulfill({json:{configured:false}}));await page.goto("/speaking.html#missions");
+ await page.locator("#record").click();await expect(page.locator("#record")).toHaveAttribute("aria-pressed","true");
+ await page.evaluate(()=>{window.lateResult=window.recognitions[0].onresult;window.recognitions[0].emit("There is a fireplace.");window.recognitions[0].onerror({error:"network"});});
+ await expect(page.locator("#record")).toHaveAttribute("aria-pressed","true");
+ await expect(page.locator(".is-user .transcript-text")).toHaveText("There is a fireplace.");
+ await page.locator("#retry").click();
+ await page.evaluate(()=>{const result=[{transcript:"Late words must not appear."}];result.isFinal=true;window.lateResult({results:[result]});});
+ await expect(page.locator("#transcript-words")).not.toContainText("Late words");
+ await page.locator("#record").click();await expect(page.locator("#record")).toHaveAttribute("aria-pressed","true");
+ await page.evaluate(()=>window.recognitions[1].emit("A new answer.",true));
+ await expect(page.locator(".is-user .transcript-text")).toHaveText(["There is a fireplace.","A new answer."]);
+ await page.locator("#retry").click();
 });

@@ -21,7 +21,13 @@
 .speaking-transcript summary:focus-visible { outline:3px solid #527958; outline-offset:-4px; border-radius:16px; }
 .transcript-body { min-height:calc(3.6em + 18px); padding:0 22px 18px; font-size:clamp(18px,1.8vw,22px); }
 .transcript-hint { margin:0; font-size:14px; line-height:1.8; color:#8c7045; }
-.transcript-words { margin:0; font-size:inherit; font-weight:600; line-height:1.8; overflow-wrap:break-word; }
+.transcript-words { margin:0; max-height:360px; overflow:auto; overscroll-behavior:contain; font-size:inherit; font-weight:600; line-height:1.8; overflow-wrap:anywhere; scrollbar-color:#d8c795 transparent; }
+.transcript-turn { display:grid; grid-template-columns:5em minmax(0,1fr); gap:10px; margin:0; padding:12px 0; }
+.transcript-turn+.transcript-turn { border-top:1px solid #eadfbe; }
+.transcript-speaker { color:#684415; font-weight:800; white-space:nowrap; }
+.transcript-turn.is-user .transcript-speaker { color:#45634a; }
+.transcript-turn.is-interim .transcript-text { opacity:.7; }
+.transcript-text { white-space:pre-wrap; }
 .transcript-word.is-current { border-radius:5px; background:#f8d77f; box-shadow:0 0 0 3px #f8d77f; color:#5d401b; }
 @media(prefers-reduced-motion:reduce) { .speaking-transcript summary::before { transition:none; } }
 .speaking-answer { max-width:1100px; margin:18px auto; }
@@ -53,7 +59,8 @@
  .speaking-activity { padding:24px 16px 16px; } .activity-label { font-size:18px; padding:12px 18px; margin:0 auto 20px; }
  .speaking-picture { width:100%; margin:14px auto 20px; }
  .speaking-transcript { width:100%; } .speaking-transcript summary { padding:16px 18px; } .transcript-body { padding:0 18px 18px; }
- .transcript-body { min-height:calc(7.2em + 18px); }
+ .transcript-turn { grid-template-columns:5em minmax(0,1fr); gap:8px; }
+ .transcript-words { max-height:300px; font-size:16px; }
  .speaking-controls { gap:12px; justify-content:space-between; } .speaking-control { flex:1; min-width:0; font-size:11px; } .speaking-control img { width:60px; }
  .word-bank { gap:10px; } .word-bank button { padding:10px 15px; }
  .speaking-body .completion { margin:16px; }

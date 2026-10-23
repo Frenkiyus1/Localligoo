@@ -7,6 +7,7 @@ const improved="This is Nhinh's house. There is a basket next to the window. A l
 async function start(page,configured=true){
  await page.addInitScript(()=>{
   window.spoken=[];
+  for(const key of ["SpeechRecognition","webkitSpeechRecognition"])Object.defineProperty(window,key,{configurable:true,value:undefined});
   Object.defineProperty(window,'speechSynthesis',{configurable:true,value:{cancel(){},getVoices(){return[];},speak(u){window.spoken.push(u.text);setTimeout(()=>u.onend?.(),0);}}});
  });
  await page.route('**/api/speaking/status',route=>route.fulfill({json:{configured}}));
@@ -66,17 +67,18 @@ test('all five recorded answers follow the three activities, save progress and r
   await expect(page.locator('#mission-prompt')).toHaveText(missions[i].prompt);
   if(i===2){await expect(page.locator('#word-bank button')).toHaveText(['under','underneath','at the bottom of','below']);await screenshot(page,testInfo,'activity-2');}
   if(i===4){await expect(page.locator('#answer-panel')).toBeHidden();await expect(page.locator('#mission-example')).toBeEmpty();await screenshot(page,testInfo,'activity-3');}
-  if(i>=2)await expect(page.locator('#answer-transcript')).toBeHidden();
+  await expect(page.locator('#answer-transcript')).toBeVisible();
   await expect(page.locator('#feedback')).toBeHidden();
   await submit(page);
   await expect(page.locator('#feedback')).toBeVisible();
+  await expect(page.locator('.is-user .transcript-text').last()).toHaveText(transcripts[i]);
   if(i===0)await screenshot(page,testInfo,'speaking-response');
   expect(await savedSpeakingCount(page)).toBe(i+1);
   await expect(page.locator('#next-mission')).toBeEnabled();
   if(i<4)await page.locator('#next-mission').click();
  }
  expect(requests()).toBe(5);await expect(page.locator('#feedback-content')).toContainText(improved);
- await expect.poll(()=>page.evaluate(()=>window.spoken.includes("Great effort! You described the room well! I understand what you mean."))).toBe(true);
+ await expect(page.locator("#transcript-words")).toContainText("Great effort! You described the room well! I understand what you mean.");
  await expect.poll(()=>page.evaluate(()=>window.spoken.includes("This is Nhinh's house. There is a basket next to the window. A low table is in front of her."))).toBe(true);
  await page.locator('#next-mission').click();await expect(page.locator('#completion')).toBeVisible();
  await page.reload();expect(await savedSpeakingCount(page)).toBe(5);

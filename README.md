@@ -43,7 +43,7 @@ Các bài học, audio và chức năng ghi âm hoạt động với máy chủ 
 
 **Speaking** gồm:
 
-1. **Listen and repeat** — 2 câu hỏi, có audio câu hỏi và đáp án. Khung **Read the transcript** mặc định đóng; khi nhấn Listen, khung tự mở và từng từ hiện theo vị trí phát audio, từ đang đọc được tô nhẹ. Nghe lại chạy chữ từ đầu; chuyển câu đóng khung và xóa nội dung cũ.
+1. **Listen and repeat** — 2 câu hỏi, có audio câu hỏi và đáp án. Khung **Read the transcript** hiển thị hội thoại theo từng lượt `BanBan:` và `User:` ở cả ba hoạt động. Câu hỏi, lời chào, câu mẫu, từ gợi ý và phản hồi được thêm khi BanBan phát lời nói; câu mẫu Activity 1 vẫn hiện từng từ theo vị trí audio. Lời người học hiện trong lúc ghi âm nếu trình duyệt hỗ trợ nhận dạng giọng nói; bản nhận dạng từ API cập nhật đúng lượt `User:` sau khi gửi ghi âm. Khi không có nhận dạng trực tiếp, lời người học hiện sau phản hồi API. Nghe lại tạo lượt nói mới; Try again và chuyển câu giữ lịch sử hội thoại trong phiên học.
 2. **Complete and Speak** — 2 câu điền khuyết kèm từ gợi ý; học sinh nói cả câu hoàn chỉnh.
 3. **Look, Think and Speak** — mô tả căn phòng bằng 2–3 câu. Sau 90 giây chưa có câu trả lời, Banban đưa gợi ý. Khi có phản hồi, trang hiển thị và đọc câu cải thiện dựa trên lời học sinh.
 
